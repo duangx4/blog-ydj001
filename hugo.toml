@@ -5,8 +5,8 @@ theme = "PaperMod"
 enableRobotsTXT = true
 
 [params]
-  description = "电气工程学生 · 无人机飞手 · 业余运维"
-  author = "颜当峻"
+  description = "电气工程 · 无人机飞手 · 业余运维"
+  author = "实力人老大"
   defaultTheme = "auto"
   ShowReadingTime = true
   ShowShareButtons = false
@@ -19,11 +19,11 @@ enableRobotsTXT = true
 
   [params.homeInfoParams]
     Title = "实力人老大"
-    Content = "电子科技大学中山学院 · 电气工程\n\nCAAC 超视距无人机机长 · 低压电工证在考\nLinux 运维实战 · 从 MC 模组服到 Docker 集群\n\n记录一个电气学生的技术成长之路"
+    Content = "电气工程专业 \n\nCAAC 超视距无人机机长 · 低压电工证在考\nLinux 运维实战 · 从 MC 模组服到 Docker 集群\n\n记录技术成长之路"
 
   [[params.socialIcons]]
     name = "github"
-    url = "https://github.com/yandangjun"
+    url = "https://github.com/duangx4"
 
   [[params.socialIcons]]
     name = "email"
