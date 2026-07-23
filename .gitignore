@@ -1,0 +1,14 @@
+# 构建产出
+/public/
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# Hugo
+.hugo_build.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
