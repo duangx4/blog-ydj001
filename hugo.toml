@@ -1,0 +1,57 @@
+baseURL = "https://ydj001.xyz"
+locale = "zh-CN"
+title = "实力人老大"
+theme = "PaperMod"
+enableRobotsTXT = true
+
+[params]
+  description = "电气工程学生 · 无人机飞手 · 业余运维"
+  author = "颜当峻"
+  defaultTheme = "auto"
+  ShowReadingTime = true
+  ShowShareButtons = false
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowWordCount = true
+  ShowToc = true
+  comments = false
+
+  [params.homeInfoParams]
+    Title = "实力人老大"
+    Content = "电子科技大学中山学院 · 电气工程\n\nCAAC 超视距无人机机长 · 低压电工证在考\nLinux 运维实战 · 从 MC 模组服到 Docker 集群\n\n记录一个电气学生的技术成长之路"
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/yandangjun"
+
+  [[params.socialIcons]]
+    name = "email"
+    url = "mailto:yandangjun@163.com"
+
+  [params.assets]
+    disableHLJS = true
+
+[[menu.main]]
+  identifier = "about"
+  name = "关于"
+  url = "/about/"
+  weight = 1
+
+[[menu.main]]
+  identifier = "blog"
+  name = "博客"
+  url = "/blog/"
+  weight = 2
+
+[[menu.main]]
+  identifier = "tags"
+  name = "标签"
+  url = "/tags/"
+  weight = 3
+
+[[menu.main]]
+  identifier = "search"
+  name = "搜索"
+  url = "/search/"
+  weight = 4
