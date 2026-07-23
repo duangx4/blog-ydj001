@@ -3,6 +3,7 @@ title: "用 FRP 隧道打通 0 号机的 Web 管理面板"
 date: 2026-07-23
 draft: false
 tags: ["frp", "运维", "内网穿透"]
+categories: ["个人项目"]
 ---
 
 ## 背景
