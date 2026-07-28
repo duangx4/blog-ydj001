@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>实力人老大 | Minecraft 服务器</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:#e0e0e0;display:flex;justify-content:center;align-items:center;padding:20px}
+.container{max-width:780px;width:100%;background:rgba(255,255,255,.05);backdrop-filter:blur(12px);border-radius:24px;padding:48px 40px;border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.header{text-align:center;margin-bottom:40px}
+.header h1{font-size:2.2rem;background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header .subtitle{color:#888;margin-top:6px;font-size:.95rem}
+#status-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;padding:10px 18px;border-radius:20px;font-size:.9rem;font-weight:500}
+#status-bar.online{background:rgba(76,175,80,.12);border:1px solid rgba(76,175,80,.25);color:#69f0ae}
+#status-bar.offline{background:rgba(244,67,54,.12);border:1px solid rgba(244,67,54,.25);color:#ef9a9a}
+#status-bar.loading{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#999}
+#status-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+#status-bar.online #status-dot{background:#4caf50;box-shadow:0 0 8px rgba(76,175,80,.6);animation:pulse 2s infinite}
+#status-bar.offline #status-dot{background:#f44336}
+#status-bar.loading #status-dot{background:#888}
+@keyframes pulse{0%{opacity:1}50%{opacity:.5}100%{opacity:1}}
+#player-avatars{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center}
+#player-avatars .player-badge{background:rgba(255,255,255,.08);padding:2px 10px;border-radius:12px;font-size:.82rem;color:#ddd;border:1px solid rgba(255,255,255,.1)}
+#status-error{color:#888;font-size:.78rem;margin-top:4px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+.info-card{background:rgba(255,255,255,.04);border-radius:14px;padding:18px 20px;border:1px solid rgba(255,255,255,.06)}
+.info-card .label{font-size:.8rem;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.info-card .value{font-size:1.1rem;font-weight:600}
+.info-card .value.mc-addr{font-family:'Courier New',monospace;color:#ffd200;font-size:1.3rem}
+.info-card .value.desc{font-size:.95rem;line-height:1.5;color:#ccc}
+.specs{margin-bottom:32px}
+.specs h2{font-size:1.1rem;margin-bottom:14px;color:#aaa}
+.specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.specs-grid .item{display:flex;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,.03);border-radius:8px;font-size:.88rem}
+.specs-grid .item .label{color:#888}
+.specs-grid .item .val{color:#e0e0e0;font-weight:500}
+.features{margin-bottom:32px}
+.features h2{font-size:1.1rem;margin-bottom:14px;color:#aaa}
+.features ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.features li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:10px;font-size:.92rem}
+.features li .icon{font-size:1.2rem}
+.cta{text-align:center;margin-top:8px}
+.cta .ip-box{display:inline-block;background:rgba(0,0,0,.3);border:1px dashed rgba(255,215,0,.4);padding:14px 32px;border-radius:12px;font-family:'Courier New',monospace;font-size:1.5rem;color:#ffd200;letter-spacing:2px;user-select:all}
+.cta p{margin-top:12px;color:#888;font-size:.85rem}
+.cta .copy-btn{margin-top:12px;background:linear-gradient(90deg,#f7971e,#ffd200);border:none;color:#1a1a2e;font-weight:700;padding:10px 28px;border-radius:10px;cursor:pointer;font-size:.95rem;transition:transform .2s}
+.cta .copy-btn:hover{transform:scale(1.03)}
+.cta .copy-btn:active{transform:scale(.97)}
+.footer{text-align:center;margin-top:32px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);font-size:.82rem;color:#666}
+.footer a{color:#888;text-decoration:none}
+.footer a:hover{color:#ffd200}
+
+/* mods section */
+.mods{margin-bottom:32px}
+.mods h2{font-size:1.1rem;margin-bottom:14px;color:#aaa}
+.mods-cat{margin-bottom:14px}
+.mods-cat .cat-title{font-size:.9rem;color:#ffd200;margin-bottom:8px;font-weight:600}
+.mods-cat .cat-mods{display:flex;flex-wrap:wrap;gap:6px}
+.mods-cat .mod-tag{padding:3px 10px;background:rgba(255,255,255,.04);border-radius:6px;font-size:.78rem;color:#bbb;border:1px solid rgba(255,255,255,.06)}
+.mods-toggle{cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:#888;font-size:.85rem;margin-top:4px;transition:color .2s}
+.mods-toggle:hover{color:#ffd200}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:1000;justify-content:center;align-items:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal-box{background:#1e1e2e;border-radius:16px;padding:32px;max-width:680px;width:100%;max-height:80vh;overflow-y:auto;border:1px solid rgba(255,255,255,.08)}
+.modal-box h3{color:#ffd200;margin-bottom:16px;font-size:1.1rem}
+.modal-box .close-btn{float:right;background:none;border:none;color:#888;font-size:1.4rem;cursor:pointer}
+.modal-box .close-btn:hover{color:#fff}
+.modal-box .full-list{display:flex;flex-direction:column;gap:6px}
+.modal-box .full-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.82rem}
+.modal-box .full-item .file{color:#ddd;font-family:monospace;font-size:.78rem;word-break:break-all}
+.modal-box .full-item .cat{color:#888;font-size:.75rem;white-space:nowrap;margin-left:8px}
+
+@media(max-width:600px){.container{padding:32px 20px}.info-grid{grid-template-columns:1fr}.features ul{grid-template-columns:1fr}.specs-grid{grid-template-columns:1fr}.header h1{font-size:1.7rem}.cta .ip-box{font-size:1.2rem;padding:12px 20px}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>⚑ 实力人老大</h1>
+<p class="subtitle">一个属于你的 Minecraft 搭子服</p>
+<div id="status-bar" class="loading"><span id="status-dot"></span><span id="status-text">正在获取服务器状态...</span></div>
+<div id="player-avatars"></div>
+<div id="status-error"></div>
+</div>
+<div class="info-grid">
+<div class="info-card"><div class="label">服务器地址</div><div class="value mc-addr">mc.ydj001.xyz</div></div>
+<div class="info-card"><div class="label">游戏版本</div><div class="value">Fabric 1.20.1</div></div>
+<div class="info-card"><div class="label">游玩模式</div><div class="value desc">生存 · 建筑 · 生电<br>休闲养老 / 半公益 · PVP 开启</div></div>
+<div class="info-card"><div class="label">验证模式</div><div class="value desc">🟢 离线模式（正版盗版均可）<br>即开即玩，无需正版账号</div></div>
+</div>
+<div class="specs">
+<h2>⚙️ 硬件配置</h2>
+<div class="specs-grid">
+<div class="item"><span class="label">CPU</span><span class="val">Intel Xeon E5-2667 v2 × 4核</span></div>
+<div class="item"><span class="label">内存</span><span class="val">15GB（可用约12GB）</span></div>
+<div class="item"><span class="label">存储</span><span class="val">58GB SSD</span></div>
+<div class="item"><span class="label">线路</span><span class="val">山东枣庄 BGP · 香港入口转发</span></div>
+</div>
+</div>
+<div class="features">
+<h2>✨ 服务器特色</h2>
+<ul>
+<li><span class="icon">🏠</span> 领地保护 &amp; 防熊</li>
+<li><span class="icon">⚡</span> 生电友好设计</li>
+<li><span class="icon">🎮</span> QQ 机器人联动</li>
+<li><span class="icon">🧩</span> 33+ 模组（<span class="mods-toggle" onclick="toggleMods()">查看全部 →</span>）</li>
+<li><span class="icon">🌙</span> 和谐社区氛围</li>
+<li><span class="icon">🔄</span> 每周备份保障</li>
+</ul>
+</div>
+
+<div class="mods">
+<h2>🧩 模组列表</h2>
+<div class="mods-cat">
+<div class="cat-title">⚙️ 世界玩法</div>
+<div class="cat-mods">
+<span class="mod-tag">机械动力</span>
+<span class="mod-tag">农夫乐事</span>
+<span class="mod-tag">汽鸣铁道</span>
+<span class="mod-tag">沉浸式飞机</span>
+<span class="mod-tag">切片与切丁</span>
+<span class="mod-tag">武器大师</span>
+<span class="mod-tag">车万女仆</span>
+</div>
+</div>
+<div class="mods-cat">
+<div class="cat-title">🔧 玩家辅助</div>
+<div class="cat-mods">
+<span class="mod-tag">一键整理</span>
+<span class="mod-tag">合成表 REI</span>
+<span class="mod-tag">HUD 信息 Jade</span>
+<span class="mod-tag">连锁挖矿</span>
+<span class="mod-tag">高级背包</span>
+<span class="mod-tag">地毯 (Carpet)</span>
+<span class="mod-tag">登录 EasyAuth</span>
+</div>
+</div>
+<div class="mods-cat">
+<div class="cat-title">🚀 性能优化</div>
+<div class="cat-mods">
+<span class="mod-tag">Lithium</span>
+<span class="mod-tag">FerriteCore</span>
+<span class="mod-tag">Krypton</span>
+<span class="mod-tag">ModernFix</span>
+<span class="mod-tag">Noisium</span>
+</div>
+</div>
+<div class="mods-cat">
+<div class="cat-title">📦 基础库 &amp; API</div>
+<div class="cat-mods">
+<span class="mod-tag">Fabric API</span>
+<span class="mod-tag">Architectury</span>
+<span class="mod-tag">Cloth Config</span>
+<span class="mod-tag">Patchouli 指南</span>
+<span class="mod-tag">Trinkets</span>
+<span class="mod-tag">FTB Library</span>
+</div>
+</div>
+</div>
+
+<!-- Full mod list modal -->
+<div id="mod-modal" class="modal-overlay" onclick="if(event.target===this)closeMods()">
+<div class="modal-box">
+<button class="close-btn" onclick="closeMods()">&times;</button>
+<h3>📦 完整模组清单</h3>
+<div class="full-list">
+<span class="full-item"><span class="file">fabric-api-0.92.9+1.20.1.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">fabric-language-kotlin-1.13.3+kotlin.2.1.21.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">architectury-9.2.14-fabric.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">cloth-config-11.1.136-fabric.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">YetAnotherConfigLib-v3-3.6.6.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">fzzy_config-0.7.0+1.20.1.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">ForgeConfigAPIPort-v8.0.3.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">YungsApi-1.20-Fabric-4.0.6.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">Iceberg-1.20.1-fabric-1.1.25.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">ftb-library-fabric-2001.2.13.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">trinkets-3.7.2.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">Patchouli-1.20.1-85-FABRIC.jar</span><span class="cat">基础</span></span>
+<span class="full-item"><span class="file">create-fabric-6.0.8.1+build.1744-mc1.20.1.jar</span><span class="cat">玩法</span></span>
+<span class="full-item"><span class="file">FarmersDelight-1.20.1-2.4.1+refabricated.jar</span><span class="cat">玩法</span></span>
+<span class="full-item"><span class="file">Steam_Rails-1.7.2+fabric-mc1.20.1.jar</span><span class="cat">玩法</span></span>
+<span class="full-item"><span class="file">sliceanddice-fabric-3.5.2.jar</span><span class="cat">玩法</span></span>
+<span class="full-item"><span class="file">immersive_aircraft-1.4.1+1.20.1-fabric.jar</span><span class="cat">玩法</span></span>
+<span class="full-item"><span class="file">weaponmaster_ydm-fabric-1.20.1-4.2.6.jar</span><span class="cat">玩法</span></span>
+<span class="full-item"><span class="file">touhoulittlemaid-fabric-0.8.2.jar</span><span class="cat">玩法</span></span>
+<span class="full-item"><span class="file">fabric-carpet-1.20-1.4.112+v230608.jar</span><span class="cat">辅助</span></span>
+<span class="full-item"><span class="file">IPN_InventoryProfilesNext-fabric-1.20-1.10.20.jar</span><span class="cat">辅助</span></span>
+<span class="full-item"><span class="file">libIPN-fabric-1.20-4.0.2.jar</span><span class="cat">辅助</span></span>
+<span class="full-item"><span class="file">REI_RoughlyEnoughItems-12.1.785-fabric.jar</span><span class="cat">辅助</span></span>
+<span class="full-item"><span class="file">Jade-1.20-Fabric-11.13.1.jar</span><span class="cat">辅助</span></span>
+<span class="full-item"><span class="file">easyauth-mc1.20-3.4.3.jar</span><span class="cat">辅助</span></span>
+<span class="full-item"><span class="file">ftb-ultimine-fabric-2001.1.8.jar</span><span class="cat">辅助</span></span>
+<span class="full-item"><span class="file">sophisticatedbackpacks-1.20.1-3.23.4.5.110.jar</span><span class="cat">辅助</span></span>
+<span class="full-item"><span class="file">sophisticatedcore-1.20.1-1.2.7.15.166.jar</span><span class="cat">辅助</span></span>
+<span class="full-item"><span class="file">lithium-fabric-mc1.20.1-0.11.4.jar</span><span class="cat">优化</span></span>
+<span class="full-item"><span class="file">ferritecore-6.0.1-fabric.jar</span><span class="cat">优化</span></span>
+<span class="full-item"><span class="file">krypton-0.2.3.jar</span><span class="cat">优化</span></span>
+<span class="full-item"><span class="file">modernfix-fabric-5.25.2+mc1.20.1.jar</span><span class="cat">优化</span></span>
+<span class="full-item"><span class="file">noisium-fabric-2.3.0+mc1.20-1.20.1.jar</span><span class="cat">优化</span></span>
+<span class="full-item"><span class="file">AdvancedBackups-fabric-1.20-3.7.1.jar</span><span class="cat">维护</span></span>
+</div>
+
+</div>
+</div>
+
+<div class="cta">
+<div class="ip-box">mc.ydj001.xyz</div>
+<p>直接复制上方地址，在 Minecraft 中添加服务器</p>
+<button class="copy-btn" onclick="copyIP()">📋 复制服务器地址</button>
+</div>
+<div class="footer">
+<p>Powered by <a href="https://ydj001.xyz">实力人老大</a> · 山东 BGP 线路 · 香港入口转发</p>
+</div>
+</div>
+<script>
+function copyIP(){
+  navigator.clipboard.writeText('mc.ydj001.xyz').then(function(){
+    var btn=document.querySelector('.copy-btn');
+    btn.textContent='✅ 已复制！';
+    btn.style.background='linear-gradient(90deg,#4caf50,#66bb6a)';
+    setTimeout(function(){
+      btn.textContent='📋 复制服务器地址';
+      btn.style.background='linear-gradient(90deg,#f7971e,#ffd200)';
+    },2000);
+  });
+}
+
+function toggleMods(){
+  document.getElementById('mod-modal').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function closeMods(){
+  document.getElementById('mod-modal').classList.remove('active');
+  document.body.style.overflow='';
+}
+
+var statusBar=document.getElementById('status-bar');
+var statusText=document.getElementById('status-text');
+var playerAvatars=document.getElementById('player-avatars');
+var statusError=document.getElementById('status-error');
+
+function fetchStatus(){
+  // 从 mc.ydj001.xyz 获取服务器实时状态
+  fetch('https://mc.ydj001.xyz/status').then(function(r){return r.json()}).then(function(data){
+    statusError.textContent='';
+    if(data.online){
+      statusBar.className='online';
+      var count=data.players_online||0;
+      statusText.textContent='服务器运行中 · '+count+'/'+data.max_players+' 人在线';
+      if(count>0&&data.player_list&&data.player_list.length>0){
+        var html='';
+        data.player_list.forEach(function(name){
+          html+='<span class="player-badge">\u26a1 '+name+'</span>';
+        });
+        playerAvatars.innerHTML=html;
+      }else{
+        playerAvatars.innerHTML='<span style="color:#666;font-size:.82rem">\u{1f634} 无人在线</span>';
+      }
+    }else{
+      statusBar.className='offline';
+      statusText.textContent='服务器已离线';
+      playerAvatars.innerHTML='';
+    }
+  })['catch'](function(err){
+    statusBar.className='offline';
+    statusText.textContent='服务器状态获取失败';
+    statusError.textContent='状态服务暂不可用，请稍后刷新';
+    playerAvatars.innerHTML='';
+  });
+}
+
+fetchStatus();
+setInterval(fetchStatus,30000);
+</script>
+</body>
+</html>
