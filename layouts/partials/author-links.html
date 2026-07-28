@@ -1,0 +1,156 @@
+{{ with .Site.Params.Author.links }}
+  <div class="flex flex-wrap text-neutral-400 dark:text-neutral-500 space-x-2">
+    {{ range $links := . }}
+      {{ range $name, $url := $links }}
+        {{ $isEmail := eq $name "email" }}
+        {{ $isQr := or (eq $name "wechat") (eq $name "qq") }}
+        {{ if $isQr }}
+        <div class="qr-wrapper relative inline-flex">
+          <a
+            class="hover:text-primary-700 dark:hover:text-primary-400 inline-flex items-center"
+            href="#"
+            data-qr="{{ $name }}-qr.jpg"
+            aria-label="{{ $name | title }}"
+            title="{{ $name | title }}"
+            ><span class="inline-block align-text-bottom">{{ partial "icon.html" $name }}</span></a
+          >
+          <div class="qr-popup"><img src="/img/{{ $name }}-qr.jpg" alt="{{ $name | title }} QR" loading="lazy"></div>
+        </div>
+        {{ else }}
+        <a
+          class="{{ cond $isEmail "email-link" "" }} hover:text-primary-700 dark:hover:text-primary-400 inline-flex items-center"
+          href="{{ if $isEmail }}#{{ else }}{{ $url | safeURL }}{{ end }}"
+          {{ if $isEmail }}data-email="{{ $url | base64Encode }}"{{ end }}
+          target="_blank"
+          aria-label="{{ $name | title }}"
+          title="{{ $name | title }}"
+          rel="me noopener noreferrer"
+          ><span class="inline-block align-text-bottom">{{ partial "icon.html" $name }}</span></a
+        >
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  </div>
+  <style>
+    .qr-wrapper {
+      position: relative;
+    }
+    .qr-popup {
+      position: absolute;
+      bottom: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      background: rgba(var(--color-neutral-800), 0.95);
+      backdrop-filter: blur(8px);
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+      transform: translateX(-50%) translateY(4px);
+      pointer-events: auto;
+      width: max-content;
+    }
+    .qr-popup.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+    .qr-popup img {
+      display: block;
+      width: 140px;
+      height: 140px;
+      border-radius: 8px;
+    }
+    /* 透明桥接层：填充电容与弹窗之间的间隙，实现平滑hover过渡 */
+    .qr-popup::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: -12px;
+      right: -12px;
+      height: 12px;
+      pointer-events: auto;
+      z-index: -1;
+    }
+    .qr-popup::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-top-color: rgba(var(--color-neutral-800), 0.95);
+    }
+  </style>
+  <script>
+    (function() {
+      // 二维码悬停弹窗：鼠标进入容器时显示，离开时隐藏
+      const wrappers = document.querySelectorAll('.qr-wrapper');
+      let hideTimer = null;
+      
+      wrappers.forEach(wrapper => {
+        const popup = wrapper.querySelector('.qr-popup');
+        if (!popup) return;
+        
+        wrapper.addEventListener('mouseenter', function() {
+          clearTimeout(hideTimer);
+          // 关闭其他弹窗
+          document.querySelectorAll('.qr-popup.show').forEach(p => {
+            if (p !== popup) p.classList.remove('show');
+          });
+          popup.classList.add('show');
+        });
+        
+        wrapper.addEventListener('mouseleave', function(e) {
+          // 短暂延迟再隐藏，防止移入弹窗时闪烁
+          hideTimer = setTimeout(() => {
+            popup.classList.remove('show');
+          }, 100);
+        });
+        
+        // 弹窗自身保持显示
+        popup.addEventListener('mouseenter', function() {
+          clearTimeout(hideTimer);
+        });
+        popup.addEventListener('mouseleave', function() {
+          popup.classList.remove('show');
+        });
+      });
+      
+      // 邮箱点击复制到剪贴板
+      const emailLinks = document.querySelectorAll('.email-link');
+      emailLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const encoded = this.getAttribute('data-email');
+          if (!encoded) return;
+          const email = atob(encoded);
+          
+          const cleanEmail = email.replace(/^https?:\/\/mailto:/i, '').replace(/^mailto:/i, '');
+          
+          const toast = document.createElement('div');
+          toast.textContent = '✅ 已复制: ' + cleanEmail;
+          toast.className = 'fixed top-4 right-4 z-50 px-4 py-2 rounded-lg bg-neutral-800 text-white text-sm shadow-lg transition-opacity duration-300';
+          document.body.appendChild(toast);
+          
+          navigator.clipboard.writeText(cleanEmail).catch(() => {
+            const textarea = document.createElement('textarea');
+            textarea.value = cleanEmail;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+          });
+          
+          setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+          }, 2000);
+        });
+      });
+    })();
+  </script>
+{{ end }}
