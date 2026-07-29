@@ -43,14 +43,17 @@ Ok "环境就绪"
 
 # Git 状态检查
 Step "预检：git 工作区"
-$gitStatus = git status --porcelain 2>&1
+# 只关心已跟踪文件的改动，忽略 untracked 文件
+$gitStatus = git diff --name-only 2>&1
+$gitStatusCached = git diff --cached --name-only 2>&1
 if ($LASTEXITCODE -ne 0) {
     Fail "git status 失败（确认在仓库根目录）"
     exit 1
 }
-if ($gitStatus) {
+$dirtyFiles = @($gitStatus) + @($gitStatusCached) | Where-Object { $_ -ne '' }
+if ($dirtyFiles) {
     Warn "有未提交的改动："
-    git status --short
+    $dirtyFiles | ForEach-Object { Write-Host "     $_" -ForegroundColor Yellow }
     $confirm = Read-Host "    继续部署？(y/N)"
     if ($confirm -ne 'y') { Fail "用户取消"; exit 1 }
 }
