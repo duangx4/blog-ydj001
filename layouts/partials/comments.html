@@ -1,35 +1,20 @@
-{{/*
-  Giscus 评论系统
-  配置来源: site.Params.comments.giscus
-  https://giscus.app/zh-CN
-*/}}
-{{ with site.Params.comments.giscus }}
-  {{ if .enable }}
-    <div class="giscus-container mt-6">
-      <script
-        src="https://giscus.app/client.js"
-        data-repo="{{ .repo }}"
-        data-repo-id="{{ .repoId }}"
-        data-category="{{ .category }}"
-        data-category-id="{{ .categoryId }}"
-        data-mapping="{{ default "pathname" .mapping }}"
-        data-strict="{{ default "0" .strict }}"
-        data-reactions-enabled="{{ default "1" .reactionsEnabled }}"
-        data-emit-metadata="{{ default "0" .emitMetadata }}"
-        data-input-position="{{ default "top" .inputPosition }}"
-        data-theme="{{ default "light" .theme }}"
-        data-lang="{{ default "zh-CN" .lang }}"
-        data-loading="{{ default "lazy" .loading }}"
-        crossorigin="anonymous"
-        async>
-      </script>
-      <noscript>
-        <p class="text-sm text-neutral-500 dark:text-neutral-400">
-          评论需要启用 JavaScript。也可访问
-          <a class="text-primary-600 hover:underline" href="https://github.com/{{ .repo }}/discussions">GitHub Discussions</a>
-          直接参与。
-        </p>
-      </noscript>
-    </div>
-  {{ end }}
+{{ if site.Params.comments.enable }}
+<div class="mt-6">
+  <hr class="border-dotted border-neutral-300 dark:border-neutral-600" />
+  <div class="py-3">
+    <div id="twikoo"></div>
+    <script src="https://cdn.staticfile.org/twikoo/1.7.15/twikoo.all.min.js"></script>
+    <script>
+      twikoo.init({
+        envId: "https://twikoo.ydj001.xyz",
+        el: "#twikoo",
+      });
+    </script>
+    <noscript>
+      <p class="text-sm text-neutral-500 dark:text-neutral-400">
+        评论区需要启用 JavaScript。
+      </p>
+    </noscript>
+  </div>
+</div>
 {{ end }}

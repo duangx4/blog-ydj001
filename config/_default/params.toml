@@ -36,24 +36,11 @@ fingerprintAlgorithm = "sha512"
   doNotTrack = false
   enableTrackEvent = true
 
-# -- 评论系统（Giscus）--
-# 1. 在 GitHub 仓库开启 Discussions
-# 2. 访问 https://giscus.app/zh-CN 配置
-# 3. 把生成的 5 个值填到下面
-[comments.giscus]
+# -- 评论系统（Twikoo）--
+# 1. 服务端：Docker 部署在 1号机，twikoo.ydj001.xyz 反代
+# 2. 前端：在 comments.html 中引入 twikoo.all.min.js
+[comments]
   enable = true
-  repo = "duangx4/blog-ydj001"
-  repoId = "R_kgDOTgykOw"
-  category = "General"
-  categoryId = "DIC_kwDOTgykO84DCM3e"
-  mapping = "pathname"
-  strict = "0"
-  reactionsEnabled = "1"
-  emitMetadata = "0"
-  inputPosition = "bottom"
-  theme = "preferred_color_scheme"
-  lang = "zh-CN"
-  loading = "lazy"
 
 # -- SEO 补充（Blowfish 已自动生成大部分 meta，这里只填额外信息）--
 [seo]
