@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="ydj001.xyz logo">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+  </defs>
+  <!-- 圆角方形底 -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#lg)"/>
+  <!-- Y 单字母（取自"实力人"首字拼音首字母 Y） -->
+  <path d="M 20 18 L 32 36 L 44 18 M 32 36 L 32 48"
+        fill="none" stroke="#f0f9ff" stroke-width="5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

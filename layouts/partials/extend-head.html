@@ -1,0 +1,77 @@
+{{/*
+  自定义 head 扩展
+  - 字体 CDN 预连接：让 Google Fonts / jsdelivr 的 TLS 握手提前完成
+  - 阅读进度条：顶部 2px 渐变细线，仅文章页显示
+*/}}
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+<style>
+  /* 阅读进度条 */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    z-index: 60;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+      rgba(14, 165, 233, 0.85) 0%,
+      rgba(56, 189, 248, 0.95) 50%,
+      rgba(125, 211, 252, 1) 100%);
+    box-shadow: 0 0 8px rgba(14, 165, 233, 0.45);
+    transition: width 0.08s linear, opacity 0.3s ease;
+    opacity: 0;
+  }
+  .reading-progress.visible { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .reading-progress { transition: none; }
+  }
+</style>
+
+<div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
+
+<script>
+  (function() {
+    const bar = document.getElementById('reading-progress');
+    if (!bar) return;
+    // 仅文章页（single 模板会注入 .prose 主容器）
+    const article = document.querySelector('article.prose, .prose-single, main article');
+    if (!article) { bar.remove(); return; }
+
+    let ticking = false;
+    function update() {
+      const rect = article.getBoundingClientRect();
+      const articleTop = rect.top + window.scrollY;
+      const articleHeight = rect.height;
+      const viewportH = window.innerHeight;
+      // 已读距离 = 滚过 articleTop 的距离
+      const scrolled = window.scrollY - articleTop + viewportH * 0.3;
+      const total = articleHeight;
+      let pct = (scrolled / total) * 100;
+      pct = Math.max(0, Math.min(100, pct));
+      bar.style.width = pct + '%';
+      // 滚到顶部或还没到正文都隐藏
+      if (window.scrollY < articleTop - viewportH * 0.5 || pct <= 0) {
+        bar.classList.remove('visible');
+      } else {
+        bar.classList.add('visible');
+      }
+      ticking = false;
+    }
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  })();
+</script>

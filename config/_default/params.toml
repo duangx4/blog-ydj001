@@ -3,7 +3,7 @@ colorScheme = "ocean"
 defaultAppearance = "dark"
 autoSwitchAppearance = true
 
-enableA11y = false
+enableA11y = true
 enableSearch = true
 enableCodeCopy = true
 enableStructuredBreadcrumbs = true
@@ -17,12 +17,68 @@ disableTextInHeader = false
 
 defaultBackgroundImage = "/img/background.svg"
 defaultFeaturedImage = "/img/featured.svg"
+defaultSocialImage = "img/og-default.png"
 
 highlightCurrentMenuArea = true
 smartTOC = true
 smartTOCHideUnfocusedChildren = false
 
 fingerprintAlgorithm = "sha512"
+
+# -- 访问分析（Umami）--
+# 1. 部署 Umami：自托管（Docker）或注册 umami.is 免费版
+# 2. 在 Umami 后台添加站点，拿到 Website ID
+# 3. 自托管时填 domain；用 umami.is 官方版则 domain 留空
+[umamiAnalytics]
+  domain = "umami.ydj001.xyz"   # 你的 Umami 实例域名（留空 = 用 umami.is 官方版）
+  websiteid = "75aa75e3-a861-4492-91bb-a74666bd0f3c"
+  scriptName = "script.js"
+  doNotTrack = false
+  enableTrackEvent = true
+
+# -- 评论系统（Giscus）--
+# 1. 在 GitHub 仓库开启 Discussions
+# 2. 访问 https://giscus.app/zh-CN 配置
+# 3. 把生成的 5 个值填到下面
+[comments.giscus]
+  enable = true
+  repo = "duangx4/blog-ydj001"
+  repoId = "REPLACE-WITH-GISCUS-REPO-ID"
+  category = "General"
+  categoryId = "REPLACE-WITH-GISCUS-CATEGORY-ID"
+  mapping = "pathname"
+  strict = "0"
+  reactionsEnabled = "1"
+  emitMetadata = "0"
+  inputPosition = "bottom"
+  theme = "preferred_color_scheme"
+  lang = "zh-CN"
+  loading = "lazy"
+
+# -- SEO 补充（Blowfish 已自动生成大部分 meta，这里只填额外信息）--
+[seo]
+  publisher = "ydj001.xyz"
+  publisherLogo = "img/logo.svg"
+  publisherDescription = "电气工程 / 无人机飞手 / 业余运维 / Hugo + Blowfish"
+  twitterSite = ""
+  twitterCreator = ""
+  ogLanguage = "zh_CN"
+
+# -- 作者信息（首页 profile / about Hero 共同使用）--
+# 唯一权威来源：languages.zh-cn.toml 不再重复定义 [params.author]
+[author]
+  name = "实力人老大"
+  image = "img/avatar.jpg"
+  imagequality = 96
+  headline = "电气工程 · 嵌入式 · 折腾爱好者"
+  bio = "电气工程 / 无人机飞手 / 业余运维 / 从 MC 模组服到 Docker 集群"
+  links = [
+    { github = "https://github.com/duangx4" },
+    { wechat = "#" },
+    { qq = "#" },
+    { email = "2197262637@qq.com" },
+    { rss = "/index.xml" },
+  ]
 
 [header]
   layout = "fixed"
@@ -68,7 +124,7 @@ fingerprintAlgorithm = "sha512"
   showTaxonomies = true
   showAuthorsBadges = true
   showWordCount = true
-  sharingLinks = [ "twitter", "reddit", "whatsapp", "telegram", "email" ]
+  sharingLinks = [ "wechat", "weibo", "qq", "telegram", "email" ]
   showZenMode = true
 
 [list]

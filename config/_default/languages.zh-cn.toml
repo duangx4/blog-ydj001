@@ -8,17 +8,8 @@ title = "实力人老大"
   isoCode = "zh-cn"
   rtl = false
   dateFormat = "2006-01-02"
-  logo = "img/logo.png"
+  logo = "img/logo.svg"
   description = "电气工程 · 无人机飞手 · 业余运维"
+  # 注：原 [params.author] 已合并至 params.toml（单一权威来源）
 
-[params.author]
-  name = "实力人老大"
-  image = "img/avatar.jpg"
-  headline = "电气工程专业 · CAAC 超视距无人机机长"
-  bio = "电气工程 / 无人机飞手 / 业余运维 / 从 MC 模组服到 Docker 集群"
-  links = [
-    { github = "https://github.com/duangx4" },
-    { wechat = "#" },
-    { qq = "#" },
-    { email = "2197262637@qq.com" },
-  ]
+# 作者信息以 [author] 块为准（见 params.toml），本文件不再重复定义

@@ -1,4 +1,7 @@
 # -- 主菜单 --
+# 三个独立顶级项：关于 / 项目 / Now，不嵌套（嵌套菜单反人类：没人会主动点父级去子项里找东西）
+# 博客首页作为第一个重量级入口
+
 [[main]]
   name = "博客"
   pageRef = "blog"
@@ -10,14 +13,24 @@
   weight = 20
 
 [[main]]
+  name = "项目"
+  pageRef = "projects"
+  weight = 30
+
+[[main]]
+  name = "Now"
+  pageRef = "now"
+  weight = 40
+
+[[main]]
   name = "标签"
   pageRef = "tags"
-  weight = 30
+  weight = 50
 
 [[main]]
   name = "分类"
   pageRef = "categories"
-  weight = 40
+  weight = 60
 
 # -- 页脚菜单 --
 [[footer]]

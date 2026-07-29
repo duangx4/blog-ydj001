@@ -1,3 +1,0 @@
-# config 已迁移至 config/_default/ 目录
-# 此文件仅保留兼容性指向
-theme = "blowfish"

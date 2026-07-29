@@ -1,0 +1,150 @@
+{{ define "main" }}
+
+<style>
+  .project-card {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+  }
+  .project-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -12px rgba(14, 165, 233, 0.3);
+    border-color: rgba(14, 165, 233, 0.6);
+  }
+  .project-card .cover-wrap {
+    overflow: hidden;
+    border-radius: 0.75rem 0.75rem 0 0;
+    aspect-ratio: 5 / 3;
+    background: rgba(15, 23, 42, 0.5);
+  }
+  .project-card .cover-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .project-card:hover .cover-wrap img {
+    transform: scale(1.05);
+  }
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: rgb(14, 165, 233);
+    transition: gap 0.2s ease;
+  }
+  .project-link:hover { gap: 0.5rem; }
+  .project-link::after { content: "→"; }
+  @media (prefers-reduced-motion: reduce) {
+    .project-card { transition: none; }
+    .project-card:hover { transform: none; }
+    .project-card .cover-wrap img,
+    .project-link { transition: none; }
+  }
+
+  /* 历程时间线 */
+  .timeline {
+    position: relative;
+    padding-left: 1.5rem;
+    border-left: 2px solid rgba(14, 165, 233, 0.25);
+  }
+  .timeline-item { position: relative; padding-bottom: 1.5rem; }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-dot {
+    position: absolute;
+    left: -1.85rem;
+    top: 0.4rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: rgb(14, 165, 233);
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+  }
+  .timeline-date {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: rgb(14, 165, 233);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+</style>
+
+<header class="text-center pt-6 pb-10">
+  <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">
+    {{ .Title | emojify }}
+  </h1>
+  {{ with .Params.description }}
+    <p class="text-base md:text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
+      {{ . }}
+    </p>
+  {{ end }}
+</header>
+
+{{ $projects := .Pages.ByWeight }}
+{{ if $projects }}
+<section class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 pb-12">
+  {{ range $projects }}
+    <a href="{{ .RelPermalink }}" class="project-card group block rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 overflow-hidden no-underline">
+      {{ with .Params.cover }}
+        <div class="cover-wrap">
+          <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy" decoding="async">
+        </div>
+      {{ end }}
+      <div class="p-5">
+        <h2 class="text-xl font-bold mb-2 text-neutral-900 dark:text-neutral group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+          {{ .Title }}
+        </h2>
+        {{ with .Params.description }}
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed m-0 mb-3">
+            {{ . }}
+          </p>
+        {{ end }}
+        {{ with .Params.tags }}
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            {{ range . }}
+              <span class="text-xs px-2 py-0.5 rounded bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300">{{ . }}</span>
+            {{ end }}
+          </div>
+        {{ end }}
+        <span class="project-link font-medium">查看详情</span>
+      </div>
+    </a>
+  {{ end }}
+</section>
+{{ else }}
+<section class="py-16 text-center">
+  <p class="text-neutral-500 dark:text-neutral-400">项目正在整理中…</p>
+</section>
+{{ end }}
+
+{{ if .Content }}
+<section class="prose dark:prose-invert max-w-none pb-12">
+  {{ .Content }}
+</section>
+{{ end }}
+
+{{/* ============ 历程（从 About 迁来的时间线） ============ */}}
+{{ with .Params.journey }}
+<section class="my-12">
+  <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+    <span class="inline-block w-1.5 h-6 bg-primary-500 rounded-full me-3"></span>
+    历程
+  </h2>
+  <div class="timeline max-w-3xl">
+    {{ range . }}
+      <div class="timeline-item">
+        <span class="timeline-dot"></span>
+        <div class="timeline-date">{{ .date }}</div>
+        <h3 class="text-lg font-bold mt-1 mb-1">{{ .title }}</h3>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400 m-0 leading-relaxed">
+          {{ .desc }}
+          {{ with .tag }}<span class="ms-2 inline-block px-2 py-0.5 text-xs rounded bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300">{{ . }}</span>{{ end }}
+        </p>
+      </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{ end }}

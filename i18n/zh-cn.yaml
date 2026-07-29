@@ -1,0 +1,11 @@
+# 项目级中文翻译（合并到主题的 i18n/zh-CN.yaml）
+# 这里只声明新增/调整的 key，主题其他翻译自动继承
+
+sharing:
+  email: "通过电子邮件发送"
+  twitter: "分享到 Twitter"
+  telegram: "通过 Telegram 分享"
+  linkedin: "分享到 LinkedIn"
+  wechat: "微信扫码分享"
+  weibo: "分享到微博"
+  qq: "分享到 QQ"

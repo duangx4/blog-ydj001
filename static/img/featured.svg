@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="ydj001.xyz 默认封面">
+  <defs>
+    <linearGradient id="fg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#0c4a6e"/>
+      <stop offset="50%" stop-color="#0e7490"/>
+      <stop offset="100%" stop-color="#155e75"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <pattern id="grid" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#38bdf8" stroke-opacity="0.12" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#fg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- 站点名 -->
+  <text x="80" y="280" font-family="LXGW WenKai, Songti SC, serif" font-size="84" font-weight="700" fill="#e0f2fe" letter-spacing="2">
+    实力人老大
+  </text>
+  <text x="82" y="340" font-family="Noto Sans SC, sans-serif" font-size="30" fill="#7dd3fc" letter-spacing="4">
+    电气工程 · 无人机 · 折腾爱好者
+  </text>
+
+  <!-- 域名水印 -->
+  <text x="80" y="560" font-family="JetBrains Mono, Consolas, monospace" font-size="22" fill="#38bdf8" fill-opacity="0.7" letter-spacing="2">
+    ydj001.xyz
+  </text>
+
+  <!-- 右下角装饰圆环 -->
+  <g transform="translate(1000 480)">
+    <circle r="120" fill="none" stroke="url(#ring)" stroke-width="3" stroke-opacity="0.55"/>
+    <circle r="80"  fill="none" stroke="url(#ring)" stroke-width="2" stroke-opacity="0.4"/>
+    <circle r="40"  fill="#0ea5e9" fill-opacity="0.18"/>
+  </g>
+</svg>

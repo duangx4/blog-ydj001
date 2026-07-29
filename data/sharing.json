@@ -1,0 +1,37 @@
+{
+  "email": {
+    "icon": "email",
+    "title": "sharing.email",
+    "url": "mailto:?body=%s&subject=%s"
+  },
+  "wechat": {
+    "icon": "wechat",
+    "title": "sharing.wechat",
+    "url": "https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&data=%s"
+  },
+  "weibo": {
+    "icon": "weibo",
+    "title": "sharing.weibo",
+    "url": "https://service.weibo.com/share/share.php?url=%s&title=%s"
+  },
+  "qq": {
+    "icon": "qq",
+    "title": "sharing.qq",
+    "url": "https://connect.qq.com/widget/shareqq/index.html?url=%s&title=%s"
+  },
+  "telegram": {
+    "icon": "telegram",
+    "title": "sharing.telegram",
+    "url": "https://t.me/share/url?url=%s&resubmit=true&title=%s"
+  },
+  "twitter": {
+    "icon": "x-twitter",
+    "title": "sharing.twitter",
+    "url": "https://twitter.com/intent/tweet/?url=%s&text=%s"
+  },
+  "linkedin": {
+    "icon": "linkedin",
+    "title": "sharing.linkedin",
+    "url": "https://www.linkedin.com/shareArticle?mini=true&url=%s&title=%s"
+  }
+}
