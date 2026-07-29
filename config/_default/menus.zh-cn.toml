@@ -6,25 +6,49 @@
   weight = 10
 
 [[main]]
-  name = "关于"
-  pageRef = "about"
+  identifier = "intro"
+  name = "自我介绍"
+  pre = "circle-info"
   weight = 20
 
 [[main]]
+  parent = "intro"
+  name = "关于"
+  pageRef = "about"
+  weight = 10
+
+[[main]]
+  parent = "intro"
   name = "项目"
   pageRef = "projects"
+  weight = 20
+
+[[main]]
+  parent = "intro"
+  name = "Now"
+  pageRef = "now"
   weight = 30
 
 [[main]]
-  name = "Now"
-  pageRef = "now"
+  name = "留言板"
+  pageRef = "message"
+  weight = 30
+
+[[main]]
+  name = "标签"
+  pageRef = "tags"
   weight = 40
+
+[[main]]
+  name = "分类"
+  pageRef = "categories"
+  weight = 50
 
 [[main]]
   identifier = "console"
   name = "个人控制台"
   pre = "globe"
-  weight = 50
+  weight = 200
 
 [[main]]
   parent = "console"
@@ -60,21 +84,6 @@
   pre = "eye"
   url = "https://umami.ydj001.xyz"
   weight = 50
-
-[[main]]
-  name = "留言板"
-  pageRef = "message"
-  weight = 60
-
-[[main]]
-  name = "标签"
-  pageRef = "tags"
-  weight = 70
-
-[[main]]
-  name = "分类"
-  pageRef = "categories"
-  weight = 80
 
 # -- 页脚菜单 --
 [[footer]]
