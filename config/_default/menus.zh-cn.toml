@@ -1,6 +1,4 @@
 # -- 主菜单 --
-# 三个独立顶级项：关于 / 项目 / Now，不嵌套（嵌套菜单反人类：没人会主动点父级去子项里找东西）
-# 博客首页作为第一个重量级入口
 
 [[main]]
   name = "博客"
@@ -23,14 +21,54 @@
   weight = 40
 
 [[main]]
+  identifier = "console"
+  name = "个人控制台"
+  weight = 50
+
+[[main]]
+  parent = "console"
+  name = "MCSManager"
+  url = "https://mcsm.ydj001.xyz"
+  weight = 10
+
+[[main]]
+  parent = "console"
+  name = "EasyBot"
+  url = "https://easybot.ydj001.xyz"
+  weight = 20
+
+[[main]]
+  parent = "console"
+  name = "LLBot"
+  url = "https://bot.ydj001.xyz"
+  weight = 30
+
+[[main]]
+  parent = "console"
+  name = "FRP 面板"
+  url = "https://frp.ydj001.xyz"
+  weight = 40
+
+[[main]]
+  parent = "console"
+  name = "Umami"
+  url = "https://umami.ydj001.xyz"
+  weight = 50
+
+[[main]]
+  name = "留言板"
+  pageRef = "message"
+  weight = 60
+
+[[main]]
   name = "标签"
   pageRef = "tags"
-  weight = 50
+  weight = 70
 
 [[main]]
   name = "分类"
   pageRef = "categories"
-  weight = 60
+  weight = 80
 
 # -- 页脚菜单 --
 [[footer]]
