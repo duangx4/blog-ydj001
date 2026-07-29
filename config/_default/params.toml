@@ -43,9 +43,9 @@ fingerprintAlgorithm = "sha512"
 [comments.giscus]
   enable = true
   repo = "duangx4/blog-ydj001"
-  repoId = "REPLACE-WITH-GISCUS-REPO-ID"
+  repoId = "R_kgDOTgykOw"
   category = "General"
-  categoryId = "REPLACE-WITH-GISCUS-CATEGORY-ID"
+  categoryId = "DIC_kwDOTgykO84DCM3e"
   mapping = "pathname"
   strict = "0"
   reactionsEnabled = "1"
