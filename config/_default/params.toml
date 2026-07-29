@@ -125,6 +125,7 @@ fingerprintAlgorithm = "sha512"
   showAuthorsBadges = true
   showWordCount = true
   sharingLinks = [ "wechat", "weibo", "qq", "telegram", "email" ]
+  showComments = true
   showZenMode = true
 
 [list]
