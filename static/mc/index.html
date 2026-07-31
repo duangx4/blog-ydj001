@@ -3,274 +3,950 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>实力人老大 | Minecraft 服务器</title>
+<meta name="description" content="YDJ Minecraft 服务器 - 一个属于玩家的创意生存社区。Fabric 模组服,实时查看在线玩家,QQ群联动。">
+<meta name="theme-color" content="#0a3a3a">
+<title>YDJ Minecraft 服务器 | 实力人老大</title>
 <style>
+/* ============================================================
+   字体与基础变量（青绿主题 · IEcraft 碧色风格）
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css');
+
+:root{
+  --bg-deep:#062e2e;
+  --bg-base:#0a3a3a;
+  --bg-soft:#0d4949;
+  --bg-card:rgba(255,255,255,.04);
+  --bg-card-hover:rgba(255,255,255,.07);
+  --line:rgba(255,255,255,.08);
+  --teal:#2EE5AC;
+  --teal-deep:#1aaa7d;
+  --teal-soft:rgba(46,229,172,.12);
+  --teal-line:rgba(46,229,172,.28);
+  --ink:#e8f5f3;
+  --ink-soft:#a8c4c1;
+  --ink-mute:#7a9a96;
+  --warn:#ef5350;
+  --shadow-card:0 20px 60px rgba(0,0,0,.45);
+  --shadow-hover:0 12px 30px -8px rgba(46,229,172,.35);
+  --radius:16px;
+  --radius-lg:24px;
+  --container:1180px;
+  --serif:"LXGW WenKai","Noto Serif SC",serif;
+  --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:#e0e0e0;display:flex;justify-content:center;align-items:center;padding:20px}
-.container{max-width:780px;width:100%;background:rgba(255,255,255,.05);backdrop-filter:blur(12px);border-radius:24px;padding:48px 40px;border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.header{text-align:center;margin-bottom:40px}
-.header h1{font-size:2.2rem;background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.header .subtitle{color:#888;margin-top:6px;font-size:.95rem}
-#status-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;padding:10px 18px;border-radius:20px;font-size:.9rem;font-weight:500}
-#status-bar.online{background:rgba(76,175,80,.12);border:1px solid rgba(76,175,80,.25);color:#69f0ae}
-#status-bar.offline{background:rgba(244,67,54,.12);border:1px solid rgba(244,67,54,.25);color:#ef9a9a}
-#status-bar.loading{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#999}
-#status-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-#status-bar.online #status-dot{background:#4caf50;box-shadow:0 0 8px rgba(76,175,80,.6);animation:pulse 2s infinite}
-#status-bar.offline #status-dot{background:#f44336}
-#status-bar.loading #status-dot{background:#888}
-@keyframes pulse{0%{opacity:1}50%{opacity:.5}100%{opacity:1}}
-#player-avatars{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center}
-#player-avatars .player-badge{background:rgba(255,255,255,.08);padding:2px 10px;border-radius:12px;font-size:.82rem;color:#ddd;border:1px solid rgba(255,255,255,.1)}
-#status-error{color:#888;font-size:.78rem;margin-top:4px}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
-.info-card{background:rgba(255,255,255,.04);border-radius:14px;padding:18px 20px;border:1px solid rgba(255,255,255,.06)}
-.info-card .label{font-size:.8rem;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.info-card .value{font-size:1.1rem;font-weight:600}
-.info-card .value.mc-addr{font-family:'Courier New',monospace;color:#ffd200;font-size:1.3rem}
-.info-card .value.desc{font-size:.95rem;line-height:1.5;color:#ccc}
-.specs{margin-bottom:32px}
-.specs h2{font-size:1.1rem;margin-bottom:14px;color:#aaa}
-.specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.specs-grid .item{display:flex;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,.03);border-radius:8px;font-size:.88rem}
-.specs-grid .item .label{color:#888}
-.specs-grid .item .val{color:#e0e0e0;font-weight:500}
-.features{margin-bottom:32px}
-.features h2{font-size:1.1rem;margin-bottom:14px;color:#aaa}
-.features ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.features li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:10px;font-size:.92rem}
-.features li .icon{font-size:1.2rem}
-.cta{text-align:center;margin-top:8px}
-.cta .ip-box{display:inline-block;background:rgba(0,0,0,.3);border:1px dashed rgba(255,215,0,.4);padding:14px 32px;border-radius:12px;font-family:'Courier New',monospace;font-size:1.5rem;color:#ffd200;letter-spacing:2px;user-select:all}
-.cta p{margin-top:12px;color:#888;font-size:.85rem}
-.cta .copy-btn{margin-top:12px;background:linear-gradient(90deg,#f7971e,#ffd200);border:none;color:#1a1a2e;font-weight:700;padding:10px 28px;border-radius:10px;cursor:pointer;font-size:.95rem;transition:transform .2s}
-.cta .copy-btn:hover{transform:scale(1.03)}
-.cta .copy-btn:active{transform:scale(.97)}
-.footer{text-align:center;margin-top:32px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);font-size:.82rem;color:#666}
-.footer a{color:#888;text-decoration:none}
-.footer a:hover{color:#ffd200}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{
+  font-family:var(--sans);
+  font-feature-settings:"tnum" 1,"palt" 1;
+  background:linear-gradient(180deg,var(--bg-deep) 0%,var(--bg-base) 40%,var(--bg-soft) 100%);
+  color:var(--ink);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:var(--teal);text-decoration:none;transition:color .2s}
+a:hover{color:var(--teal-deep)}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 
-/* mods section */
-.mods{margin-bottom:32px}
-.mods h2{font-size:1.1rem;margin-bottom:14px;color:#aaa}
-.mods-cat{margin-bottom:14px}
-.mods-cat .cat-title{font-size:.9rem;color:#ffd200;margin-bottom:8px;font-weight:600}
-.mods-cat .cat-mods{display:flex;flex-wrap:wrap;gap:6px}
-.mods-cat .mod-tag{padding:3px 10px;background:rgba(255,255,255,.04);border-radius:6px;font-size:.78rem;color:#bbb;border:1px solid rgba(255,255,255,.06)}
-.mods-toggle{cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:#888;font-size:.85rem;margin-top:4px;transition:color .2s}
-.mods-toggle:hover{color:#ffd200}
-.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:1000;justify-content:center;align-items:center;padding:20px}
-.modal-overlay.active{display:flex}
-.modal-box{background:#1e1e2e;border-radius:16px;padding:32px;max-width:680px;width:100%;max-height:80vh;overflow-y:auto;border:1px solid rgba(255,255,255,.08)}
-.modal-box h3{color:#ffd200;margin-bottom:16px;font-size:1.1rem}
-.modal-box .close-btn{float:right;background:none;border:none;color:#888;font-size:1.4rem;cursor:pointer}
-.modal-box .close-btn:hover{color:#fff}
-.modal-box .full-list{display:flex;flex-direction:column;gap:6px}
-.modal-box .full-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.82rem}
-.modal-box .full-item .file{color:#ddd;font-family:monospace;font-size:.78rem;word-break:break-all}
-.modal-box .full-item .cat{color:#888;font-size:.75rem;white-space:nowrap;margin-left:8px}
+.container{max-width:var(--container);margin:0 auto;padding:0 24px}
 
-@media(max-width:600px){.container{padding:32px 20px}.info-grid{grid-template-columns:1fr}.features ul{grid-template-columns:1fr}.specs-grid{grid-template-columns:1fr}.header h1{font-size:1.7rem}.cta .ip-box{font-size:1.2rem;padding:12px 20px}}
+/* ============================================================
+   顶部导航
+   ============================================================ */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 32px;
+  background:rgba(10,58,58,.55);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  transition:background .3s;
+}
+.topbar .brand{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--serif);font-weight:700;font-size:1.15rem;
+  color:var(--ink);
+}
+.topbar .brand .logo{
+  width:34px;height:34px;border-radius:8px;
+  background:linear-gradient(135deg,var(--teal),var(--teal-deep));
+  display:grid;place-items:center;
+  color:#062e2e;font-weight:900;font-size:1.1rem;
+  box-shadow:0 0 16px rgba(46,229,172,.4);
+}
+.topbar nav{display:flex;gap:28px}
+.topbar nav a{
+  color:var(--ink-soft);font-size:.92rem;font-weight:500;
+  position:relative;padding:4px 0;
+}
+.topbar nav a:hover{color:var(--teal)}
+.topbar nav a::after{
+  content:"";position:absolute;left:0;bottom:-4px;width:0;height:2px;
+  background:var(--teal);transition:width .25s;
+}
+.topbar nav a:hover::after{width:100%}
+
+/* ============================================================
+   Hero 区
+   ============================================================ */
+.hero{
+  position:relative;
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;
+  padding:120px 24px 80px;
+  overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:url("./img/hero.jpg") center/cover no-repeat;
+  z-index:0;
+  animation:slowZoom 24s ease-in-out infinite alternate;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,
+    rgba(6,46,46,.78) 0%,
+    rgba(10,58,58,.82) 50%,
+    rgba(13,73,73,.92) 100%);
+  z-index:1;
+}
+@keyframes slowZoom{from{transform:scale(1)}to{transform:scale(1.06)}}
+.hero-inner{position:relative;z-index:2;max-width:960px;width:100%}
+.hero .eyebrow{
+  display:inline-block;
+  font-size:.82rem;letter-spacing:3px;
+  color:var(--teal);text-transform:uppercase;
+  padding:6px 16px;border:1px solid var(--teal-line);
+  border-radius:999px;margin-bottom:24px;
+  background:var(--teal-soft);
+}
+.hero h1{
+  font-family:var(--serif);
+  font-size:clamp(2.4rem,6vw,4.8rem);
+  font-weight:700;line-height:1.15;
+  margin-bottom:18px;
+  text-shadow:0 4px 24px rgba(0,0,0,.5);
+}
+.hero h1 .accent{color:var(--teal);position:relative;white-space:nowrap}
+.hero h1 .accent::after{
+  content:"";position:absolute;left:0;right:0;bottom:-2px;height:6px;
+  background:linear-gradient(90deg,transparent,var(--teal),transparent);
+  opacity:.45;border-radius:3px;
+}
+.hero .lead{
+  font-size:clamp(1rem,1.4vw,1.2rem);
+  color:var(--ink-soft);max-width:680px;margin:0 auto 36px;
+  line-height:1.7;
+}
+.hero .cta-row{
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+  margin-bottom:48px;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 28px;border-radius:999px;
+  font-weight:600;font-size:.95rem;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  cursor:pointer;white-space:nowrap;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--teal),var(--teal-deep));
+  color:#062e2e;box-shadow:0 6px 20px rgba(46,229,172,.35);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(46,229,172,.5);color:#062e2e}
+.btn-ghost{
+  background:transparent;color:var(--ink);
+  border:1.5px solid rgba(255,255,255,.25);
+}
+.btn-ghost:hover{border-color:var(--teal);color:var(--teal);transform:translateY(-2px)}
+
+/* 状态条（核心保留功能） */
+.status-bar{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:12px 22px;border-radius:999px;
+  background:rgba(0,0,0,.4);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--line);
+  font-size:.95rem;font-weight:500;
+  min-width:280px;
+}
+.status-bar .dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#888;flex-shrink:0;
+}
+.status-bar.online{border-color:var(--teal-line);background:rgba(46,229,172,.08)}
+.status-bar.online .dot{background:var(--teal);box-shadow:0 0 12px var(--teal);animation:pulse 2s infinite}
+.status-bar.offline{border-color:rgba(239,83,80,.35);background:rgba(239,83,80,.08)}
+.status-bar.offline .dot{background:var(--warn)}
+.status-bar.loading .dot{background:#aaa;animation:blink 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+.status-bar .status-text{color:var(--ink)}
+.status-bar .player-count{color:var(--teal);font-weight:700;margin:0 4px}
+
+.player-list{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  max-width:680px;margin:16px auto 0;
+  max-height:88px;overflow-y:auto;
+  padding:4px;
+}
+.player-list::-webkit-scrollbar{width:4px;height:4px}
+.player-list::-webkit-scrollbar-thumb{background:var(--teal-line);border-radius:2px}
+.player-badge{
+  background:var(--teal-soft);
+  color:var(--teal);
+  border:1px solid var(--teal-line);
+  padding:3px 12px;border-radius:999px;
+  font-size:.82rem;font-weight:500;
+  white-space:nowrap;
+}
+.player-list .empty{color:var(--ink-mute);font-size:.85rem;padding:6px 0}
+.status-error{color:var(--warn);font-size:.78rem;margin-top:8px;min-height:1.2em}
+
+/* ============================================================
+   通用 Section
+   ============================================================ */
+section{position:relative;padding:96px 0}
+.section-title{
+  font-family:var(--serif);
+  font-size:clamp(1.8rem,3vw,2.4rem);
+  font-weight:700;margin-bottom:12px;
+  text-align:center;
+}
+.section-title .accent{color:var(--teal)}
+.section-sub{
+  text-align:center;color:var(--ink-soft);
+  max-width:640px;margin:0 auto 56px;
+  font-size:1rem;line-height:1.7;
+}
+.divider{
+  width:60px;height:3px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--teal),transparent);
+  margin:14px auto 28px;
+}
+
+/* ============================================================
+   三大特性（3 列 + 图）
+   ============================================================ */
+.features3 .grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+}
+.feature-card{
+  position:relative;
+  background:var(--bg-card);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  transition:all .35s ease;
+  display:flex;flex-direction:column;
+}
+.feature-card:hover{
+  transform:translateY(-6px);
+  border-color:var(--teal-line);
+  box-shadow:var(--shadow-hover);
+}
+.feature-card .img-wrap{
+  position:relative;aspect-ratio:16/10;overflow:hidden;
+  background:#062e2e;
+}
+.feature-card .img-wrap img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .6s ease;
+}
+.feature-card:hover .img-wrap img{transform:scale(1.08)}
+.feature-card .img-wrap::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 50%,rgba(6,46,46,.6) 100%);
+}
+.feature-card .body{padding:28px 26px;flex:1;display:flex;flex-direction:column}
+.feature-card .icon{
+  width:48px;height:48px;border-radius:12px;
+  background:var(--teal-soft);
+  display:grid;place-items:center;
+  font-size:1.5rem;margin-bottom:14px;
+  border:1px solid var(--teal-line);
+}
+.feature-card h3{
+  font-family:var(--serif);font-size:1.3rem;
+  font-weight:700;margin-bottom:10px;color:var(--ink);
+}
+.feature-card p{
+  color:var(--ink-soft);font-size:.94rem;line-height:1.7;flex:1;
+  margin-bottom:18px;
+}
+.feature-card .more{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--teal);font-weight:600;font-size:.9rem;
+  align-self:flex-start;
+}
+.feature-card .more::after{content:"→";transition:transform .2s}
+.feature-card .more:hover::after{transform:translateX(4px)}
+
+/* ============================================================
+   统计数字
+   ============================================================ */
+.stats{
+  background:linear-gradient(135deg,rgba(46,229,172,.05),rgba(46,229,172,.02));
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.stats .grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+  text-align:center;
+}
+.stat-item .num{
+  font-family:var(--serif);
+  font-size:clamp(2.2rem,4vw,3.2rem);
+  font-weight:700;color:var(--teal);
+  line-height:1;display:block;margin-bottom:8px;
+}
+.stat-item .label{
+  color:var(--ink-soft);font-size:.92rem;letter-spacing:1px;
+}
+.stats .live-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:28px;padding:5px 14px;border-radius:999px;
+  background:var(--teal-soft);border:1px solid var(--teal-line);
+  color:var(--teal);font-size:.8rem;font-weight:600;
+  letter-spacing:1px;
+}
+.stats .live-tag::before{
+  content:"";width:6px;height:6px;border-radius:50%;
+  background:var(--teal);box-shadow:0 0 8px var(--teal);
+  animation:pulse 1.5s infinite;
+}
+
+/* ============================================================
+   6 格特色
+   ============================================================ */
+.features6 .grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+}
+.feat-mini{
+  padding:28px 24px;
+  background:var(--bg-card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  transition:all .25s ease;
+}
+.feat-mini:hover{
+  background:var(--bg-card-hover);
+  border-color:var(--teal-line);
+  transform:translateY(-3px);
+}
+.feat-mini .ico{
+  width:42px;height:42px;border-radius:10px;
+  background:var(--teal-soft);
+  display:grid;place-items:center;
+  font-size:1.3rem;margin-bottom:14px;
+  border:1px solid var(--teal-line);
+}
+.feat-mini h4{
+  font-family:var(--serif);font-size:1.1rem;
+  font-weight:700;margin-bottom:8px;color:var(--ink);
+}
+.feat-mini p{
+  color:var(--ink-soft);font-size:.88rem;line-height:1.6;margin:0;
+}
+
+/* ============================================================
+   3 段图文（左右交替）
+   ============================================================ */
+.showcase .row{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:60px;align-items:center;
+  margin-bottom:80px;
+}
+.showcase .row:last-child{margin-bottom:0}
+.showcase .row.reverse{direction:rtl}
+.showcase .row.reverse > *{direction:ltr}
+.showcase .img-wrap{
+  border-radius:var(--radius-lg);overflow:hidden;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-card);
+  aspect-ratio:4/3;
+}
+.showcase .img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.showcase .img-wrap:hover img{transform:scale(1.04)}
+.showcase .text h3{
+  font-family:var(--serif);
+  font-size:clamp(1.4rem,2.2vw,1.8rem);
+  font-weight:700;margin-bottom:16px;color:var(--ink);
+}
+.showcase .text h3 .accent{color:var(--teal)}
+.showcase .text p{
+  color:var(--ink-soft);font-size:1rem;line-height:1.8;margin-bottom:20px;
+}
+.showcase .text ul{
+  list-style:none;display:flex;flex-direction:column;gap:10px;
+}
+.showcase .text li{
+  display:flex;align-items:flex-start;gap:10px;
+  color:var(--ink-soft);font-size:.95rem;
+}
+.showcase .text li::before{
+  content:"▸";color:var(--teal);font-weight:700;flex-shrink:0;margin-top:2px;
+}
+
+/* ============================================================
+   画廊
+   ============================================================ */
+.gallery .grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+}
+.gallery-card{
+  position:relative;border-radius:var(--radius);
+  overflow:hidden;border:1px solid var(--line);
+  background:#062e2e;
+  cursor:pointer;
+  aspect-ratio:4/3;
+}
+.gallery-card img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .6s ease;
+}
+.gallery-card:hover img{transform:scale(1.08)}
+.gallery-card::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(6,46,46,.85) 100%);
+  transition:opacity .3s;
+}
+.gallery-card .caption{
+  position:absolute;left:18px;bottom:18px;z-index:2;
+  font-family:var(--serif);font-size:1.05rem;font-weight:600;
+  color:#fff;
+}
+.gallery-card.placeholder{
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,rgba(46,229,172,.08),rgba(46,229,172,.02));
+  border:1px dashed var(--teal-line);
+  text-align:center;padding:20px;
+}
+.gallery-card.placeholder .ph-icon{font-size:2.6rem;margin-bottom:10px;opacity:.6}
+.gallery-card.placeholder p{color:var(--ink-soft);font-size:.9rem;line-height:1.6}
+.gallery-card.placeholder strong{color:var(--teal);display:block;margin-bottom:4px}
+
+/* ============================================================
+   加入我们
+   ============================================================ */
+.join{padding-bottom:96px}
+.join .box{
+  background:linear-gradient(135deg,rgba(46,229,172,.08),rgba(46,229,172,.02));
+  border:1px solid var(--teal-line);
+  border-radius:var(--radius-lg);
+  padding:48px 40px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.join .box::before{
+  content:"";position:absolute;top:-50%;right:-10%;width:300px;height:300px;
+  background:radial-gradient(circle,rgba(46,229,172,.15),transparent 70%);
+  pointer-events:none;
+}
+.join .box > *{position:relative;z-index:1}
+.join .ip-display{
+  display:inline-block;
+  font-family:"Courier New",ui-monospace,monospace;
+  font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;
+  color:var(--teal);letter-spacing:2px;
+  padding:18px 36px;
+  background:rgba(0,0,0,.4);
+  border:1.5px dashed var(--teal-line);
+  border-radius:14px;margin:18px 0 20px;
+  user-select:all;
+}
+.join .ip-meta{
+  display:flex;flex-wrap:wrap;gap:24px;justify-content:center;
+  color:var(--ink-soft);font-size:.92rem;margin:18px 0 24px;
+}
+.join .ip-meta span strong{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* ============================================================
+   管理后台
+   ============================================================ */
+.admin{padding-top:0;padding-bottom:96px}
+.admin .grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
+}
+.admin-card{
+  display:flex;align-items:center;gap:18px;
+  padding:22px 24px;
+  background:var(--bg-card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  transition:all .25s ease;
+}
+.admin-card:hover{
+  border-color:var(--teal-line);
+  background:var(--bg-card-hover);
+  transform:translateY(-3px);
+}
+.admin-card .ic{
+  width:48px;height:48px;border-radius:12px;
+  background:var(--teal-soft);
+  display:grid;place-items:center;
+  font-size:1.3rem;border:1px solid var(--teal-line);
+  flex-shrink:0;
+}
+.admin-card .info{flex:1;min-width:0}
+.admin-card .info h4{
+  font-size:1rem;font-weight:600;margin-bottom:4px;
+  font-family:var(--serif);color:var(--ink);
+}
+.admin-card .info a{
+  color:var(--teal);font-size:.88rem;
+  font-family:"Courier New",monospace;word-break:break-all;
+}
+.admin-card .arrow{
+  color:var(--ink-mute);font-size:1.2rem;
+  transition:transform .2s;
+}
+.admin-card:hover .arrow{color:var(--teal);transform:translateX(4px)}
+
+/* ============================================================
+   页脚
+   ============================================================ */
+footer{
+  padding:32px 24px;text-align:center;
+  border-top:1px solid var(--line);
+  color:var(--ink-mute);font-size:.85rem;
+}
+footer a{color:var(--ink-soft)}
+footer a:hover{color:var(--teal)}
+footer .small{margin-top:6px;font-size:.78rem;opacity:.7}
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width:980px){
+  .features3 .grid,.features6 .grid{grid-template-columns:repeat(2,1fr)}
+  .stats .grid{grid-template-columns:repeat(2,1fr);gap:32px}
+  .showcase .row,.showcase .row.reverse{grid-template-columns:1fr;direction:ltr;gap:32px;margin-bottom:64px}
+  .gallery .grid{grid-template-columns:repeat(2,1fr)}
+  section{padding:72px 0}
+  .join .box{padding:36px 24px}
+}
+@media (max-width:640px){
+  .topbar{padding:14px 18px}
+  .topbar nav{gap:14px}
+  .topbar nav a{font-size:.82rem}
+  .topbar .brand{font-size:1rem}
+  .topbar .brand .logo{width:30px;height:30px;font-size:1rem}
+  .features3 .grid,.features6 .grid{grid-template-columns:1fr}
+  .gallery .grid{grid-template-columns:1fr}
+  .stats .grid{grid-template-columns:repeat(2,1fr);gap:24px}
+  .hero{padding:110px 18px 60px}
+  .hero .cta-row{gap:10px}
+  .btn{padding:11px 22px;font-size:.88rem}
+  section{padding:56px 0}
+  .feature-card .body,.feat-mini,.admin-card{padding:20px 18px}
+  .showcase .row{margin-bottom:48px}
+  .join .ip-display{padding:14px 24px;font-size:1.3rem}
+  .join .ip-meta{flex-direction:column;gap:8px}
+}
 </style>
 </head>
 <body>
-<div class="container">
-<div class="header">
-<h1>⚑ 实力人老大</h1>
-<p class="subtitle">一个属于你的 Minecraft 搭子服</p>
-<div id="status-bar" class="loading"><span id="status-dot"></span><span id="status-text">正在获取服务器状态...</span></div>
-<div id="player-avatars"></div>
-<div id="status-error"></div>
-</div>
-<div class="info-grid">
-<div class="info-card"><div class="label">服务器地址</div><div class="value mc-addr">mc.ydj001.xyz</div></div>
-<div class="info-card"><div class="label">游戏版本</div><div class="value">Fabric 1.20.1</div></div>
-<div class="info-card"><div class="label">游玩模式</div><div class="value desc">生存 · 建筑 · 生电<br>休闲养老 / 半公益 · PVP 开启</div></div>
-<div class="info-card"><div class="label">验证模式</div><div class="value desc">🟢 离线模式（正版盗版均可）<br>即开即玩，无需正版账号</div></div>
-</div>
-<div class="specs">
-<h2>⚙️ 硬件配置</h2>
-<div class="specs-grid">
-<div class="item"><span class="label">CPU</span><span class="val">Intel Xeon E5-2667 v2 × 4核</span></div>
-<div class="item"><span class="label">内存</span><span class="val">15GB（可用约12GB）</span></div>
-<div class="item"><span class="label">存储</span><span class="val">58GB SSD</span></div>
-<div class="item"><span class="label">线路</span><span class="val">山东枣庄 BGP · 香港入口转发</span></div>
-</div>
-</div>
-<div class="features">
-<h2>✨ 服务器特色</h2>
-<ul>
-<li><span class="icon">🏠</span> 领地保护 &amp; 防熊</li>
-<li><span class="icon">⚡</span> 生电友好设计</li>
-<li><span class="icon">🎮</span> QQ 机器人联动</li>
-<li><span class="icon">🧩</span> 33+ 模组（<span class="mods-toggle" onclick="toggleMods()">查看全部 →</span>）</li>
-<li><span class="icon">🌙</span> 和谐社区氛围</li>
-<li><span class="icon">🔄</span> 每周备份保障</li>
-</ul>
-</div>
 
-<div class="mods">
-<h2>🧩 模组列表</h2>
-<div class="mods-cat">
-<div class="cat-title">⚙️ 世界玩法</div>
-<div class="cat-mods">
-<span class="mod-tag">机械动力</span>
-<span class="mod-tag">农夫乐事</span>
-<span class="mod-tag">汽鸣铁道</span>
-<span class="mod-tag">沉浸式飞机</span>
-<span class="mod-tag">切片与切丁</span>
-<span class="mod-tag">武器大师</span>
-<span class="mod-tag">车万女仆</span>
-</div>
-</div>
-<div class="mods-cat">
-<div class="cat-title">🔧 玩家辅助</div>
-<div class="cat-mods">
-<span class="mod-tag">一键整理</span>
-<span class="mod-tag">合成表 REI</span>
-<span class="mod-tag">HUD 信息 Jade</span>
-<span class="mod-tag">连锁挖矿</span>
-<span class="mod-tag">高级背包</span>
-<span class="mod-tag">地毯 (Carpet)</span>
-<span class="mod-tag">登录 EasyAuth</span>
-</div>
-</div>
-<div class="mods-cat">
-<div class="cat-title">🚀 性能优化</div>
-<div class="cat-mods">
-<span class="mod-tag">Lithium</span>
-<span class="mod-tag">FerriteCore</span>
-<span class="mod-tag">Krypton</span>
-<span class="mod-tag">ModernFix</span>
-<span class="mod-tag">Noisium</span>
-</div>
-</div>
-<div class="mods-cat">
-<div class="cat-title">📦 基础库 &amp; API</div>
-<div class="cat-mods">
-<span class="mod-tag">Fabric API</span>
-<span class="mod-tag">Architectury</span>
-<span class="mod-tag">Cloth Config</span>
-<span class="mod-tag">Patchouli 指南</span>
-<span class="mod-tag">Trinkets</span>
-<span class="mod-tag">FTB Library</span>
-</div>
-</div>
-</div>
+<!-- ===== 顶部导航 ===== -->
+<header class="topbar">
+  <a href="#top" class="brand">
+    <span class="logo">Y</span>
+    <span>YDJ Minecraft</span>
+  </a>
+  <nav aria-label="主导航">
+    <a href="#features">特色</a>
+    <a href="#stats">状态</a>
+    <a href="#showcase">玩法</a>
+    <a href="#gallery">画廊</a>
+    <a href="#join">加入</a>
+  </nav>
+</header>
 
-<!-- Full mod list modal -->
-<div id="mod-modal" class="modal-overlay" onclick="if(event.target===this)closeMods()">
-<div class="modal-box">
-<button class="close-btn" onclick="closeMods()">&times;</button>
-<h3>📦 完整模组清单</h3>
-<div class="full-list">
-<span class="full-item"><span class="file">fabric-api-0.92.9+1.20.1.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">fabric-language-kotlin-1.13.3+kotlin.2.1.21.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">architectury-9.2.14-fabric.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">cloth-config-11.1.136-fabric.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">YetAnotherConfigLib-v3-3.6.6.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">fzzy_config-0.7.0+1.20.1.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">ForgeConfigAPIPort-v8.0.3.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">YungsApi-1.20-Fabric-4.0.6.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">Iceberg-1.20.1-fabric-1.1.25.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">ftb-library-fabric-2001.2.13.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">trinkets-3.7.2.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">Patchouli-1.20.1-85-FABRIC.jar</span><span class="cat">基础</span></span>
-<span class="full-item"><span class="file">create-fabric-6.0.8.1+build.1744-mc1.20.1.jar</span><span class="cat">玩法</span></span>
-<span class="full-item"><span class="file">FarmersDelight-1.20.1-2.4.1+refabricated.jar</span><span class="cat">玩法</span></span>
-<span class="full-item"><span class="file">Steam_Rails-1.7.2+fabric-mc1.20.1.jar</span><span class="cat">玩法</span></span>
-<span class="full-item"><span class="file">sliceanddice-fabric-3.5.2.jar</span><span class="cat">玩法</span></span>
-<span class="full-item"><span class="file">immersive_aircraft-1.4.1+1.20.1-fabric.jar</span><span class="cat">玩法</span></span>
-<span class="full-item"><span class="file">weaponmaster_ydm-fabric-1.20.1-4.2.6.jar</span><span class="cat">玩法</span></span>
-<span class="full-item"><span class="file">touhoulittlemaid-fabric-0.8.2.jar</span><span class="cat">玩法</span></span>
-<span class="full-item"><span class="file">fabric-carpet-1.20-1.4.112+v230608.jar</span><span class="cat">辅助</span></span>
-<span class="full-item"><span class="file">IPN_InventoryProfilesNext-fabric-1.20-1.10.20.jar</span><span class="cat">辅助</span></span>
-<span class="full-item"><span class="file">libIPN-fabric-1.20-4.0.2.jar</span><span class="cat">辅助</span></span>
-<span class="full-item"><span class="file">REI_RoughlyEnoughItems-12.1.785-fabric.jar</span><span class="cat">辅助</span></span>
-<span class="full-item"><span class="file">Jade-1.20-Fabric-11.13.1.jar</span><span class="cat">辅助</span></span>
-<span class="full-item"><span class="file">easyauth-mc1.20-3.4.3.jar</span><span class="cat">辅助</span></span>
-<span class="full-item"><span class="file">ftb-ultimine-fabric-2001.1.8.jar</span><span class="cat">辅助</span></span>
-<span class="full-item"><span class="file">sophisticatedbackpacks-1.20.1-3.23.4.5.110.jar</span><span class="cat">辅助</span></span>
-<span class="full-item"><span class="file">sophisticatedcore-1.20.1-1.2.7.15.166.jar</span><span class="cat">辅助</span></span>
-<span class="full-item"><span class="file">lithium-fabric-mc1.20.1-0.11.4.jar</span><span class="cat">优化</span></span>
-<span class="full-item"><span class="file">ferritecore-6.0.1-fabric.jar</span><span class="cat">优化</span></span>
-<span class="full-item"><span class="file">krypton-0.2.3.jar</span><span class="cat">优化</span></span>
-<span class="full-item"><span class="file">modernfix-fabric-5.25.2+mc1.20.1.jar</span><span class="cat">优化</span></span>
-<span class="full-item"><span class="file">noisium-fabric-2.3.0+mc1.20-1.20.1.jar</span><span class="cat">优化</span></span>
-<span class="full-item"><span class="file">AdvancedBackups-fabric-1.20-3.7.1.jar</span><span class="cat">维护</span></span>
-</div>
+<!-- ===== Hero ===== -->
+<section id="top" class="hero" aria-label="服务器主页">
+  <div class="hero-inner">
+    <span class="eyebrow">YDJ · MINECRAFT SERVER</span>
+    <h1>这里是 <span class="accent">YDJ</span> 服务器<br>一个属于玩家的创意生存社区</h1>
+    <p class="lead">轻量级模组方案 · 友好社区氛围 · QQ机器人联动<br>欢迎来到 YDJ MC 服务器，一起创造属于我们的世界！</p>
+    <div class="cta-row">
+      <button class="btn btn-primary" onclick="copyIP(event,'mc.ydj001.xyz')" aria-label="复制服务器地址 mc.ydj001.xyz">
+        <span>📋</span><span>复制服务器地址</span>
+      </button>
+      <a class="btn btn-ghost" href="#features">了解特色</a>
+      <a class="btn btn-ghost" href="#join">加入我们</a>
+    </div>
 
-</div>
-</div>
+    <!-- 状态条（核心保留） -->
+    <div id="status-bar" class="status-bar loading" role="status" aria-live="polite">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="status-text">正在获取服务器状态…</span>
+    </div>
+    <div id="player-list" class="player-list" aria-label="在线玩家列表"></div>
+    <div id="status-error" class="status-error" role="alert"></div>
+  </div>
+</section>
 
-<div class="cta">
-<div class="ip-box">mc.ydj001.xyz</div>
-<p>直接复制上方地址，在 Minecraft 中添加服务器</p>
-<button class="copy-btn" onclick="copyIP()">📋 复制服务器地址</button>
-</div>
-<div class="footer">
-<p>Powered by <a href="https://ydj001.xyz">实力人老大</a> · 山东 BGP 线路 · 香港入口转发</p>
-</div>
-</div>
+<!-- ===== 三大特性 ===== -->
+<section id="features" class="features3">
+  <div class="container">
+    <h2 class="section-title">你想要的一切都在 <span class="accent">YDJ</span></h2>
+    <div class="divider"></div>
+    <p class="section-sub">轻量模组 × 友好社区 × 智能联动 — 三个维度打造舒适的开荒与建造体验</p>
+
+    <div class="grid">
+      <article class="feature-card">
+        <div class="img-wrap">
+          <img src="./img/feature-1.jpg" alt="樱花林麦田中的玩家角色" loading="lazy">
+        </div>
+        <div class="body">
+          <div class="icon" aria-hidden="true">🔧</div>
+          <h3>玩法模组</h3>
+          <p>在保留原版生存乐趣的基础上，引入精选轻量级模组：性能优化、便捷工具、趣味玩法应有尽有。具体模组列表详见服务器公告。</p>
+          <a href="#showcase" class="more">查看玩法</a>
+        </div>
+      </article>
+
+      <article class="feature-card">
+        <div class="img-wrap">
+          <img src="./img/feature-2.jpg" alt="水面倒影与樱花灯笼夜景" loading="lazy">
+        </div>
+        <div class="body">
+          <div class="icon" aria-hidden="true">👥</div>
+          <h3>社群文化</h3>
+          <p>QQ 群实时交流 · 互帮互助 · 定期活动。这里不只是一个服务器，更是一群热爱 MC 的朋友，新手友好，老玩家乐于带路。</p>
+          <a href="#join" class="more">加入我们</a>
+        </div>
+      </article>
+
+      <article class="feature-card">
+        <div class="img-wrap">
+          <img src="./img/feature-3.jpg" alt="樱花村庄全景" loading="lazy">
+        </div>
+        <div class="body">
+          <div class="icon" aria-hidden="true">🤖</div>
+          <h3>QQ 机器人</h3>
+          <p>游戏内外无缝连接：群内发送 <code>!list</code> 查询在线玩家，支持部分远程指令，QQ 群与游戏内聊天实时互通。</p>
+          <a href="https://easybot.ydj001.xyz" target="_blank" rel="noopener" class="more">机器人控制台</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 统计数字 ===== -->
+<section id="stats" class="stats">
+  <div class="container">
+    <h2 class="section-title">服务器 <span class="accent">实时数据</span></h2>
+    <div class="divider"></div>
+    <p class="section-sub">所有数字自动同步 mc.ydj001.xyz 状态接口</p>
+
+    <div class="grid">
+      <div class="stat-item">
+        <span class="num" id="stat-online">—</span>
+        <span class="label">服务器状态</span>
+      </div>
+      <div class="stat-item">
+        <span class="num" id="stat-players">0</span>
+        <span class="label">当前在线</span>
+      </div>
+      <div class="stat-item">
+        <span class="num">20</span>
+        <span class="label">最大在线</span>
+      </div>
+      <div class="stat-item">
+        <span class="num">1.20.1</span>
+        <span class="label">游戏版本</span>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <span class="live-tag">[ 实时更新 ]</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 6 格特色 ===== -->
+<section class="features6">
+  <div class="container">
+    <h2 class="section-title">妙趣横生 的<span class="accent">游戏体验</span></h2>
+    <div class="divider"></div>
+    <p class="section-sub">给你更具有特色的 MC 玩法</p>
+
+    <div class="grid">
+      <div class="feat-mini">
+        <div class="ico" aria-hidden="true">⚡</div>
+        <h4>优化体验</h4>
+        <p>性能优化模组加持，服务器流畅运行不卡顿，给你丝滑的开荒体验。</p>
+      </div>
+      <div class="feat-mini">
+        <div class="ico" aria-hidden="true">🛠️</div>
+        <h4>便捷工具</h4>
+        <p>实用小工具让建造更轻松，省时省力，专注于创造本身。</p>
+      </div>
+      <div class="feat-mini">
+        <div class="ico" aria-hidden="true">🎮</div>
+        <h4>趣味玩法</h4>
+        <p>精选模组带来全新体验，机械动力、农夫乐事、汽鸣铁道等丰富内容。</p>
+      </div>
+      <div class="feat-mini">
+        <div class="ico" aria-hidden="true">💬</div>
+        <h4>活跃社群</h4>
+        <p>QQ 群实时交流，分享建筑、红石、探险心得，社区氛围融洽。</p>
+      </div>
+      <div class="feat-mini">
+        <div class="ico" aria-hidden="true">🤝</div>
+        <h4>互帮互助</h4>
+        <p>新手友好，老玩家乐于带路。不会玩？没关系，有人手把手教你。</p>
+      </div>
+      <div class="feat-mini">
+        <div class="ico" aria-hidden="true">🎉</div>
+        <h4>定期活动</h4>
+        <p>建筑比赛、生存挑战、节日庆典 — 不定期举办，让游戏永葆新鲜。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3 段图文 ===== -->
+<section id="showcase" class="showcase">
+  <div class="container">
+
+    <div class="row">
+      <div class="img-wrap">
+        <img src="./img/gallery-1.jpg" alt="玩家角色站在樱花麦田中央" loading="lazy">
+      </div>
+      <div class="text">
+        <h3>在此 <span class="accent">征服每个世界</span>，建造属于你的家园</h3>
+        <p>无论你是热爱硬核生存的探索者，还是专注建筑美学的创造者，都能在这里找到自己的节奏。</p>
+        <ul>
+          <li>轻量级模组，保持原版生存的纯粹乐趣</li>
+          <li>领地保护 & 防熊机制，安全无后顾之忧</li>
+          <li>生电友好设计，鼓励红石与机械创作</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row reverse">
+      <div class="img-wrap">
+        <img src="./img/gallery-2.jpg" alt="金色麦田与远处村庄樱花树" loading="lazy">
+      </div>
+      <div class="text">
+        <h3><span class="accent">战斗</span> 与创造，<span class="accent">生产</span> 与经营</h3>
+        <p>玩家之间不只是简单的合作，更有基于信任的经济与贸易系统。你可以成为最富强的玩家，也可以成为最慷慨的赞助者。</p>
+        <ul>
+          <li>活跃玩家群，QQ 群 24 小时在线交流</li>
+          <li>每周备份保障，存档安全无忧</li>
+          <li>和谐社区氛围，PVP 区域与生存区域分明</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="img-wrap">
+        <img src="./img/gallery-3.jpg" alt="樱花坡与村庄远景" loading="lazy">
+      </div>
+      <div class="text">
+        <h3>您准备好 <span class="accent">加入</span> 我们来体验了吗？</h3>
+        <p>QQ 机器人让游戏与社交无缝连接：群内发送 <code style="color:var(--teal)">!list</code> 即可查看在线玩家，远程指令与游戏内消息实时互通。</p>
+        <ul>
+          <li>游戏状态查询 — 随时了解服务器动态</li>
+          <li>远程指令 — 部分游戏内命令远程执行</li>
+          <li>消息互通 — 游戏聊天与 QQ 群双向联动</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== 画廊 ===== -->
+<section id="gallery" class="gallery">
+  <div class="container">
+    <h2 class="section-title">来自 YDJ 精彩的 <span class="accent">服务器图片</span></h2>
+    <div class="divider"></div>
+    <p class="section-sub">服务器实景截图 · 来自玩家社区的精彩瞬间</p>
+
+    <div class="grid">
+      <div class="gallery-card">
+        <img src="./img/gallery-1.jpg" alt="玩家合影：樱花麦田中" loading="lazy">
+        <div class="caption">玩家合影</div>
+      </div>
+      <div class="gallery-card">
+        <img src="./img/gallery-2.jpg" alt="麦田远景" loading="lazy">
+        <div class="caption">金色麦田</div>
+      </div>
+      <div class="gallery-card">
+        <img src="./img/gallery-3.jpg" alt="樱花坡" loading="lazy">
+        <div class="caption">樱花坡</div>
+      </div>
+      <div class="gallery-card">
+        <img src="./img/gallery-4.jpg" alt="村庄全景" loading="lazy">
+        <div class="caption">村庄全景</div>
+      </div>
+      <div class="gallery-card">
+        <img src="./img/gallery-5.jpg" alt="村庄侧景" loading="lazy">
+        <div class="caption">村庄侧景</div>
+      </div>
+      <div class="gallery-card placeholder">
+        <div>
+          <div class="ph-icon" aria-hidden="true">📸</div>
+          <strong>更多图片敬请期待</strong>
+          <p>欢迎加入服务器<br>留下你的精彩瞬间</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 加入我们 ===== -->
+<section id="join" class="join">
+  <div class="container">
+    <div class="box">
+      <h2 class="section-title" style="margin-bottom:8px">加入 <span class="accent">YDJ</span></h2>
+      <p class="section-sub" style="margin-bottom:8px">复制下方服务器地址，在 Minecraft 中添加服务器即可加入</p>
+      <div class="ip-display" aria-label="服务器地址 mc.ydj001.xyz">mc.ydj001.xyz</div>
+      <div class="ip-meta">
+        <span><strong>游戏版本：</strong>Fabric 1.20.1</span>
+        <span><strong>QQ 群：</strong>加入后获取完整入服指南</span>
+        <span><strong>端口：</strong>加入 QQ 群获取</span>
+      </div>
+      <div class="cta-row">
+        <button class="btn btn-primary" onclick="copyIP(event,'mc.ydj001.xyz')" aria-label="复制服务器地址 mc.ydj001.xyz">
+          <span>📋</span><span>复制服务器地址</span>
+        </button>
+        <a class="btn btn-ghost" href="https://qm.qq.com/" target="_blank" rel="noopener">加入 QQ 群</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 管理后台 ===== -->
+<section class="admin">
+  <div class="container">
+    <h2 class="section-title">管理 <span class="accent">后台</span></h2>
+    <div class="divider"></div>
+    <p class="section-sub">为服主与运维准备的快捷入口</p>
+
+    <div class="grid">
+      <a class="admin-card" href="https://mcsm.ydj001.xyz" target="_blank" rel="noopener">
+        <div class="ic" aria-hidden="true">☁️</div>
+        <div class="info">
+          <h4>MCSManager 面板</h4>
+          <span>mcsm.ydj001.xyz</span>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 页脚 ===== -->
+<footer>
+  <p>© 2026 <a href="https://ydj001.xyz">YDJ Minecraft Server</a> · 实力人老大 · 山东 BGP 线路</p>
+  <p class="small">Powered by Hugo &amp; <a href="https://ydj001.xyz" target="_blank" rel="noopener">ydj001.xyz</a></p>
+</footer>
+
 <script>
-function copyIP(){
-  navigator.clipboard.writeText('mc.ydj001.xyz').then(function(){
-    var btn=document.querySelector('.copy-btn');
-    btn.textContent='✅ 已复制！';
-    btn.style.background='linear-gradient(90deg,#4caf50,#66bb6a)';
-    setTimeout(function(){
-      btn.textContent='📋 复制服务器地址';
-      btn.style.background='linear-gradient(90deg,#f7971e,#ffd200)';
-    },2000);
-  });
+/* ============================================================
+   IP 复制（多按钮共用）
+   ============================================================ */
+function copyIP(e,ip){
+  e&&e.preventDefault&&e.preventDefault();
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ip).then(function(){
+      flashCopyBtn(e&&e.currentTarget||document.activeElement);
+    },function(){
+      fallbackCopy(ip);
+    });
+  }else{
+    fallbackCopy(ip);
+  }
+}
+function fallbackCopy(text){
+  var t=document.createElement('textarea');
+  t.value=text;t.style.position='fixed';t.style.opacity='0';
+  document.body.appendChild(t);t.select();
+  try{document.execCommand('copy');flashCopyBtn(document.activeElement);}catch(_){}
+  document.body.removeChild(t);
+}
+function flashCopyBtn(btn){
+  if(!btn)return;
+  var orig=btn.innerHTML;
+  btn.innerHTML='<span>✅</span><span>已复制！</span>';
+  btn.style.background='linear-gradient(135deg,#1aaa7d,#0d8a5f)';
+  setTimeout(function(){
+    btn.innerHTML=orig;
+    btn.style.background='';
+  },2000);
 }
 
-function toggleMods(){
-  document.getElementById('mod-modal').classList.add('active');
-  document.body.style.overflow='hidden';
-}
-function closeMods(){
-  document.getElementById('mod-modal').classList.remove('active');
-  document.body.style.overflow='';
-}
-
+/* ============================================================
+   服务器状态轮询（核心保留功能）
+   ============================================================ */
 var statusBar=document.getElementById('status-bar');
 var statusText=document.getElementById('status-text');
-var playerAvatars=document.getElementById('player-avatars');
+var playerList=document.getElementById('player-list');
 var statusError=document.getElementById('status-error');
+var statOnline=document.getElementById('stat-online');
+var statPlayers=document.getElementById('stat-players');
 
 function fetchStatus(){
-  // 从 mc.ydj001.xyz 获取服务器实时状态
-  fetch('https://mc.ydj001.xyz/status').then(function(r){return r.json()}).then(function(data){
-    statusError.textContent='';
-    if(data.online){
-      statusBar.className='online';
+  fetch('https://mc.ydj001.xyz/status',{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error('http '+r.status);return r.json()})
+    .then(function(data){
+      statusError.textContent='';
+      var online=!!data.online;
       var count=data.players_online||0;
-      statusText.textContent='服务器运行中 · '+count+'/'+data.max_players+' 人在线';
-      if(count>0&&data.player_list&&data.player_list.length>0){
+      var max=data.max_players||20;
+
+      // 状态条
+      if(online){
+        statusBar.className='status-bar online';
+        statusText.innerHTML='服务器运行中 · <span class="player-count">'+count+'</span>/'+max+' 人在线';
+      }else{
+        statusBar.className='status-bar offline';
+        statusText.textContent='服务器已离线';
+      }
+
+      // 玩家列表
+      if(online&&count>0&&data.player_list&&data.player_list.length>0){
         var html='';
         data.player_list.forEach(function(name){
-          html+='<span class="player-badge">\u26a1 '+name+'</span>';
+          html+='<span class="player-badge">⚡ '+name+'</span>';
         });
-        playerAvatars.innerHTML=html;
+        playerList.innerHTML=html;
+      }else if(online){
+        playerList.innerHTML='<span class="empty">💤 暂无玩家在线</span>';
       }else{
-        playerAvatars.innerHTML='<span style="color:#666;font-size:.82rem">\u{1f634} 无人在线</span>';
+        playerList.innerHTML='';
       }
-    }else{
-      statusBar.className='offline';
-      statusText.textContent='服务器已离线';
-      playerAvatars.innerHTML='';
-    }
-  })['catch'](function(err){
-    statusBar.className='offline';
-    statusText.textContent='服务器状态获取失败';
-    statusError.textContent='状态服务暂不可用，请稍后刷新';
-    playerAvatars.innerHTML='';
-  });
+
+      // 统计数字
+      statOnline.textContent=online?'在线':'离线';
+      statOnline.style.color=online?'var(--teal)':'var(--warn)';
+      statPlayers.textContent=count;
+    })
+    .catch(function(){
+      statusBar.className='status-bar offline';
+      statusText.textContent='服务器状态获取失败';
+      statusError.textContent='状态服务暂不可用，请稍后刷新';
+      playerList.innerHTML='';
+      statOnline.textContent='未知';
+      statOnline.style.color='var(--ink-mute)';
+      statPlayers.textContent='-';
+    });
 }
 
 fetchStatus();
 setInterval(fetchStatus,30000);
 </script>
+
 </body>
 </html>
