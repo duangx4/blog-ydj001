@@ -2,49 +2,33 @@
 colorScheme = "ocean"
 defaultAppearance = "dark"
 autoSwitchAppearance = true
-enableA11y = true
+
+enableA11y = false
 enableSearch = true
 enableCodeCopy = true
 enableStructuredBreadcrumbs = true
+
 replyByEmail = false
+
 mainSections = ["blog"]
+
 disableImageOptimization = false
 disableTextInHeader = false
+
 defaultBackgroundImage = "/img/background.svg"
 defaultFeaturedImage = "/img/featured.svg"
-defaultSocialImage = "https://ydj001.xyz/img/avatar.jpg"
+defaultSocialImage = "img/avatar.png"
+
 highlightCurrentMenuArea = true
 smartTOC = true
 smartTOCHideUnfocusedChildren = false
+
 fingerprintAlgorithm = "sha512"
-# -- 访问分析（Umami）--
-# 1. 部署 Umami：自托管（Docker）或注册 umami.is 免费版
-# 2. 在 Umami 后台添加站点，拿到 Website ID
-# 3. 自托管时填 domain；用 umami.is 官方版则 domain 留空
-[umamiAnalytics]
-  domain = "umami.ydj001.xyz"   # 你的 Umami 实例域名（留空 = 用 umami.is 官方版）
-  websiteid = "75aa75e3-a861-4492-91bb-a74666bd0f3c"
-  scriptName = "script.js"
-  doNotTrack = false
-  enableTrackEvent = true
-# -- 评论系统（Twikoo）--
-# 1. 服务端：Docker 部署在 1号机，twikoo.ydj001.xyz 反代
-# 2. 前端：在 comments.html 中引入 twikoo.all.min.js
-[comments]
-  enable = true
-# -- 默认社交分享图（主页/标签页等无 featured 图片的页面使用）--
-# -- SEO 补充（Blowfish 已自动生成大部分 meta，这里只填额外信息）--
-[seo]
-  publisher = "ydj001.xyz"
-  publisherLogo = "img/logo.svg"
-  publisherDescription = "电气工程 / 无人机飞手 / 业余运维 / Hugo + Blowfish"
-  twitterSite = ""
-  twitterCreator = ""
-  ogLanguage = "zh_CN"
+
 # -- 作者信息（首页 profile / about Hero 共同使用）--
 # 唯一权威来源：languages.zh-cn.toml 不再重复定义 [params.author]
 [author]
-  name = "大嘴哥"
+  name = "实力人老大"
   image = "img/avatar.jpg"
   imagequality = 96
   headline = "电气工程 · 嵌入式 · 折腾爱好者"
@@ -56,14 +40,17 @@ fingerprintAlgorithm = "sha512"
     { email = "2197262637@qq.com" },
     { rss = "/index.xml" },
   ]
+
 [header]
   layout = "fixed"
+
 [footer]
   showMenu = true
   showCopyright = true
   showThemeAttribution = true
   showAppearanceSwitcher = true
   showScrollToTop = true
+
 [homepage]
   layout = "profile"
   showRecent = true
@@ -73,6 +60,7 @@ fingerprintAlgorithm = "sha512"
   cardView = true
   cardViewScreenWidth = false
   layoutBackgroundBlur = true
+
 [article]
   showDate = true
   showViews = false
@@ -98,8 +86,8 @@ fingerprintAlgorithm = "sha512"
   showAuthorsBadges = true
   showWordCount = true
   sharingLinks = [ "wechat", "weibo", "qq", "telegram", "email" ]
-  showComments = true
   showZenMode = true
+
 [list]
   showHero = true
   heroStyle = "background"
@@ -116,8 +104,10 @@ fingerprintAlgorithm = "sha512"
   cardView = true
   cardViewScreenWidth = false
   constrainItemsWidth = false
+
 [sitemap]
   excludedKinds = []
+
 [taxonomy]
   showTermCount = true
   showHero = true
@@ -127,6 +117,7 @@ fingerprintAlgorithm = "sha512"
   showLikes = false
   showTableOfContents = false
   cardView = false
+
 [term]
   showHero = true
   heroStyle = "background"

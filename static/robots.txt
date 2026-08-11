@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-
-# 屏蔽 build 临时目录（理论上不会出现在生产环境，但加一道保险）
-Disallow: /tags/
-Disallow: /categories/
-
-Sitemap: https://ydj001.xyz/sitemap.xml
