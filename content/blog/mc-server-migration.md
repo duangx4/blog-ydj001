@@ -27,12 +27,18 @@ categories: ["个人项目"]
 ## 架构最终形态
 
 ```
-玩家 ──→ mc.ydj001.xyz (SRV) ──→ 浙江 frp 隧道 ──→ 2号机 VM ──→ MC 服 (Docker)
-玩家 ──→ hkmc.ydj001.xyz (SRV) ──→ 香港 frps ──→ 2号机 VM（备用入口）
+玩家 ──→ hkmc.ydj001.xyz (SRV → hk.ydj001.xyz:25565) ──→ 香港 frps ──→ 2号机 VM ──→ MC 服 (Docker)
+玩家 ──→ hj.wwszxc.tax:31552 (frp 直连，无 SRV) ──→ 2号机 VM（备用入口）
 
 浏览器 ──→ map.ydj001.xyz ──→ 香港 nginx ──→ frp ──→ Dynmap 8123
 浏览器 ──→ mcsm.ydj001.xyz ──→ 香港 nginx ──→ frp ──→ MCSM 面板
 ```
+
+> 注：上面链路图里的 SRV/入口信息已按 2026-08-12 实际 DNS 查询修正——SRV 记录只有 `hkmc.ydj001.xyz` 有（指向 `hk.ydj001.xyz:25565`），`mc.ydj001.xyz` 只是 Cloudflare 代理域名，玩家直连不了。
+
+实际入口架构（DNS + 连通性实测）：
+
+{{< figure src="srv-arch.png" alt="MC 服务器玩家入口架构图" caption="MC 服务器玩家入口架构（2026-08-12 实测）" >}}
 
 迁移后 2 号机（VM）上跑的东西：
 

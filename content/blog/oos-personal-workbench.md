@@ -24,6 +24,24 @@ OOS 不是日记本，不是待办清单 App，是一台**由真实证据驱动*
 
 里程碑、截止日期、进度、工时，每一项都必须来自真实日志、真实操作或用户明说。HUD 的"空状态"是诚实的——没有证据就是没有证据，AI 不得为没有证据的东西编一个进度数字。这条规则被写成了操作员的铁律第一条，也被做进了状态机的风险判定。
 
+## 实际界面
+
+HUD 是纯浏览器端渲染的六视图看板（原生 ES modules，零构建）。空状态是它的常态——这不是没做完，而是"只记真实"的直接体现：还没有任何真实证据时，页面就诚实地空着。
+
+**Today**（今日视图）：当天排期 + 待办 + 健康度信号：
+
+{{< figure src="shots/today.png" alt="OOS Today 视图" caption="Today：今日排期与待办" >}}
+
+**Plan**（排期工作台）：四周概览 + 选中日时间线 + 吸底未排期架，拖放统一落 `scheduleBlocks`：
+
+{{< figure src="shots/plan.png" alt="OOS Plan 视图" caption="Plan：连续排期工作台" >}}
+
+**Tracks / Tools**（项目跟踪与工具统筹）：三个真实 Track 的状态页 + 20 条 AI 工具绑定（凭据只留 last4）：
+
+{{< figure src="shots/tracks.png" alt="OOS Tracks 视图" caption="Tracks：电气 / Agent基建 / 学习 三项目" >}}
+
+{{< figure src="shots/tools.png" alt="OOS Tools 视图" caption="Tools：AI 工具统筹（凭据脱敏）" >}}
+
 ## 架构总览
 
 ```
