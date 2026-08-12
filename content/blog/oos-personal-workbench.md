@@ -1,6 +1,6 @@
 ---
 title: "OOS 个人工作台：一台只记真实的本地 Agent 工作台"
-date: 2026-08-12T12:00:00+08:00
+date: 2026-08-12T11:00:00+08:00
 draft: false
 tags: ["开发", "个人项目", "Agent", "状态管理", "OOS"]
 categories: ["个人项目"]
