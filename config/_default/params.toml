@@ -28,7 +28,7 @@ fingerprintAlgorithm = "sha512"
 # -- 作者信息（首页 profile / about Hero 共同使用）--
 # 唯一权威来源：languages.zh-cn.toml 不再重复定义 [params.author]
 [author]
-  name = "实力人老大"
+  name = "实力人老大 · DAX"
   image = "img/avatar.jpg"
   imagequality = 96
   headline = "电气工程 · 嵌入式 · 折腾爱好者"

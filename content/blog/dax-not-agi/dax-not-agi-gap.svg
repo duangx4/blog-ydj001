@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="540" viewBox="0 0 880 540" font-family="'Segoe UI','Microsoft YaHei',sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="880" height="540" rx="18" fill="url(#bg)"/>
+  <text x="440" y="40" text-anchor="middle" fill="#f8fafc" font-size="22" font-weight="700">DAX 是 AGI 吗？——差距对照</text>
+  <text x="440" y="64" text-anchor="middle" fill="#94a3b8" font-size="13">通用智能三要素：跨域泛化 · 自主目标 · 持续学习 —— DAX 差的三道坎</text>
+
+  <!-- 表头 -->
+  <text x="240" y="105" text-anchor="middle" fill="#34d399" font-size="15" font-weight="700">✅ AGI（人/通用智能）</text>
+  <text x="640" y="105" text-anchor="middle" fill="#f87171" font-size="15" font-weight="700">❌ DAX（GPA · Agent）</text>
+  <line x1="130" y1="120" x2="350" y2="120" stroke="#34d399" stroke-width="2" opacity="0.5"/>
+  <line x1="530" y1="120" x2="750" y2="120" stroke="#f87171" stroke-width="2" opacity="0.5"/>
+  <text x="120" y="120" text-anchor="middle" fill="#475569" font-size="11">①</text>
+  <text x="760" y="120" text-anchor="middle" fill="#475569" font-size="11">②</text>
+
+  <g font-size="13">
+    <!-- Row 1 泛化 -->
+    <rect x="100" y="140" width="280" height="90" rx="12" fill="#134e4a"/>
+    <text x="115" y="168" fill="#5eead4" font-size="14" font-weight="700">① 跨域泛化</text>
+    <text x="115" y="192" fill="#99f6e4" font-size="12">新领域能「边学边做」</text>
+    <text x="115" y="216" fill="#99f6e4" font-size="12">把经验迁移到没见过的场景</text>
+
+    <rect x="500" y="140" width="280" height="90" rx="12" fill="#7f1d1d"/>
+    <text x="515" y="168" fill="#fca5a5" font-size="14" font-weight="700">① 跨域泛化</text>
+    <text x="515" y="192" fill="#fecaca" font-size="12">只在「语言 + 已学工具」里强</text>
+    <text x="515" y="216" fill="#fecaca" font-size="12">新领域没有自我学习机制</text>
+
+    <path d="M 380 185 C 440 185 440 185 500 185" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ar)" fill="none"/>
+
+    <!-- Row 2 自主 -->
+    <rect x="100" y="250" width="280" height="90" rx="12" fill="#134e4a"/>
+    <text x="115" y="278" fill="#5eead4" font-size="14" font-weight="700">② 自主目标</text>
+    <text x="115" y="302" fill="#99f6e4" font-size="12">自己冒出「我想做 X」</text>
+    <text x="115" y="326" fill="#99f6e4" font-size="12">有内在动机和意志</text>
+
+    <rect x="500" y="250" width="280" height="90" rx="12" fill="#7f1d1d"/>
+    <text x="515" y="278" fill="#fca5a5" font-size="14" font-weight="700">② 自主目标</text>
+    <text x="515" y="302" fill="#fecaca" font-size="12">目标全靠人喂</text>
+    <text x="515" y="326" fill="#fecaca" font-size="12">「自主任务」也是定时脚本触发，不是真自发</text>
+
+    <path d="M 380 295 C 440 295 440 295 500 295" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ar)" fill="none"/>
+
+    <!-- Row 3 学习 -->
+    <rect x="100" y="360" width="280" height="90" rx="12" fill="#134e4a"/>
+    <text x="115" y="388" fill="#5eead4" font-size="14" font-weight="700">③ 持续学习</text>
+    <text x="115" y="412" fill="#99f6e4" font-size="12">一直学、一直变强</text>
+    <text x="115" y="436" fill="#99f6e4" font-size="12">经验内化进「自己」</text>
+
+    <rect x="500" y="360" width="280" height="90" rx="12" fill="#7f1d1d"/>
+    <text x="515" y="388" fill="#fca5a5" font-size="14" font-weight="700">③ 持续学习</text>
+    <text x="515" y="412" fill="#fecaca" font-size="12">会话断就失忆</text>
+    <text x="515" y="436" fill="#fecaca" font-size="12">靠记忆库/RAG 补 = 数据库，不是大脑</text>
+
+    <path d="M 380 405 C 440 405 440 405 500 405" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ar)" fill="none"/>
+  </g>
+
+  <text x="440" y="490" text-anchor="middle" fill="#64748b" font-size="12">结论：DAX 强在「执行同域任务的效能」，缺的是「从智能里生长出意愿与连续经验」的机制</text>
+  <text x="440" y="516" text-anchor="middle" fill="#475569" font-size="11">一句话：AGI 是能自己决定今天出门干嘛的人，DAX 是认得全天下菜的顶级厨师</text>
+</svg>

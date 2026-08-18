@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="520" viewBox="0 0 860 520" font-family="'Segoe UI','Microsoft YaHei',sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="860" height="520" rx="18" fill="url(#bg)"/>
+  <text x="430" y="40" text-anchor="middle" fill="#f8fafc" font-size="22" font-weight="700">DAX 怎么运作</text>
+  <text x="430" y="64" text-anchor="middle" fill="#94a3b8" font-size="13">喂料 → 大脑 → 记忆 → 执行 → 审计，一条「只记真实」的流水线</text>
+
+  <!-- ① 输入 -->
+  <rect x="40" y="110" width="230" height="120" rx="14" fill="#0ea5e9"/>
+  <text x="155" y="138" text-anchor="middle" fill="#f0f9ff" font-size="15" font-weight="700">① 喂料 / 输入</text>
+  <text x="155" y="162" text-anchor="middle" fill="#e0f2fe" font-size="12">对话指令（QQ / Web / HUD）</text>
+  <text x="155" y="184" text-anchor="middle" fill="#e0f2fe" font-size="12">每日自主任务（定时）</text>
+  <text x="155" y="206" text-anchor="middle" fill="#e0f2fe" font-size="12">待办 / 笔记 / 队列项</text>
+
+  <!-- ② 大脑 -->
+  <rect x="330" y="110" width="240" height="120" rx="14" fill="#8b5cf6"/>
+  <text x="450" y="138" text-anchor="middle" fill="#f5f3ff" font-size="15" font-weight="700">② 大脑（Agent 引擎）</text>
+  <text x="450" y="162" text-anchor="middle" fill="#ede9fe" font-size="12">OpenClaw Gateway</text>
+  <text x="450" y="184" text-anchor="middle" fill="#ede9fe" font-size="12">多模型路由 + 自动降级</text>
+  <text x="450" y="206" text-anchor="middle" fill="#ede9fe" font-size="12">工具调用（真调工具，不空说）</text>
+
+  <!-- ③ 记忆 -->
+  <rect x="630" y="110" width="190" height="120" rx="14" fill="#10b981"/>
+  <text x="725" y="138" text-anchor="middle" fill="#ecfdf5" font-size="15" font-weight="700">③ 记忆</text>
+  <text x="725" y="162" text-anchor="middle" fill="#d1fae5" font-size="12">memory/ 每日日志</text>
+  <text x="725" y="184" text-anchor="middle" fill="#d1fae5" font-size="12">memory_search 检索</text>
+  <text x="725" y="206" text-anchor="middle" fill="#d1fae5" font-size="12">RAG 知识库</text>
+
+  <!-- 箭头 1->2 -->
+  <path d="M 270 170 C 300 170 300 170 330 170" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ar)" fill="none"/>
+  <!-- 2->3 -->
+  <path d="M 570 170 C 600 170 600 170 630 170" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#ar)" fill="none"/>
+
+  <!-- ④ 执行工具列 -->
+  <rect x="40" y="300" width="780" height="110" rx="14" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+  <text x="430" y="328" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">④ 执行工具链（做完没，一眼能查）</text>
+  <g font-size="12" fill="#cbd5e1" text-anchor="middle">
+    <rect x="70" y="345" width="120" height="40" rx="9" fill="#1e293b"/><text x="130" y="369">HUD 控制台</text>
+    <rect x="210" y="345" width="120" height="40" rx="9" fill="#1e293b"/><text x="270" y="369">CDP 抓数据</text>
+    <rect x="350" y="345" width="120" height="40" rx="9" fill="#1e293b"/><text x="410" y="369">LED 状态灯</text>
+    <rect x="490" y="345" width="120" height="40" rx="9" fill="#1e293b"/><text x="550" y="369">文件 / 服务器</text>
+    <rect x="630" y="345" width="120" height="40" rx="9" fill="#1e293b"/><text x="690" y="369">通知 / 计划任务</text>
+  </g>
+  <text x="430" y="400" text-anchor="middle" fill="#94a3b8" font-size="11">从「能聊天」升级成「能干活、能记住、能自己定时跑」</text>
+
+  <!-- ⑤ 审计 -->
+  <rect x="40" y="440" width="780" height="56" rx="12" fill="#0f766e"/>
+  <text x="430" y="466" text-anchor="middle" fill="#ccfbf1" font-size="14" font-weight="700">⑤ 审计 &amp; 约束：只记真实 · 凭据不过手 · 外网只认自家域名 · 改重要先问</text>
+  <text x="430" y="486" text-anchor="middle" fill="#99f6e4" font-size="11">OOS 状态账本（op 操作 + 审计日志），每步可回看、可复盘</text>
+</svg>

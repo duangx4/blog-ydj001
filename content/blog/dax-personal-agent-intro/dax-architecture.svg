@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="620" viewBox="0 0 880 620" font-family="'Segoe UI','Microsoft YaHei',sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="mob" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="gw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="cloud" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="local" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect width="880" height="620" rx="18" fill="url(#bg)"/>
+  <text x="440" y="40" text-anchor="middle" fill="#f8fafc" font-size="22" font-weight="700">DAX 三端协同架构</text>
+  <text x="440" y="64" text-anchor="middle" fill="#94a3b8" font-size="13">个人 Agent 系统 · 移动端入口 / 云端大脑 / 本地数据主权 / 香港机门户中转</text>
+
+  <!-- 移动端 -->
+  <rect x="40" y="100" width="240" height="150" rx="14" fill="url(#mob)"/>
+  <text x="160" y="128" text-anchor="middle" fill="#0c4a6e" font-size="16" font-weight="700">📱 移动端 · 入口</text>
+  <text x="160" y="152" text-anchor="middle" fill="#083344" font-size="12">浏览器 / PWA（未来 APK）</text>
+  <text x="160" y="176" text-anchor="middle" fill="#083344" font-size="12">随身待办 · 笔记 · 问答</text>
+  <text x="160" y="200" text-anchor="middle" fill="#083344" font-size="12">无 Agent · 纯访问端</text>
+  <text x="160" y="234" text-anchor="middle" fill="#083344" font-size="11" opacity="0.8">手机 / 平板</text>
+
+  <!-- 1号机 公网门户 -->
+  <rect x="320" y="90" width="240" height="170" rx="14" fill="url(#gw)"/>
+  <text x="440" y="118" text-anchor="middle" fill="#78350f" font-size="16" font-weight="700">🌐 1号机 · 公网门户</text>
+  <text x="440" y="142" text-anchor="middle" fill="#7c2d12" font-size="12">香港机（免备案）</text>
+  <text x="440" y="166" text-anchor="middle" fill="#431407" font-size="12">🔁 网络代理 / 中转</text>
+  <text x="440" y="190" text-anchor="middle" fill="#431407" font-size="12">nginx 反代 + SSL(Certbot)</text>
+  <text x="440" y="214" text-anchor="middle" fill="#431407" font-size="12">frp 服务端（隧道汇聚）</text>
+  <text x="440" y="244" text-anchor="middle" fill="#431407" font-size="11" opacity="0.85">域名 ydj001.xyz 全走它</text>
+
+  <!-- 移动 -> 1号机 -->
+  <path d="M 280 175 C 300 175 300 175 320 175" stroke="#fbbf24" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <text x="288" y="168" fill="#fcd34d" font-size="10">HTTPS</text>
+
+  <!-- 云端机 2号机 -->
+  <rect x="600" y="90" width="240" height="170" rx="14" fill="url(#cloud)"/>
+  <text x="720" y="118" text-anchor="middle" fill="#f5f3ff" font-size="16" font-weight="700">☁️ 云端机（2号机）· 大脑</text>
+  <text x="720" y="142" text-anchor="middle" fill="#ede9fe" font-size="12">Open WebUI 前端 + RAG</text>
+  <text x="720" y="166" text-anchor="middle" fill="#ede9fe" font-size="12">云端 Agent</text>
+  <text x="720" y="190" text-anchor="middle" fill="#ede9fe" font-size="12">7×24 在线 · 断电自启</text>
+  <text x="720" y="214" text-anchor="middle" fill="#ede9fe" font-size="12">服务经 1号机 反代上网</text>
+  <text x="720" y="244" text-anchor="middle" fill="#ede9fe" font-size="11" opacity="0.8">doge（Debian 13 · Docker）</text>
+
+  <!-- 1号机 -> 云端机 -->
+  <path d="M 560 175 C 580 175 580 175 600 175" stroke="#fbbf24" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <text x="566" y="166" fill="#fcd34d" font-size="10">隧道</text>
+
+  <!-- 本地机 -->
+  <rect x="40" y="330" width="300" height="200" rx="14" fill="url(#local)"/>
+  <text x="190" y="358" text-anchor="middle" fill="#064e3b" font-size="16" font-weight="700">💻 本地机（Windows）· 数据主权</text>
+  <text x="190" y="384" text-anchor="middle" fill="#064e3b" font-size="12">Gateway 主代理（OpenClaw）</text>
+  <text x="190" y="408" text-anchor="middle" fill="#064e3b" font-size="12">DAX HUD（6 视图控制台）</text>
+  <text x="190" y="432" text-anchor="middle" fill="#064e3b" font-size="12">OOS 账本（只记真实 · 不扩散）</text>
+  <text x="190" y="456" text-anchor="middle" fill="#064e3b" font-size="12">记忆库 memory/ + 每日日志</text>
+  <text x="190" y="480" text-anchor="middle" fill="#064e3b" font-size="12">工具链（LED 生命周期 · CDP）</text>
+  <text x="190" y="504" text-anchor="middle" fill="#064e3b" font-size="12">frpc 隧道出网（经 1号机）</text>
+  <text x="190" y="522" text-anchor="middle" fill="#064e3b" font-size="11" opacity="0.8">你唯一的写源</text>
+
+  <!-- 本地 -> 1号机 -->
+  <path d="M 250 330 C 340 300 380 280 400 265" stroke="#f59e0b" stroke-width="2.5" fill="none" marker-end="url(#arrow)" stroke-dasharray="5,4"/>
+  <path d="M 400 250 C 380 265 360 280 300 320" stroke="#f59e0b" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <text x="348" y="282" fill="#fcd34d" font-size="10">frpc 隧道</text>
+
+  <!-- 多模型 -->
+  <rect x="420" y="330" width="420" height="120" rx="14" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+  <text x="630" y="360" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">🔌 多模型通道（大脑供能）</text>
+  <g font-size="12" fill="#cbd5e1" text-anchor="middle">
+    <rect x="440" y="376" width="120" height="40" rx="9" fill="#1e293b"/><text x="500" y="400">lantian flash</text>
+    <rect x="570" y="376" width="120" height="40" rx="9" fill="#1e293b"/><text x="630" y="400">lantian earth</text>
+    <rect x="700" y="376" width="120" height="40" rx="9" fill="#1e293b"/><text x="760" y="400">官方 DeepSeek</text>
+  </g>
+  <text x="630" y="438" text-anchor="middle" fill="#94a3b8" font-size="11">429 自动降级 · RAG embedding（bge-m3）· 成本可控</text>
+
+  <!-- 底部说明 -->
+  <text x="440" y="500" text-anchor="middle" fill="#64748b" font-size="11">1号机 = 网络代理/门户：手机、云端、本地都经它隧道与 HTTPS 反代互相连通</text>
+  <text x="440" y="524" text-anchor="middle" fill="#475569" font-size="11">原则：移动端纯访问 · 云端跑重活 · 本地守住数据主权（账本不随同步扩散）</text>
+</svg>
