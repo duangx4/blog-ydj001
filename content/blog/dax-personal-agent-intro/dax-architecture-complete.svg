@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 1100" width="1160" height="1100" role="img" aria-label="DAX 现有完整架构（硬件层+软件层）"><rect x="0" y="0" width="1160" height="1100" fill="#0f172a"/>
+<style>
+  .title{font-size:21px;font-weight:650;fill:#e5e7eb}
+  .subtitle{font-size:13px;fill:#a3adbd}
+  .label{font-size:14px;font-weight:600;fill:#e5e7eb}
+  .small{font-size:11.5px;fill:#a3adbd}
+  .zone-tag{font-size:12px;fill:#a3adbd}
+  .node{stroke:#94a3b8;stroke-width:1}
+  .neutral{fill:#334155}
+  .input{fill:#1d4ed8}
+  .process{fill:#4338ca}
+  .storage{fill:#0f766e}
+  .external{fill:#a16207}
+  .risk{fill:#b91c1c}
+  .new{fill:#7c3aed}
+  .edge{stroke:#94a3b8;stroke-width:1.6;fill:none}
+  .edge-sync{stroke:#0f766e;stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .edge-tunnel{stroke:#94a3b8;stroke-width:2;fill:none;stroke-dasharray:9 6}
+  .zone{fill:none;stroke:#94a3b8;stroke-width:1.1;stroke-dasharray:6 5;opacity:0.85}
+  .zone-risk{fill:none;stroke:#b91c1c;stroke-width:1.5;stroke-dasharray:6 5;opacity:0.9}
+  .zone-special{fill:none;stroke:#7c3aed;stroke-width:1.6;stroke-dasharray:6 5;opacity:0.9}
+  .edgetxt{font-size:11px;fill:#a3adbd}
+  .arrowext{font-size:11.5px;font-weight:600;fill:#e5e7eb}
+</style>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0L10,5L0,10z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrow-sync" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0L10,5L0,10z" fill="#0f766e"/>
+    </marker>
+  </defs>
+
+  <!-- ===== 标题 ===== -->
+  <text x="40" y="32" class="title">DAX 现有完整架构 · 硬件层 + 软件层</text>
+  <text x="40" y="53" class="subtitle">合并《改进后工作结构》(2026-08-14) + 《DAX 三端协同架构》 · ★ = 干活方式升级项 · 设备与规矩原样保留</text>
+
+  <!-- ===== 层间主流向箭头（先画垫底） ===== -->
+  <!-- ①→② 指令：平时对话 → AI管家 -->
+  <path class="edge" marker-end="url(#arrow)" d="M432,200 L432,252 L190,252 L190,300"/>
+  <text x="300" y="247" text-anchor="middle" class="arrowext">指令 / 对话</text>
+  <!-- ②→③ 云端执行 -->
+  <path class="edge" marker-end="url(#arrow)" d="M170,440 L170,497"/>
+  <text x="182" y="472" text-anchor="start" class="arrowext">→ 云端</text>
+  <!-- ②→③ 本地执行 -->
+  <path class="edge" marker-end="url(#arrow)" d="M714,440 L714,497"/>
+  <text x="726" y="472" text-anchor="start" class="arrowext">→ 本地</text>
+
+  <!-- ================================================================= -->
+  <!-- ① 软件层 · 入口 -->
+  <!-- ================================================================= -->
+  <rect class="zone" x="30" y="70" width="1100" height="150" rx="12"/>
+  <text x="48" y="92" class="zone-tag" style="font-weight:700">① 软件层 · 入口（用户接入）</text>
+
+  <rect class="node input" x="48" y="112" width="240" height="88" rx="8"/>
+  <text x="168" y="138" text-anchor="middle" class="label">移动端 · 手机/平板</text>
+  <text x="168" y="160" text-anchor="middle" class="small">浏览器 / PWA（未来 APK）</text>
+  <text x="168" y="178" text-anchor="middle" class="small">上传文件 · 聊天 · 下命令</text>
+  <text x="168" y="196" text-anchor="middle" class="small">入口：只连云端，不直连本地</text>
+
+  <rect class="node input" x="312" y="112" width="240" height="88" rx="8"/>
+  <text x="432" y="138" text-anchor="middle" class="label">平时对话 / 纠正</text>
+  <text x="432" y="160" text-anchor="middle" class="small">说错当场改 · 越用越懂你</text>
+  <text x="432" y="178" text-anchor="middle" class="small">本机主账号（活跃端）</text>
+
+  <rect class="node input" x="576" y="112" width="240" height="88" rx="8"/>
+  <text x="696" y="138" text-anchor="middle" class="label">QQ 消息 · 双账号</text>
+  <text x="696" y="160" text-anchor="middle" class="small">每天早上 9:30 例行</text>
+  <text x="696" y="178" text-anchor="middle" class="small">自动收 / 自动干 / 提醒推送</text>
+
+  <rect class="node new" x="840" y="112" width="272" height="88" rx="8"/>
+  <text x="976" y="136" text-anchor="middle" class="label">★ 挑活标准</text>
+  <text x="976" y="158" text-anchor="middle" class="small">只接一眼能看出好坏的活</text>
+  <text x="976" y="176" text-anchor="middle" class="small">视频 / 报告 / 搭好的系统</text>
+  <text x="976" y="194" text-anchor="middle" class="small">不碰收费·造引擎·万能打杂</text>
+
+  <!-- ================================================================= -->
+  <!-- ② 软件层 · 大脑 + 模型通道 -->
+  <!-- ================================================================= -->
+  <rect class="zone-special" x="30" y="280" width="1100" height="160" rx="12"/>
+  <text x="48" y="302" class="zone-tag" style="font-weight:700">② 大脑 + 模型通道（★ 干活方式升级区）</text>
+
+  <rect class="node process" x="48" y="304" width="280" height="114" rx="8"/>
+  <text x="188" y="328" text-anchor="middle" class="label">AI 管家（不变）</text>
+  <text x="188" y="350" text-anchor="middle" class="small">任务自动分工 · 便宜快+高级+备用</text>
+  <text x="188" y="368" text-anchor="middle" class="small">★ 好钢用在刀刃上：难题高级</text>
+  <text x="188" y="386" text-anchor="middle" class="small">★ 干活留录像：可回放·月底复盘</text>
+  <text x="188" y="404" text-anchor="middle" class="small">★ 长任务能暂停：干半停·放久作废</text>
+
+  <rect class="node external" x="352" y="304" width="360" height="114" rx="8"/>
+  <text x="532" y="328" text-anchor="middle" class="label">模型通道（多级降级）</text>
+  <text x="532" y="350" text-anchor="middle" class="small">主力：lantian deepseek-v4-flash</text>
+  <text x="532" y="368" text-anchor="middle" class="small">备用：lantian earth/terra（零限流）</text>
+  <text x="532" y="386" text-anchor="middle" class="small">兜底：官方 deepseek（429 降级）</text>
+  <text x="532" y="404" text-anchor="middle" class="small">高级模型干难活 · 便宜跑腿</text>
+
+  <rect class="node storage" x="736" y="304" width="376" height="114" rx="8"/>
+  <text x="924" y="328" text-anchor="middle" class="label">记忆 / 知识 / 菜谱</text>
+  <text x="924" y="350" text-anchor="middle" class="small">长期记忆 · 越用越懂你 · 每周复盘</text>
+  <text x="924" y="368" text-anchor="middle" class="small">学习资料知识库（云端 ≤1GB）</text>
+  <text x="924" y="386" text-anchor="middle" class="small">★ 套路菜谱：验证过的流程套用</text>
+  <text x="924" y="404" text-anchor="middle" class="small">★ 重要决定多 AI 投票 · 一主带多</text>
+
+  <!-- ================================================================= -->
+  <!-- ③ 软件层 · 应用与服务 -->
+  <!-- ================================================================= -->
+  <rect class="zone" x="30" y="500" width="1100" height="252" rx="12"/>
+  <text x="48" y="522" class="zone-tag" style="font-weight:700">③ 软件层 · 应用与服务（云端 + 本地 · daemon 调 gateway）</text>
+
+  <!-- 云端子区 -->
+  <rect class="zone" x="48" y="534" width="520" height="190" rx="10"/>
+  <text x="64" y="556" class="zone-tag">云端 · 2号机 doge（24 小时在线）</text>
+
+  <rect class="node process" x="64" y="566" width="220" height="72" rx="8"/>
+  <text x="174" y="590" text-anchor="middle" class="label">云端 OpenClaw agent</text>
+  <text x="174" y="614" text-anchor="middle" class="small">独立记忆 + QQ 通道（已有）</text>
+  <text x="174" y="633" text-anchor="middle" class="small">理解 → 转发 → 调本机工具</text>
+
+  <rect class="node input" x="308" y="566" width="244" height="72" rx="8"/>
+  <text x="430" y="590" text-anchor="middle" class="label">Open WebUI（前端）⛳</text>
+  <text x="430" y="614" text-anchor="middle" class="small">聊天界面 + 文档 RAG</text>
+  <text x="430" y="633" text-anchor="middle" class="small">多设备入口 · 模型走 lantian</text>
+
+  <rect class="node storage" x="64" y="650" width="220" height="60" rx="8"/>
+  <text x="174" y="674" text-anchor="middle" class="small">学习资料知识库 ≤1GB</text>
+  <text x="174" y="696" text-anchor="middle" class="small">云端存储（学习资料）</text>
+
+  <rect class="node external" x="308" y="650" width="244" height="60" rx="8"/>
+  <text x="430" y="674" text-anchor="middle" class="small">QQ 机器人 · 提醒通道</text>
+  <text x="430" y="696" text-anchor="middle" class="small">两个 QQ 收发 · 告警推送</text>
+
+  <!-- 本地子区 -->
+  <rect class="zone-risk" x="588" y="534" width="524" height="190" rx="10"/>
+  <text x="604" y="556" class="zone-tag" fill="#b91c1c">本地机 · Windows（数据主权区）</text>
+
+  <rect class="node neutral" x="604" y="566" width="220" height="72" rx="8"/>
+  <text x="714" y="590" text-anchor="middle" class="label">OpenClaw gateway</text>
+  <text x="714" y="614" text-anchor="middle" class="small">活跃记忆 / /tools/invoke</text>
+  <text x="714" y="633" text-anchor="middle" class="small">⚠ 默认禁 exec/shell</text>
+
+  <rect class="node neutral" x="852" y="566" width="260" height="72" rx="8"/>
+  <text x="982" y="590" text-anchor="middle" class="label">DAX HUD（localhost:4174）</text>
+  <text x="982" y="612" text-anchor="middle" class="small">Today/Plan/Tracks/Notes/Review</text>
+  <text x="982" y="631" text-anchor="middle" class="small">六视图 · 本地 · 零依赖</text>
+
+  <rect class="node storage" x="604" y="650" width="220" height="60" rx="8"/>
+  <text x="714" y="674" text-anchor="middle" class="small">个人工作台（记账式）</text>
+  <text x="714" y="696" text-anchor="middle" class="small">计划/排期/笔记/复盘/工具</text>
+
+  <rect class="node risk" x="852" y="650" width="244" height="60" rx="8"/>
+  <text x="974" y="674" text-anchor="middle" class="small">OOS 账本 · 敏感数据</text>
+  <text x="974" y="696" text-anchor="middle" class="small">只留本机（数据主权红线）</text>
+
+  <!-- 云端 ↔ 本地 数据流（虚线，收进区底部图注解释） -->
+  <path class="edge-tunnel" d="M174,638 L174,644 L714,644 L714,638" marker-end="url(#arrow)"/>
+  <path class="edge-sync" d="M714,710 L714,718 L174,718 L174,710" marker-end="url(#arrow-sync)"/>
+  <!-- 图注 -->
+  <text x="48" y="736" class="edgetxt">——— frp 隧道：云端 agent ↔ 本地 gateway（经 1号机 frps · Bearer token）</text>
+  <text x="48" y="752" class="edgetxt">······ 每小时同步：本地 → 云端（仅必要文件 · memory + workspace 核心）</text>
+
+  <!-- ================================================================= -->
+  <!-- ④ 硬件层 · 物理设备与网络底座 -->
+  <!-- ================================================================= -->
+  <rect class="zone" x="30" y="800" width="1100" height="150" rx="12"/>
+  <text x="48" y="822" class="zone-tag" style="font-weight:700">④ 硬件层 · 物理设备与网络底座（五处分工 · 一条不动）</text>
+
+  <rect class="node risk" x="48" y="836" width="196" height="84" rx="8"/>
+  <text x="146" y="864" text-anchor="middle" class="label">本机 · Windows</text>
+  <text x="146" y="886" text-anchor="middle" class="small">创作大本营 · 数据权威</text>
+  <text x="146" y="906" text-anchor="middle" class="small">AI 管家主账号（活跃端）</text>
+
+  <rect class="node process" x="256" y="836" width="196" height="84" rx="8"/>
+  <text x="354" y="864" text-anchor="middle" class="label">2号机 · doge（中枢）</text>
+  <text x="354" y="886" text-anchor="middle" class="small">Debian 13 · Docker</text>
+  <text x="354" y="906" text-anchor="middle" class="small">24 小时执行 · 断电自重启</text>
+
+  <rect class="node external" x="464" y="836" width="196" height="84" rx="8"/>
+  <text x="562" y="864" text-anchor="middle" class="label">1号机 · 香港（枢纽）</text>
+  <text x="562" y="886" text-anchor="middle" class="small">nginx 反代 + frps · SSL</text>
+  <text x="562" y="906" text-anchor="middle" class="small">ydj001.xyz · 公网入口</text>
+
+  <rect class="node external" x="672" y="836" width="196" height="84" rx="8"/>
+  <text x="770" y="864" text-anchor="middle" class="label">手机 + 平板 · vivo</text>
+  <text x="770" y="886" text-anchor="middle" class="small">随身终端 · 收提醒/告警</text>
+  <text x="770" y="906" text-anchor="middle" class="small">平板手写 · 日历管课表</text>
+
+  <rect class="node neutral" x="880" y="836" width="196" height="84" rx="8"/>
+  <text x="978" y="864" text-anchor="middle" class="label">枣庄机 · 备份</text>
+  <text x="978" y="886" text-anchor="middle" class="small">异地备份（0→1 定时同步）</text>
+  <text x="978" y="906" text-anchor="middle" class="small">0号机退役中 · 资产迁出</text>
+
+  <text x="48" y="938" class="edgetxt">网络：HTTPS（ydj001.xyz） · frp 隧道（1号机 frps 中转） · 每小时同步 本机→云端（仅必要文件）</text>
+
+  <!-- ================================================================= -->
+  <!-- ⑤ 约束层 -->
+  <!-- ================================================================= -->
+  <rect class="zone" x="30" y="992" width="1100" height="80" rx="12"/>
+  <text x="48" y="1014" class="zone-tag" style="font-weight:700">⑤ 约束 · 停电 / 安全 / 边界</text>
+  <text x="48" y="1036" class="small">停电（不变）：23:00 自动备份 → 23:30 关机离线；云端不受影响，手机照常收 QQ；第二天开机自动补上</text>
+  <text x="48" y="1054" class="small">安全（不变）：只记真事 / 密码不存 / 可回退 / 只收有用的（✅待办·笔记·作息 ❌课表·照片·大文件）</text>
+  <text x="48" y="1072" class="small">边界：外网只认自家网址（防骗子域名冒充）· 密码加密存放 · 菜谱只套验证过的流程 · 越用越懂你也得有底线</text>
+
+  <!-- ===== 底部强调 ===== -->
+  <rect class="node risk" x="30" y="1088" width="1100" height="24" rx="6"/>
+  <text x="580" y="1104" text-anchor="middle" class="label" font-size="12">学思路不抄架构 · 只升级干活方式 · 设备与规矩全保留 · 数据主权保持在本机</text>
+</svg>
