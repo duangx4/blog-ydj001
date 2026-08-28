@@ -17,7 +17,7 @@ description: "上篇介绍了 DAX 是什么、为什么做、怎么运作。下�
 
 判断标准不是「它能回答多少问题、干多少活」，而是看三个**核心能力的边界**——一张对照图看懂差距：
 
-{{< figure src="dax-not-agi-gap.svg" alt="DAX 与 AGI 差距对照" caption="通用智能三要素：跨域泛化 · 自主目标 · 持续学习 —— DAX 差的三道坎" >}}
+{{< archify src="/archify/dax-not-agi-gap.html" caption="通用智能三要素：跨域泛化 · 自主目标 · 持续学习 —— DAX 差的三道坎" >}}
 
 ## 三个硬门槛，DAX 都差一道坎
 

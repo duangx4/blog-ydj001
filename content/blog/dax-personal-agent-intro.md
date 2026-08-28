@@ -21,7 +21,7 @@ description: "DAX 是我自建、跑在自己设备上的个人 AI Agent 系统�
 
 DAX 再大，也就三样东西叠在一起：**软件层（怎么想、怎么干）· 硬件层（住在哪）· 约束层（家规是什么）**。这张图就是它的全景：
 
-{{< figure src="dax-architecture-complete.svg" alt="DAX 完整分层架构" caption="DAX 全景：①软件层·入口 ②大脑+模型通道 ③应用与服务｜④硬件层·五台设备｜⑤约束·规矩" >}}
+{{< archify src="/archify/dax-architecture.html" caption="DAX 全景：①软件层·入口 ②大脑+模型通道 ③应用与服务｜④硬件层·五台设备｜⑤约束·规矩" >}}
 
 **软件层 = 一个人怎么想、怎么干**，分三段：
 
@@ -79,7 +79,7 @@ DAX = **D + Agent eXecutor**。
 
 运作是一个五步流水线：**喂料 → 大脑 → 记忆 → 执行 → 审计**。
 
-{{< figure src="dax-how-it-works.svg" alt="DAX 运作流水线" caption="DAX 运作：喂料 → 大脑 → 记忆 → 执行 → 审计" >}}
+{{< archify src="/archify/dax-how-it-works.html" caption="DAX 运作：喂料 → 大脑 → 记忆 → 执行 → 审计" >}}
 
 ### 1. 喂料 / 输入
 - 对话指令：QQ、Web 控制台、HUD 都能喊它

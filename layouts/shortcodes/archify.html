@@ -1,0 +1,19 @@
+{{- /* archify shortcode: embed a self-contained interactive archify HTML diagram
+     Usage: {{< archify src="/archify/dax-architecture.html" caption="..." >}}
+     Optional: height (px, default 850), title (a11y, default "交互式架构图")
+  */ -}}
+{{- $src := .Get "src" -}}
+{{- $height := .Get "height" | default "850" -}}
+{{- $title := .Get "title" | default "交互式架构图" -}}
+{{- $caption := .Get "caption" -}}
+
+<figure class="archify-embed">
+  <iframe
+    src="{{ $src }}"
+    title="{{ $title }}"
+    loading="lazy"
+    style="width:100%; height:min({{ $height }}px, 82vh); border:1px solid rgba(128,128,128,0.25); border-radius:0.6rem; background:#111827;"
+    allowfullscreen
+  ></iframe>
+  {{- with $caption }}<figcaption>{{ . | markdownify }}</figcaption>{{ end }}
+</figure>
