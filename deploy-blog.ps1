@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 # 博客发布脚本（重构版 v2）
 # 用法: powershell -File deploy-blog.ps1
 #
@@ -15,7 +15,7 @@
 # --------------------- 配置区（按需修改） ---------------------
 $Hugo      = "C:\Users\21972\AppData\Local\Microsoft\WinGet\Packages\Hugo.Hugo.Extended_Microsoft.Winget.Source_8wekyb3d8bbwe\hugo.exe"
 $BlogDir   = "C:\Users\21972\Desktop\blog-ydj001"
-$Server    = "root@154.12.85.12"
+$Server    = "root@38.76.201.242"
 $WebRoot   = "/var/www/ydj001.xyz"
 $SshKey    = "$env:USERPROFILE\.ssh\id_ed25519"   # 推荐用 ed25519；不存在会报错并退出
 $SshPort   = 22

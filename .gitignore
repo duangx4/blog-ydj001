@@ -12,3 +12,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# 临时构建包
+/public.tgz
