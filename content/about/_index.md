@@ -18,7 +18,7 @@ skills:
     title: "嵌入式"
     desc: "STM32F103 · HAL/标准库 · 基础电子设计"
     works:
-      - "智能花园（星火电子社新生杯三等奖）"
+      - "智能花园（星火电子社新生杯优胜奖）"
       - "RobotMaster 校内工程赛电控设计"
   - icon: "code"
     title: "编程"
