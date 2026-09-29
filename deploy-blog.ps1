@@ -92,7 +92,8 @@ Ok "权限已修正"
 
 # Git 提交（只暂存已跟踪文件，不自动拉入 untracked）
 Step "Git：提交并推送"
-$hasChanges = [bool] (git diff --name-only; git diff --cached --name-only)
+$changedFiles = @(git diff --name-only) + @(git diff --cached --name-only) | Where-Object { $_ -ne '' }
+$hasChanges = $changedFiles.Count -gt 0
 if ($hasChanges) {
     git add --update
     git commit -m "deploy: $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
