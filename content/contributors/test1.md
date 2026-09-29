@@ -7,7 +7,5 @@ intro: test
 tags:
   - test
 weight: 10
-links:
-  - label: test
-    url: ''
+links: []
 ---
