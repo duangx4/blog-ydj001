@@ -8,27 +8,51 @@
 </header>
 
 {{/* ============ 资源贡献者 ============ */}}
-{{ with .Params.contributors }}
+{{/* 每张卡片 = content/contributors/<GitHub 用户名>.md，由 CMS 后台自助维护 */}}
+{{ $contributors := slice }}
+{{ with site.GetPage "/contributors" }}
+  {{ $contributors = .Pages.ByWeight }}
+{{ end }}
+{{ if not $contributors }}
+  {{/* 兜底：老写法（数据写在 _index.md 的 front matter）仍然渲染 */}}
+  {{ with .Params.contributors }}{{ $contributors = . }}{{ end }}
+{{ end }}
+
+{{ with $contributors }}
 <section style="margin-bottom:2.5rem">
   <h2 class="resource-category">资源贡献者</h2>
   {{ range . }}
-    {{ $c := . }}
+    {{ $c := .Params }}
+    {{ $name := $c.name | default .Title }}
+    {{ if not $c }}
+      {{ $c = . }}
+      {{ $name = $c.name }}
+    {{ end }}
+    {{/* 名字兜底到 GitHub 用户名；两者都没有说明是张空卡片，跳过不渲染 */}}
+    {{ if not $name }}{{ $name = $c.github }}{{ end }}
+    {{ if $name }}
     <div class="contributor-card">
-      {{ with $c.avatar }}
-        {{ $img := resources.Get . }}
-        {{ if $img }}
-          {{ if not (or $.Site.Params.disableImageOptimization (eq $img.MediaType.SubType "svg")) }}
-            {{ $img = $img.Fill "256x256 q92" }}
-          {{ end }}
-          <img class="contributor-avatar nozoom"
-               src="{{ $img.RelPermalink }}"
-               alt="{{ $c.name }}"
-               width="88" height="88" loading="lazy" decoding="async">
+    {{/* 头像解析顺序：全局资源（CMS 上传到这里，可裁剪压缩）→ static 原样路径（兼容 GitHub 头像直链） */}}
+    {{ if $c.avatar }}
+      {{ $src := "" }}
+      {{ $avatar := $c.avatar }}
+      {{ with resources.Get $avatar }}
+        {{ $img := . }}
+        {{ if not (or $.Site.Params.disableImageOptimization (eq $img.MediaType.SubType "svg")) }}
+          {{ $img = $img.Fill "256x256 q92" }}
         {{ end }}
+        {{ $src = $img.RelPermalink }}
       {{ end }}
+      {{/* 兜底：static/ 下的原样路径，也兼容直接写 GitHub 头像直链 */}}
+      {{ if not $src }}{{ $src = $avatar | relURL }}{{ end }}
+      <img class="contributor-avatar nozoom"
+           src="{{ $src }}"
+           alt="{{ $name }}"
+           width="88" height="88" loading="lazy" decoding="async">
+    {{ end }}
       <div class="contributor-body">
         <div class="contributor-head">
-          <h3 class="contributor-name">{{ $c.name }}</h3>
+          <h3 class="contributor-name">{{ $name }}</h3>
           <span class="contributor-role">资源贡献者</span>
         </div>
         {{ with $c.intro }}
@@ -42,12 +66,17 @@
         {{ with $c.links }}
           <div class="contributor-actions">
             {{ range . }}
-              <a href="{{ .url | default "#" }}" class="mc-btn mc-btn-ghost">{{ .label | default "占位" }}</a>
+              {{ $u := .url | default "#" }}
+              {{ if and (ne $u "#") (not (or (hasPrefix $u "http") (hasPrefix $u "mailto") (hasPrefix $u "/"))) }}
+                {{ $u = printf "https://%s" $u }}
+              {{ end }}
+              <a href="{{ $u }}" class="mc-btn mc-btn-ghost"{{ if hasPrefix $u "http" }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .label | default "链接" }}</a>
             {{ end }}
           </div>
         {{ end }}
       </div>
     </div>
+    {{ end }}
   {{ end }}
 </section>
 {{ end }}

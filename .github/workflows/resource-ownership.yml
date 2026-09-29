@@ -40,16 +40,54 @@ jobs:
             git show "$1:$2" 2>/dev/null | yq --front-matter=extract '.authors[]' - 2>/dev/null || true
           }
 
+          # 读取某个版本下贡献者卡片的 github 字段（不存在返回空）
+          github_at() {
+            git show "$1:$2" 2>/dev/null | yq --front-matter=extract '.github' - 2>/dev/null || true
+          }
+
           fail=0
           declare -A seen=()
           while IFS= read -r file; do
+            # ---- 贡献者卡片：content/contributors/<用户名>.md ----
+            case "$file" in
+              content/contributors/_index.md)
+                echo "::error file=$file::贡献者目录首页只能由维护者修改"; fail=1; continue ;;
+              content/contributors/*)
+                slug="${file#content/contributors/}"; slug="${slug%.md}"
+                # 只允许单层 .md 文件，挡住 content/contributors/foo/bar.md 这类绕过
+                case "$slug" in
+                  */*) echo "::error file=$file::贡献者卡片必须是 content/contributors/<用户名>.md"; fail=1; continue ;;
+                esac
+                # 卡片文件名 + github 字段都必须等于 PR 作者
+                if [ "$slug" != "$PR_AUTHOR" ]; then
+                  echo "::error file=$file::卡片文件名必须是你的 GitHub 登录名 $PR_AUTHOR（当前是 $slug）"; fail=1; continue
+                fi
+                head_github="$(github_at "$HEAD_SHA" "$file")"
+                if [ "$head_github" != "$PR_AUTHOR" ]; then
+                  echo "::error file=$file::github 字段必须填 $PR_AUTHOR（当前是 ${head_github:-空}）"; fail=1; continue
+                fi
+                # 已有卡片：github 字段不允许被改成别人（防止冒名占用文件）
+                base_github="$(github_at "$BASE_SHA" "$file")"
+                if [ -n "$base_github" ] && [ "$base_github" != "$PR_AUTHOR" ]; then
+                  echo "::error file=$file::这张卡片属于 $base_github，无权修改"; fail=1; continue
+                fi
+                continue ;;
+            esac
+
             case "$file" in
               content/resources/_index.md)
                 echo "::error file=$file::资源区首页只能由维护者修改"; fail=1; continue ;;
+              # 贡献者卡片头像（CMS 的 contributors.media_folder 指向这里）。
+              # 只放行图片扩展名，避免这里变成往仓库塞任意文件的通道。
+              assets/img/contributors/*)
+                case "$file" in
+                  *.png|*.PNG|*.jpg|*.JPG|*.jpeg|*.JPEG|*.webp|*.WEBP|*.gif|*.GIF|*.svg|*.SVG) continue ;;
+                esac
+                echo "::error file=$file::头像目录只接受图片文件（png/jpg/jpeg/webp/gif/svg）"; fail=1; continue ;;
               content/resources/*/*)
                 slug="${file#content/resources/}"; slug="${slug%%/*}" ;;
               *)
-                echo "::error file=$file::贡献者只能修改 content/resources/<slug>/ 下的文件"; fail=1; continue ;;
+                echo "::error file=$file::贡献者只能修改 content/resources/<slug>/、content/contributors/<用户名>.md 或上传头像"; fail=1; continue ;;
             esac
 
             [ -n "${seen[$slug]:-}" ] && continue

@@ -25,7 +25,7 @@
 | `static/admin/index.html` | Sveltia CMS 入口，含 `pan-link` 和 `download-table` 自定义编辑组件 |
 | `static/admin/config.yml` | 集合定义、字段 schema、媒体上传配置 |
 
-**字段设计**：
+**资源文章字段设计**：
 - `title`、`description`、`date`、`lastmod`、`draft`、`weight`
 - `authors`：贡献者 GitHub 用户名（用于归属校验）
 - `tags`、`categories`
@@ -34,12 +34,42 @@
 - `showComments`
 - `body`：正文（支持 Markdown + 短代码组件）
 
+**贡献者卡片字段设计**（集合「我的贡献者卡片」，每人一份 `content/contributors/<GitHub 登录名>.md`）：
+- `github`：GitHub 登录名（归属校验锚点，须与文件名一致）
+- `name`：卡片显示名
+- `avatar`：头像（存到 `assets/img/contributors/`，模板裁成 256×256）
+- `intro`：一句话简介
+- `tags`：方向标签
+- `weight`：排序权重
+- `links`：链接按钮列表（最多 4 个，含 `label` / `url`）
+
 ### 2. 模板适配
 
 | 文件 | 修改内容 |
 |------|----------|
 | `layouts/resources/list.html` | 封面图路径解析：优先检查 bundle 内资源，兼容 CMS 上传的相对文件名 |
+| `layouts/resources/list.html` | 贡献者卡片改为读取 `content/contributors/` 下的页面（旧的内联 `contributors` 写法仍兼容） |
 | `layouts/shortcodes/download-table.html` | 下载按钮支持 bundle 内附件文件名（除了 http/https URL） |
+
+### 3. 贡献者卡片的数据来源
+
+卡片从 `content/resources/_index.md` 的 front matter 里**挪了出来**，改为独立目录：
+
+```
+content/contributors/
+├── _index.md      # 目录索引，cascade 里的 build.render/list: never（不对外出页面）
+└── duangx4.md     # 一张卡片 = 一个文件，文件名必须是 GitHub 登录名
+```
+
+头像不放在 `content/` 下，而是由 CMS 上传到 `assets/img/contributors/`，front matter 里记
+`/img/contributors/<文件名>`。原因：`content/contributors/` 是 **branch bundle**（目录里有
+`_index.md`），卡片自身取不到 bundle 内资源，`.Resources.GetMatch` 永远不命中；放进
+`assets/` 就能用 `resources.Get` 拿到并裁成 256×256。已用一张真实上传图验证过。
+
+这样做的原因：所有贡献者挤在 `_index.md` 一个文件里，多人同时改必然 PR 冲突；
+拆开后每人只碰自己的文件，**PR 之间零冲突**，归属校验也能精确到「这个人只能改自己那张卡」。
+
+排序按 `weight`（越小越靠前），同权重时按文件名。
 
 ### 3. CI/CD 流水线
 
@@ -179,6 +209,24 @@ rsync -rlptz --delete --exclude='mc/' \
 4. 发布后会创建 PR
 5. 站主在 GitHub 审核合并，CI 自动部署上线
 
+### 贡献者编辑自己的个人卡片
+
+资源页顶部那张名片，贡献者可以自己维护：
+
+1. 后台左侧选「我的贡献者卡片」
+2. **第一次用要先新建**，文件名填自己的 GitHub 登录名（如 `duangx4`），
+   `GitHub 登录名` 字段也填同一个值——两处必须一致，CI 会校验
+3. 填显示名、头像、简介、标签、链接按钮，点「发布」
+4. 站主合并 PR 后上线
+
+> 已经建过卡片的，直接点开改就行，不要再新建（会和现有文件撞名）。
+
+### 站主管理贡献者卡片
+
+- 卡片文件在 `content/contributors/<GitHub 登录名>.md`，也可以在本地直接编辑
+- 想删除某张卡片：**后台删不了**（`delete: false`），本地删文件后提交
+- 想调整顺序：改各自的 `weight`，越小越靠前
+
 ### 正文短代码
 
 后台编辑器工具栏「+」里有两个组件：
@@ -230,6 +278,25 @@ layouts/
 ### Q: 贡献者发布报错「归属校验失败」？
 
 `authors` 字段必须填贡献者自己的 **GitHub 登录名**（不是昵称），且 PR 必须由该账号发起。
+
+编辑贡献者卡片时报错，则是这两处有一处不对：
+
+1. 文件名不是自己的登录名（`content/contributors/<你的用户名>.md`）
+2. `GitHub 登录名` 字段（front matter 里的 `github`）和登录名对不上
+
+另外，贡献者只能改**自己的**那张卡片，改别人的会被拒绝。
+
+### Q: 贡献者卡片改完不显示？
+
+先确认 PR 已合并（`editorial_workflow` 下「发布」只是开 PR）。合并后如果还没显示，
+检查 `content/contributors/_index.md` 是否被误改——那个文件的 `cascade: build` 是让 Hugo
+把它当数据目录、不出页面的，改坏了整个贡献者区都会消失（注意 Hugo 0.145 起键名是
+`build`，旧的 `_build` 已失效）。
+
+### Q: 资源页顶部的贡献者卡片不显示了？
+
+新方案依赖 `content/contributors/` 目录。如果这个目录不存在或为空，模板会**回退**去读
+`content/resources/_index.md` 的 `contributors` 字段（旧写法）。两者都在就不会有问题。
 
 ### Q: CI 构建失败？
 

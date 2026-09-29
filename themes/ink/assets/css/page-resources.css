@@ -117,6 +117,11 @@
   padding: 22px 24px;
 }
 
+/* 多人时卡片之间留出间距（首张不加） */
+.contributor-card + .contributor-card {
+  margin-top: 14px;
+}
+
 .contributor-avatar {
   width: 88px;
   height: 88px;
