@@ -9,7 +9,7 @@
 <title>{{ $title }}</title>
 
 {{- with .Description }}<meta name="description" content="{{ . }}">{{ end }}
-{{- with .Site.Params.Author }}<meta name="author" content="{{ . }}">{{ end }}
+{{- with .Site.Params.author.name }}<meta name="author" content="{{ . }}">{{ end }}
 
 {{- /* Open Graph */ -}}
 <meta property="og:title" content="{{ $title }}">
