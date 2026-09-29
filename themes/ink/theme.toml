@@ -1,0 +1,12 @@
+name        = "Ink"
+license     = "MIT"
+licenselink = "https://opensource.org/licenses/MIT"
+description = "墨与器 — 拓片美学的极简中文博客主题"
+homepage    = "https://github.com/yandangjun/blog-ydj001"
+tags        = ["blog", "minimal", "chinese", "dark"]
+features    = ["blog", "syntax highlighting", "search"]
+min_version = "0.120.0"
+
+[author]
+  name     = "yandangjun"
+  homepage = "https://yandangjun.com"

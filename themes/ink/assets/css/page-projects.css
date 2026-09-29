@@ -1,0 +1,183 @@
+/* ==========================================================
+   page-projects.css — Projects 专用：卡片墙 + journey 时间轴
+   ========================================================== */
+
+/* 项目卡片墙 */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.project-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--t-fast), transform var(--t-fast);
+}
+
+.project-card:hover {
+  border-color: var(--stone-blue);
+  transform: translateY(-2px);
+}
+
+.project-card-cover {
+  height: 160px;
+  overflow: hidden;
+  background: var(--paper-3);
+  flex: 0 0 auto;
+}
+
+.project-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  margin: 0;
+  transition: transform .5s ease;
+}
+
+.project-card:hover .project-card-cover img { transform: scale(1.04); }
+
+.project-card-body {
+  padding: 18px 20px 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink-2);
+  margin: 0 0 8px;
+  letter-spacing: .02em;
+  line-height: 1.4;
+}
+
+.project-card-desc {
+  font-size: 13.5px;
+  color: var(--ink-4);
+  line-height: 1.8;
+  flex: 1;
+  margin: 0 0 14px;
+}
+
+.project-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-card-tag {
+  font-size: 11px;
+  padding: 2px 9px;
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--ink-meta);
+  letter-spacing: .04em;
+}
+
+.project-card-link {
+  display: inline-block;
+  margin-top: auto;
+  padding-top: 12px;
+  font-size: 12.5px;
+  color: var(--stone-blue);
+  letter-spacing: .04em;
+}
+
+/* Journey 时间轴 */
+.journey {
+  position: relative;
+  padding-left: 34px;
+  margin-top: 24px;
+}
+
+.journey::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent 0%, var(--line) 5%,
+    var(--line) 95%, transparent 100%);
+}
+
+.journey-item {
+  position: relative;
+  padding: 0 0 36px;
+}
+
+/* 路点 */
+.journey-item::before {
+  content: "";
+  position: absolute;
+  left: -34px;
+  top: 7px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1.4px solid var(--cinnabar);
+}
+
+.journey-period,
+.journey-date {
+  font-size: 11px;
+  letter-spacing: .18em;
+  color: var(--ink-meta);
+  margin-bottom: 6px;
+}
+
+.journey-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-2);
+  margin: 0 0 6px;
+}
+
+.journey-desc {
+  font-size: 14px;
+  color: var(--ink-4);
+  line-height: 1.8;
+  max-width: 60ch;
+}
+
+/* KV 信息行（键值对展示） */
+.kv-row {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 13.5px;
+  color: var(--ink-4);
+}
+
+.kv-k {
+  color: var(--ink-meta);
+  letter-spacing: .1em;
+  font-size: 11px;
+  text-transform: uppercase;
+  flex: 0 0 auto;
+}
+
+.kv-v {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card, .project-card-cover img { transition: none; }
+}
+
+@media (max-width: 640px) {
+  .projects-grid { grid-template-columns: 1fr; }
+}

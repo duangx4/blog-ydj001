@@ -1,0 +1,72 @@
+/* ==========================================================
+   taxonomy.css — tag/category 索引 + term 详情页
+   ========================================================== */
+
+/* 标签云容器 */
+.taxonomy-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 12px;
+}
+
+/* 单个标签 pill */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper-2);
+  font-size: 13.5px;
+  color: var(--ink-3);
+  text-decoration: none;
+  letter-spacing: .04em;
+  transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast);
+}
+
+.pill:hover {
+  border-color: var(--stone-blue);
+  color: var(--stone-blue);
+  background: var(--paper-3);
+}
+
+.pill-count {
+  font-size: 11px;
+  color: var(--ink-meta);
+  font-family: "JetBrains Mono", Consolas, monospace;
+  letter-spacing: 0;
+}
+
+/* term 页标题区 */
+.term-header {
+  margin-bottom: 52px;
+}
+
+.term-name {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--ink-1);
+  margin: 0 0 .5em;
+  letter-spacing: .04em;
+}
+
+.term-count {
+  font-size: 13px;
+  color: var(--ink-meta);
+  letter-spacing: .12em;
+}
+
+/* 大字母分组（按首字母归档） */
+.tax-group { margin-bottom: 52px; }
+
+.tax-group-letter {
+  font-size: 12px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-meta);
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}

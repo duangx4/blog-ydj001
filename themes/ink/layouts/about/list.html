@@ -1,0 +1,79 @@
+{{ define "main" }}
+
+{{/* ============ Hero ============ */}}
+<section class="about-hero">
+  {{ with .Params.hero }}
+    {{ with $.Site.Params.Author.image }}
+      {{ $img := resources.Get . }}
+      {{ if $img }}
+        <img
+          class="about-avatar nozoom"
+          width="128" height="128"
+          alt="{{ $.Site.Params.Author.name | default `Author` }}"
+          src="{{ $img.RelPermalink }}"
+          loading="lazy" decoding="async">
+      {{ end }}
+    {{ end }}
+    <h1>{{ $.Site.Params.Author.name | default $.Site.Title }}</h1>
+    {{ with .taglines }}
+      <div class="about-taglines">
+        {{ range . }}<span class="chip">{{ . }}</span>{{ end }}
+      </div>
+    {{ end }}
+    {{ if $.Site.Params.Author.links }}
+      <div class="author-links" style="justify-content:center">
+        {{ partialCached "author-links.html" . }}
+      </div>
+    {{ end }}
+    {{ with .intro }}
+      <p class="about-intro">{{ . }}</p>
+    {{ end }}
+  {{ end }}
+</section>
+
+{{/* ============ 技能栈 ============ */}}
+{{ with .Params.skills }}
+<section class="about-section">
+  <h2 class="section-label">技能栈</h2>
+  <div class="skill-grid">
+    {{ range . }}
+      <div class="skill-card">
+        <div class="skill-card-head">
+          <span class="skill-card-icon">{{ .icon }}</span>
+          <h3>{{ .title }}</h3>
+        </div>
+        <p class="skill-desc">{{ .desc }}</p>
+        {{ with .works }}
+          <ul class="skill-works">
+            {{ range . }}<li>{{ . }}</li>{{ end }}
+          </ul>
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{/* ============ 发展规划 ============ */}}
+{{ with .Params.plans }}
+<section class="about-section">
+  <h2 class="section-label">发展规划</h2>
+  <div class="plan-grid">
+    {{ range . }}
+      <div class="plan-card">
+        <div class="plan-card-title">{{ .title }}</div>
+        <p>{{ .text }}</p>
+      </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{/* ============ Markdown 正文 ============ */}}
+{{ if .Content }}
+<section class="about-section prose">
+  {{ .Content }}
+</section>
+{{ end }}
+
+{{ end }}

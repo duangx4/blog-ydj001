@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang | default "zh-cn" }}" data-theme="dark">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  <div id="reading-progress" aria-hidden="true"></div>
+  {{ partial "nav.html" . }}
+  <main id="main-content">
+    {{ block "main" . }}{{ end }}
+  </main>
+  {{ partial "footer.html" . }}
+  {{- $js := resources.Get "js/theme-toggle.js" | minify -}}
+  <script src="{{ $js.RelPermalink }}" defer></script>
+</body>
+</html>

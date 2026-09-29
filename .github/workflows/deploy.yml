@@ -1,0 +1,64 @@
+# 推送到 master 后自动构建并发布到 VPS
+# 需要的仓库 Secrets（Settings → Secrets and variables → Actions）：
+#   SSH_PRIVATE_KEY  CI 专用的 ed25519 私钥（不要复用本地密钥）
+#   SSH_KNOWN_HOSTS  ssh-keyscan -p <端口> <主机> 的输出，用于校验服务器指纹
+#   DEPLOY_HOST      38.76.201.242
+#   DEPLOY_USER      root
+#   DEPLOY_PORT      22
+#   DEPLOY_PATH      /var/www/ydj001.xyz
+name: deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.164.0"
+          extended: true
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      # 暂不加 --delete：服务器上可能有仓库外的文件（如 sync-mc.ps1 推送的 mc/），
+      # 确认远端目录内容后再开启，并用 --exclude 保护这些目录。
+      - name: Deploy
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER: ${{ secrets.DEPLOY_USER }}
+          PORT: ${{ secrets.DEPLOY_PORT }}
+          TARGET: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          rsync -rlptz --chown=www-data:www-data \
+            -e "ssh -i ~/.ssh/deploy_key -p ${PORT:-22} -o StrictHostKeyChecking=yes" \
+            public/ "${USER}@${HOST}:${TARGET}/"
+
+      - name: Cleanup
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

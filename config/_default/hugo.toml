@@ -1,5 +1,5 @@
 # -- 站点基础配置 --
-theme = "blowfish"
+theme = "ink"
 baseURL = "https://ydj001.xyz"
 defaultContentLanguage = "zh-cn"
 disableLanguages = []
@@ -31,7 +31,7 @@ enableEmoji = true
   priority = 0.5
 
 [outputs]
-  home = ["HTML", "RSS", "JSON"]
+  home = ["HTML", "RSS"]
 
 [related]
   threshold = 0

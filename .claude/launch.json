@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hugo",
+      "runtimeExecutable": "C:/Users/21972/AppData/Local/Microsoft/WinGet/Packages/Hugo.Hugo.Extended_Microsoft.Winget.Source_8wekyb3d8bbwe/hugo.exe",
+      "runtimeArgs": ["server", "--port", "13131", "--bind", "127.0.0.1"],
+      "port": 13131
+    },
+    {
+      "name": "hugo-attach",
+      "url": "http://localhost:13130",
+      "port": 13130
+    }
+  ]
+}

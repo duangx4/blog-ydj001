@@ -1,0 +1,114 @@
+# Sveltia CMS 配置（资源发布后台，访问 https://ydj001.xyz/admin/）
+# 文档：https://sveltiacms.app/en/docs
+
+backend:
+  name: github
+  repo: duangx4/blog-ydj001
+  branch: master
+  # OAuth 中转（sveltia-cms-auth，部署好后填入并取消注释）。
+  # 未配置前只能用后台登录页的「Sign In with Token」（GitHub PAT）登录。
+  # base_url: https://oauth.ydj001.xyz
+  squash_merges: true
+
+# 保存 = 建分支 cms/resources/<slug> + 开 PR；站主审核合并后才会上线
+publish_mode: editorial_workflow
+
+site_url: https://ydj001.xyz
+display_url: https://ydj001.xyz
+
+# 全局媒体（仅作兜底；资源文章的图片/附件都跟随文章目录）
+media_folder: static/img/uploads
+public_folder: /img/uploads
+
+media_libraries:
+  default:
+    config:
+      # 单文件上限 20 MB；更大的请传网盘，用「网盘卡片」组件
+      max_file_size: 20971520
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  - name: resources
+    label: 资源分享
+    label_singular: 资源
+    description: 每篇资源一个目录（content/resources/<slug>/index.md），图片和附件都放在文章目录里。
+    folder: content/resources
+    path: "{{slug}}/index"
+    media_folder: ""
+    public_folder: ""
+    format: yaml-frontmatter
+    create: true
+    delete: false
+    identifier_field: title
+    slug:
+      editable: [create]
+      hint: 文章目录名，只能用小写字母、数字和连字符，例如 stm32-template。创建后不可修改。
+      pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', '只能用小写字母、数字和连字符']
+    summary: "{{title}} · {{authors}}"
+    sortable_fields: [date, weight, title]
+    fields:
+      - { name: title, label: 标题, widget: string }
+      - name: authors
+        label: 贡献者 GitHub 用户名
+        widget: list
+        hint: 填你自己的 GitHub 用户名（登录名，不是昵称）。合并前会自动校验，只能改署名是自己的文章。
+        min: 1
+        max: 1
+      - { name: date, label: 发布时间, widget: datetime, format: "YYYY-MM-DDTHH:mm:ssZ" }
+      - { name: lastmod, label: 最后更新, widget: datetime, format: "YYYY-MM-DDTHH:mm:ssZ", required: false }
+      - { name: draft, label: 草稿（勾选则不在站点显示）, widget: boolean, default: false }
+      - { name: weight, label: 排序权重（越小越靠前）, widget: number, value_type: int, default: 10 }
+      - { name: description, label: 一句话简介, widget: text, hint: 显示在资源卡片上，说明这是什么、给谁用 }
+      - { name: tags, label: 标签, widget: list, required: false, default: [] }
+      - name: categories
+        label: 分类
+        widget: list
+        default: ["资源分享"]
+      - name: cover
+        label: 封面图
+        widget: image
+        required: false
+        hint: 显示在资源列表卡片上，建议 16:9。
+      - name: attachments
+        label: 附件
+        widget: list
+        required: false
+        hint: 上传后在正文「下载表格」的下载格里填文件名（如 tool-v1.0.zip）即可生成下载按钮。单个文件不超过 20 MB。
+        field: { name: file, label: 文件, widget: file }
+      - { name: showComments, label: 开启评论区, widget: boolean, default: false }
+      - name: body
+        label: 正文
+        widget: markdown
+        hint: >-
+          建议结构：这是什么 / 内容清单 / 下载 / 更新日志 / 使用教程 / 常见问题（可参考「资源页模板示范」）。
+          工具栏「+」里有「下载表格」和「网盘卡片」两个组件。
+        default: |
+          ## 这是什么
+
+          一段话讲清：解决什么问题、适合谁。
+
+          ## 内容清单
+
+          - 文件名 / 版本 / 大小
+
+          ## 下载
+
+          {{< download-table caption="下载说明" >}}
+          文件名.zip | 1.0 MB | 文件名.zip
+          {{< /download-table >}}
+
+          ## 更新日志
+
+          - 首发
+
+          ## 使用教程
+
+          1. 第一步
+
+          ## 常见问题
+
+          **Q：下载链接失效了？**
+          A：在留言板反馈，我会尽快补链。

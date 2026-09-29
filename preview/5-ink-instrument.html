@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>预览 05 · 墨与器 — ydj001.xyz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" rel="stylesheet">
+<style>
+/* ============================================================
+   预览 05 · 墨与器 (Ink & Instrument)
+   ------------------------------------------------------------
+   核心：不画中国元素，只用水墨的「材质法则」
+     1. 墨分五色 —— 焦/浓/重/淡/清 就是全套文字层级
+     2. 留白是一等公民，装饰只用飞白（笔断意连的线）
+     3. 深色模式 = 拓片（黑底白笔），不是宣纸反相
+     4. 颜色只用三味国画颜料：石青 / 石绿 / 朱砂，朱砂仅作印章与警示
+     5. 「科技」不靠发光，靠走线（PCB 与回纹同构）与航迹
+   ============================================================ */
+
+/* --- 宣纸：暖白微糙，颗粒用 SVG 噪声生成（纯 CSS，无外部资源） --- */
+:root, [data-theme="light"] {
+  --paper:      #f4f0e6;
+  --paper-2:    #ece7da;
+  --paper-3:    #e3ddcd;
+
+  /* 墨分五色 */
+  --ink-1:      #14120f;   /* 焦墨 —— 主标题 */
+  --ink-2:      #2b2823;   /* 浓墨 —— 文章标题 / 强调 */
+  --ink-3:      #45413a;   /* 重墨 —— 正文 */
+  --ink-4:      #7d786d;   /* 淡墨 —— 次要信息 */
+  --ink-5:      #b0aa9d;   /* 清墨 —— 细线 / 禁用 */
+
+  --line:       rgba(20, 18, 15, 0.14);
+  --line-soft:  rgba(20, 18, 15, 0.07);
+
+  /* 三味颜料 */
+  --stone-blue: #2f6f92;   /* 石青 —— 主强调 */
+  --stone-green:#5c8360;   /* 石绿 —— 次强调 */
+  --cinnabar:   #a83a2c;   /* 朱砂 —— 仅印章 / 警示 */
+
+  --grain-opacity: 0.5;
+  --grain-blend:   multiply;
+  --code-bg:       rgba(20, 18, 15, 0.045);
+  --shadow:        none;
+}
+[data-theme="dark"] {
+  --paper:      #100f0d;
+  --paper-2:    #171613;
+  --paper-3:    #1f1d19;
+
+  /* 拓片：黑底白笔，墨色关系整体反相 */
+  --ink-1:      #f2ede2;
+  --ink-2:      #ded7c9;
+  --ink-3:      #b6ae9f;
+  --ink-4:      #7d7668;
+  --ink-5:      #423e36;
+
+  --line:       rgba(242, 237, 226, 0.15);
+  --line-soft:  rgba(242, 237, 226, 0.07);
+
+  --stone-blue: #6fb3d4;
+  --stone-green:#8fbf92;
+  --cinnabar:   #d96a58;
+
+  --grain-opacity: 0.42;
+  --grain-blend:   screen;
+  --code-bg:       rgba(242, 237, 226, 0.05);
+  --shadow:        none;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink-3);
+  font-family: "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  font-size: 16px;
+  line-height: 1.9;
+  -webkit-font-smoothing: antialiased;
+  transition: background .45s ease, color .45s ease;
+}
+
+/* 纸纹 / 拓片石面 —— 同一层噪声，两种混合模式 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23g)'/></svg>");
+}
+
+/* ---------- 字体分工：楷（题）/ 黑（文）/ 等宽（数） ---------- */
+h1, h2, h3, h4, .brand, .post-title, .section-head, .seal-char {
+  font-family: "LXGW WenKai", "Noto Serif SC", "Songti SC", serif;
+}
+.mono, time, code, pre, .stat-num, .eyebrow, .tag, .chip, .kv-v { font-family: "JetBrains Mono", Consolas, monospace; }
+
+/* ============================================================
+   飞白：一条两端渐隐、粗细不匀的墨线
+   用 SVG feTurbulence 位移做出「笔锋」的抖动
+   ============================================================ */
+.rule {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--line) 8%,
+    var(--line) 92%,
+    transparent 100%);
+}
+.rule-brush {
+  filter: url(#ink-edge);
+}
+
+/* ============================================================
+   顶栏 —— 无卡片，只有一条飞白压底
+   ============================================================ */
+nav.top {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 68px;
+  padding: 0 34px;
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line-soft);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink-1);
+  text-decoration: none;
+  letter-spacing: .06em;
+}
+/* 印章 —— 全站唯一的朱砂色块 */
+.seal {
+  width: 26px; height: 26px;
+  flex: 0 0 auto;
+  background: var(--cinnabar);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.28);
+}
+nav.top ul {
+  display: flex;
+  gap: 26px;
+  list-style: none;
+  margin: 0; padding: 0;
+  flex: 1;
+}
+nav.top a {
+  font-size: 14px;
+  color: var(--ink-4);
+  text-decoration: none;
+  letter-spacing: .05em;
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+  transition: color .25s, border-color .25s;
+}
+nav.top a:hover { color: var(--ink-2); }
+nav.top a.active { color: var(--ink-1); border-bottom-color: var(--stone-blue); }
+nav.top .caret::after { content: " ⌄"; font-size: 10px; opacity: .45; }
+
+.theme-btn {
+  margin-left: auto;
+  font-family: "LXGW WenKai", serif;
+  font-size: 13px;
+  letter-spacing: .08em;
+  color: var(--ink-4);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 5px 13px;
+  cursor: pointer;
+  transition: color .25s, border-color .25s;
+}
+.theme-btn:hover { color: var(--stone-blue); border-color: var(--stone-blue); }
+
+/* ============================================================
+   容器
+   ============================================================ */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 0 34px 110px;
+}
+section { margin-bottom: 84px; }
+.bleed { max-width: 1180px; margin: 0 auto; padding: 0 34px; }
+
+/* 章节题 —— 楷体 + 飞白尾线 */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink-2);
+  letter-spacing: .14em;
+  margin: 0 0 34px;
+}
+.section-head::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--line) 0%, var(--line) 62%, transparent 100%);
+}
+.eyebrow {
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-5);
+  margin: 0 0 22px;
+}
+
+/* ============================================================
+   Profile —— 左对齐、大量留白、航迹线
+   ============================================================ */
+.profile {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 34px;
+  align-items: start;
+  padding: 74px 0 0;
+}
+
+/* 册页装裱：头像不加圆环，只用一道细墨线与纸白边距 */
+.mount {
+  padding: 7px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+}
+.mount img, .mount .avatar-fallback {
+  width: 148px; height: 148px;
+  display: block;
+  object-fit: cover;
+  border: 1px solid var(--line-soft);
+}
+.avatar-fallback {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-family: "LXGW WenKai", serif;
+  font-size: 54px;
+  color: var(--ink-2);
+  background: var(--paper-3);
+}
+
+.profile h1 {
+  font-size: clamp(32px, 5.6vw, 50px);
+  font-weight: 700;
+  line-height: 1.24;
+  letter-spacing: .04em;
+  color: var(--ink-1);
+  margin: 0 0 14px;
+}
+.headline {
+  font-family: "LXGW WenKai", "Noto Serif SC", serif;
+  font-size: 17px;
+  color: var(--ink-3);
+  letter-spacing: .05em;
+  margin: 0 0 8px;
+}
+.bio { font-size: 13px; color: var(--ink-4); margin: 0; letter-spacing: .03em; }
+
+.pills { display: flex; flex-wrap: wrap; gap: 0 16px; margin: 22px 0 0; }
+.pill {
+  font-family: "LXGW WenKai", serif;
+  font-size: 13.5px;
+  color: var(--ink-4);
+  letter-spacing: .06em;
+  padding-right: 16px;
+  border-right: 1px solid var(--line-soft);
+}
+.pill:last-child { border-right: none; padding-right: 0; }
+
+.socials { display: flex; gap: 20px; margin-top: 26px; }
+.socials a {
+  font-size: 13px;
+  color: var(--ink-4);
+  text-decoration: none;
+  letter-spacing: .08em;
+  border-bottom: 1px solid transparent;
+  transition: color .25s, border-color .25s;
+}
+.socials a:hover { color: var(--stone-blue); border-bottom-color: var(--stone-blue); }
+
+/* --- 航迹 / 山脊线：同一个图形，两种读法 --- */
+.trail {
+  display: block;
+  width: 100%;
+  height: 96px;
+  margin: 40px 0 0;
+  overflow: visible;
+}
+.trail path {
+  fill: none;
+  stroke: var(--ink-5);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.trail path.r2 { stroke: var(--stone-blue); stroke-width: 1.4; opacity: .85; }
+.trail circle { fill: var(--paper); stroke: var(--stone-blue); stroke-width: 1.4; }
+.trail circle.last { fill: var(--cinnabar); stroke: var(--cinnabar); }
+
+/* ============================================================
+   文章列表 —— 不用卡片，用航迹竖线串起路点
+   ============================================================ */
+.posts { position: relative; padding-left: 34px; }
+/* 竖脊线 */
+.posts::before {
+  content: "";
+  position: absolute;
+  left: 5px; top: 12px; bottom: 12px;
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    var(--line) 6%,
+    var(--line) 94%,
+    transparent 100%);
+}
+.post {
+  position: relative;
+  display: block;
+  padding: 26px 0 28px;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid var(--line-soft);
+}
+.post:last-child { border-bottom: none; }
+/* 路点 */
+.post::before {
+  content: "";
+  position: absolute;
+  left: -34px; top: 38px;
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1.4px solid var(--ink-5);
+  transition: border-color .25s, background .25s;
+}
+.post:hover::before { border-color: var(--cinnabar); background: var(--cinnabar); }
+
+.post time {
+  display: block;
+  font-size: 11.5px;
+  letter-spacing: .18em;
+  color: var(--ink-5);
+  margin-bottom: 10px;
+}
+.post-title {
+  display: block;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: .02em;
+  color: var(--ink-2);
+  margin: 0 0 12px;
+  transition: color .25s;
+}
+.post:hover .post-title { color: var(--stone-blue); }
+.post-desc {
+  display: block;
+  font-size: 14.5px;
+  color: var(--ink-4);
+  line-height: 1.85;
+  margin: 0 0 14px;
+  max-width: 64ch;
+}
+.post .tags { display: flex; gap: 16px; flex-wrap: wrap; }
+.tag { font-size: 11.5px; color: var(--ink-5); letter-spacing: .05em; }
+.tag::before { content: "· "; color: var(--stone-green); }
+
+/* ============================================================
+   封面与装裱
+   ============================================================ */
+.mount-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.mount-cell { display: block; text-decoration: none; color: inherit; }
+.mount-cell .frame {
+  padding: 8px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  transition: border-color .3s, transform .3s;
+}
+.mount-cell:hover .frame { border-color: var(--stone-blue); transform: translateY(-3px); }
+.mount-cell .frame > * {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1200 / 630;
+  object-fit: cover;
+  border: 1px solid var(--line-soft);
+}
+.mount-cell h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-2);
+  letter-spacing: .04em;
+  margin: 16px 0 5px;
+}
+.mount-cell p { font-size: 12.5px; color: var(--ink-4); margin: 0; line-height: 1.7; }
+.chip {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: .1em;
+  border: 1px solid;
+  border-radius: 2px;
+  padding: 1px 7px;
+  margin-bottom: 2px;
+}
+.chip-bad { color: var(--cinnabar); border-color: color-mix(in srgb, var(--cinnabar) 45%, transparent); }
+.chip-ok  { color: var(--stone-green); border-color: color-mix(in srgb, var(--stone-green) 45%, transparent); }
+
+/* ============================================================
+   正文
+   ============================================================ */
+.prose { font-size: 17px; line-height: 2; }
+.prose h2 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  color: var(--ink-1);
+  margin: 58px 0 22px;
+  padding-bottom: 14px;
+  background-image: linear-gradient(90deg, var(--ink-5) 0%, var(--ink-5) 55%, transparent 100%);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+}
+.prose h2:first-child { margin-top: 0; }
+.prose h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 11px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink-2);
+  letter-spacing: .04em;
+  margin: 38px 0 14px;
+}
+/* 朱砂点苔 —— 极小的一点，不抢戏 */
+.prose h3::before {
+  content: "";
+  width: 6px; height: 6px;
+  flex: 0 0 auto;
+  background: var(--cinnabar);
+  border-radius: 1px;
+  transform: translateY(-1px);
+}
+.prose p { margin: 0 0 22px; }
+
+.prose blockquote {
+  margin: 32px 0;
+  padding: 2px 0 2px 24px;
+  border-left: 2px solid var(--stone-blue);
+  color: var(--ink-4);
+  font-family: "LXGW WenKai", serif;
+  font-size: 17px;
+  letter-spacing: .04em;
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+
+.prose code {
+  font-size: .86em;
+  background: var(--code-bg);
+  border: 1px solid var(--line-soft);
+  border-radius: 2px;
+  padding: 1px 6px;
+  color: var(--stone-blue);
+}
+.prose pre {
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 20px 22px;
+  overflow-x: auto;
+  margin: 0 0 24px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.prose pre code { background: none; border: none; padding: 0; color: var(--ink-3); }
+.prose pre .c { color: var(--ink-5); }
+.prose pre .k { color: var(--stone-blue); }
+.prose pre .s { color: var(--stone-green); }
+
+.prose ul { padding-left: 22px; margin: 0 0 22px; }
+.prose li { margin-bottom: 10px; }
+.prose li::marker { color: var(--stone-green); }
+
+.prose table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 0 0 26px; }
+.prose th, .prose td {
+  text-align: left;
+  padding: 12px 14px 12px 0;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+.prose th {
+  font-family: "LXGW WenKai", serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-5);
+  border-bottom: 1px solid var(--line);
+}
+.prose tr:last-child td { border-bottom: none; }
+.prose strong { color: var(--ink-1); font-weight: 700; }
+.prose a {
+  color: var(--stone-blue);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--stone-blue) 40%, transparent);
+}
+
+/* ============================================================
+   页脚 + 标注
+   ============================================================ */
+footer.site {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--line-soft);
+  padding: 34px 0;
+  font-size: 12.5px;
+  color: var(--ink-4);
+}
+.footer-inner { display: flex; gap: 22px; flex-wrap: wrap; align-items: center; }
+.footer-inner a { color: var(--ink-4); text-decoration: none; }
+.footer-inner a:hover { color: var(--stone-blue); }
+.footer-inner .mono { font-size: 11.5px; }
+
+.spec {
+  position: relative;
+  z-index: 1;
+  background: var(--paper-2);
+  border-top: 1px solid var(--line-soft);
+  padding: 24px 34px 32px;
+  font-size: 12px;
+  line-height: 2;
+  color: var(--ink-4);
+}
+.spec b { color: var(--stone-blue); font-weight: 600; }
+.swatches { display: inline-flex; gap: 6px; vertical-align: -3px; margin-left: 8px; }
+.sw { width: 13px; height: 13px; display: inline-block; border: 1px solid var(--line); }
+.scale { display: inline-flex; gap: 0; vertical-align: -3px; margin-left: 8px; }
+.scale i { width: 26px; height: 13px; display: inline-block; border: 1px solid var(--line); }
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 900px) {
+  nav.top { flex-wrap: wrap; height: auto; padding: 12px 20px; gap: 10px; }
+  nav.top ul { order: 3; width: 100%; overflow-x: auto; flex-wrap: nowrap; gap: 20px; padding-bottom: 4px; }
+  nav.top ul li { flex: 0 0 auto; }
+  main, .bleed { padding-left: 20px; padding-right: 20px; }
+  .profile { grid-template-columns: 1fr; gap: 26px; padding-top: 48px; }
+  .mount img, .mount .avatar-fallback { width: 118px; height: 118px; }
+  .mount-row { grid-template-columns: 1fr; gap: 26px; }
+  .trail { height: 72px; }
+}
+@media (max-width: 640px) {
+  body { font-size: 15.5px; }
+  .seal { width: 22px; height: 22px; font-size: 8px; }
+  .brand { font-size: 17px; }
+  .post-title { font-size: 20px; }
+  .post { padding: 22px 0 24px; }
+  .post::before { top: 32px; }
+  .prose { font-size: 16px; line-height: 1.95; }
+  .prose h2 { font-size: 21px; }
+  .prose table { font-size: 13px; }
+  .prose th, .prose td { padding: 9px 8px 9px 0; }
+  .pills { gap: 6px 14px; }
+  section { margin-bottom: 60px; }
+  .posts { padding-left: 26px; }
+  .post::before { left: -26px; width: 9px; height: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 皴法：用湍流位移让直线有笔锋 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="ink-edge">
+    <feTurbulence type="fractalNoise" baseFrequency="0.014 0.09" numOctaves="4" seed="11" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<nav class="top">
+  <a class="brand" href="#"><span class="seal">DAX</span> ydj001.xyz</a>
+  <ul>
+    <li><a href="#" class="active">博客</a></li>
+    <li><a href="#" class="caret">自我介绍</a></li>
+    <li><a href="#">资源</a></li>
+    <li><a href="#">留言板</a></li>
+    <li><a href="#">标签</a></li>
+    <li><a href="#">分类</a></li>
+    <li><a href="#" class="caret">个人控制台</a></li>
+  </ul>
+  <button class="theme-btn" id="themeBtn">明 / 暗</button>
+</nav>
+
+<main>
+
+  <!-- ============ Profile ============ -->
+  <section class="profile" style="padding-bottom:0">
+    <div class="mount">
+      <img id="avatar" src="../assets/img/avatar.jpg" alt="实力人老大 · DAX">
+      <div class="avatar-fallback" id="avatarFallback">实</div>
+    </div>
+    <div>
+      <h1>实力人老大 · DAX</h1>
+      <p class="headline">电气工程 · 嵌入式 · 折腾爱好者</p>
+      <p class="bio">电气工程 / 无人机飞手 / 业余运维 / 从 MC 模组服到 Docker 集群</p>
+      <div class="pills">
+        <span class="pill">电气工程</span>
+        <span class="pill">CAAC 超视距无人机机长</span>
+        <span class="pill">业余运维玩家</span>
+      </div>
+      <div class="socials">
+        <a href="#">GitHub</a><a href="#">微信</a><a href="#">QQ</a><a href="#">邮箱</a><a href="#">RSS</a>
+      </div>
+    </div>
+
+    <!-- 航迹 = 山脊：同一条线 -->
+    <svg class="trail" viewBox="0 0 900 96" preserveAspectRatio="none" style="grid-column:1/-1" aria-hidden="true">
+      <path d="M0,70 L96,70 L96,44 L188,44 L188,62 L268,62" class="r2"/>
+      <path d="M268,62 C320,62 330,20 392,20 S470,58 540,50 S640,16 706,30  S820,58 900,52" class="r2"/>
+      <path d="M0,84 L120,84 L120,74 L240,74" />
+      <path d="M560,80 C620,80 660,68 720,72 S840,84 900,80" />
+      <circle cx="96" cy="44" r="3.4"/>
+      <circle cx="268" cy="62" r="3.4"/>
+      <circle cx="540" cy="50" r="3.4"/>
+      <circle cx="706" cy="30" r="3.4"/>
+      <circle cx="900" cy="52" r="3.4" class="last"/>
+    </svg>
+  </section>
+
+  <!-- ============ 文章列表 ============ -->
+  <section>
+    <h2 class="section-head">最近更新</h2>
+    <div class="posts">
+
+      <a class="post" href="#">
+        <time>2026 · 08 · 18</time>
+        <span class="post-title">我的 DAX 算某种程度上的 AGI 吗？（下篇 · 差距在哪）</span>
+        <span class="post-desc">DAX 很强，但它算 AGI 吗？结论是不算——用通用智能的三个硬门槛来量一量。</span>
+        <span class="tags"><span class="tag">DAX</span><span class="tag">AI Agent</span><span class="tag">AGI</span></span>
+      </a>
+
+      <a class="post" href="#">
+        <time>2026 · 08 · 12</time>
+        <span class="post-title">MC 服务器大迁移：从 NAT 机到 VM 的 72 小时</span>
+        <span class="post-desc">把跑在山东枣庄 NAT 机上的 MC 模组服整体迁到 VMware 虚拟机，顺带重建面板、机器人和监控体系。</span>
+        <span class="tags"><span class="tag">运维</span><span class="tag">MC</span><span class="tag">FRP</span></span>
+      </a>
+
+      <a class="post" href="#">
+        <time>2026 · 07 · 27</time>
+        <span class="post-title">一次优班答辩 PPT 引发的「技术路线战争」</span>
+        <span class="post-desc">从 python-pptx 到多模态横评再到模板克隆——一个工科生的 PPT 折腾纪实。</span>
+        <span class="tags"><span class="tag">ppt</span><span class="tag">AI</span><span class="tag">自动化</span></span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ 封面与装裱 ============ -->
+  <section>
+    <h2 class="section-head">封面与装裱</h2>
+    <p style="font-size:15px;color:var(--ink-4);margin:0 0 30px;max-width:66ch">
+      这一版对封面最依赖，也最需要克制：纸底配全彩照片会打架，所以照片一律走「册页」——
+      细墨线加一圈纸白边距。上面列表刻意不放封面，就是为了让文字撑住版面。
+    </p>
+    <div class="mount-row">
+
+      <div class="mount-cell">
+        <div class="frame"><img src="../static/img/featured.svg" alt="默认封面"></div>
+        <span class="chip chip-bad">现状 ×9</span>
+        <h4>回落默认封面</h4>
+        <p>所有无封面文章共用同一张图</p>
+      </div>
+
+      <div class="mount-cell">
+        <div class="frame"><img src="../static/img/covers/blog-evolution.png" alt="专属封面"></div>
+        <span class="chip chip-ok">现状 ×1</span>
+        <h4>已有专属封面</h4>
+        <p>《博客进化论》——装裱后立刻成立</p>
+      </div>
+
+      <div class="mount-cell">
+        <div class="frame" style="display:flex;align-items:center;justify-content:center;background:var(--paper-3)">
+          <span style="font-family:'LXGW WenKai',serif;color:var(--ink-3);font-size:17px;letter-spacing:.3em;text-align:center">淡墨山水<br><span style="font-size:12px;color:var(--ink-5);letter-spacing:.16em">＋ 航迹线</span></span>
+        </div>
+        <span class="chip chip-ok">改造后 ×10</span>
+        <h4>单色墨稿 + 一色点睛</h4>
+        <p>纸底、淡墨皴笔、一处石青或朱砂</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 正文节选 ============ -->
+  <section>
+    <h2 class="section-head">正文节选</h2>
+    <article class="prose">
+
+      <blockquote>
+        <p>系列上篇：《我的 DAX：一个学生自建的个人 Agent 系统（What / Why / How）》</p>
+      </blockquote>
+
+      <h2>结论先行</h2>
+      <p><strong>不算。</strong>DAX 是一个相当强的通用任务 Agent（GPA，General Purpose Agent），但<strong>不是</strong> AGI（通用人工智能）。这两个名字只差一个词，本质差一层。</p>
+
+      <h3>① 跨域泛化：只强在「语言 + 已学工具」</h3>
+      <ul>
+        <li><strong>AGI</strong> 遇到全新领域，能「边学边做」，把别的领域的经验迁移过来。</li>
+        <li><strong>DAX</strong> 只在「语言理解」和「它训练过/见过的工具调用」里强。换到一个完全没见过的领域，它<strong>没有自我学习的机制</strong>——参数是训练时定死的。</li>
+      </ul>
+      <p>它很博学，但那是<strong>别人（训练时）教出来的</strong>，不是它自己摸索出来的。</p>
+
+      <h2>方案选型</h2>
+      <table>
+        <thead>
+          <tr><th>方案</th><th>选不选</th><th>理由</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Halo / WordPress</td><td>❌</td><td>2G 内存跑动态站浪费，还要操心数据库、更新、安全</td></tr>
+          <tr><td>Hexo</td><td>❌</td><td>依赖 Node.js，不想多装一套生态</td></tr>
+          <tr><td><strong>Hugo</strong></td><td><strong>✅</strong></td><td>一个二进制，构建 100ms，纯静态 = 零维护</td></tr>
+        </tbody>
+      </table>
+
+      <p>部署走 <code>ed25519</code> 密钥，不再用 sshpass 明文密码：</p>
+      <pre><code><span class="c"># 生成部署密钥</span>
+<span class="k">ssh-keygen</span> -t ed25519 -C <span class="s">'blog-deploy'</span>
+
+<span class="c"># 公钥扔到 1 号机的 authorized_keys</span>
+<span class="k">cat</span> ~/.ssh/id_ed25519.pub | <span class="k">ssh</span> blog@hk <span class="s">'cat >> ~/.ssh/authorized_keys'</span></code></pre>
+
+      <p>完整的方案对比和选型理由在 <a href="#">《从零搭个人博客》</a>里。</p>
+
+    </article>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="bleed footer-inner">
+    <span>© 2026 ydj001.xyz</span>
+    <a href="#">标签</a>
+    <a href="#">分类</a>
+    <a href="#">RSS</a>
+    <span class="mono" style="margin-left:auto">Hugo · Blowfish</span>
+  </div>
+</footer>
+
+<div class="spec">
+  <div class="bleed">
+    <div><b>风格 05 · 墨与器（Ink &amp; Instrument）</b></div>
+    <div>颜料 <b>石青 #2f6f92</b> · <b>石绿 #5c8360</b> · <b>朱砂 #a83a2c</b>（仅印章与警示）
+      <span class="swatches"><span class="sw" style="background:#2f6f92"></span><span class="sw" style="background:#5c8360"></span><span class="sw" style="background:#a83a2c"></span><span class="sw" style="background:#f4f0e6"></span><span class="sw" style="background:#100f0d"></span></span>
+    </div>
+    <div>墨分五色（= 全部文字层级）焦 <b>#14120f</b> · 浓 <b>#2b2823</b> · 重 <b>#45413a</b> · 淡 <b>#7d786d</b> · 清 <b>#b0aa9d</b>
+      <span class="scale"><i style="background:#14120f"></i><i style="background:#2b2823"></i><i style="background:#45413a"></i><i style="background:#7d786d"></i><i style="background:#b0aa9d"></i></span>
+    </div>
+    <div>字体 题 <b>LXGW WenKai</b> · 文 <b>Noto Sans SC</b> · 数 <b>JetBrains Mono</b></div>
+    <div>手法 飞白分隔线（SVG <b>feTurbulence</b> 位移）· 航迹／山脊同构 · 册页装裱 · 纸纹噪声 · 明=宣纸 / 暗=拓片</div>
+    <div>代价 <b>高</b> —— 概念最完整，但对照片、封面、留白的控制要求最高；做半吊子会滑向「国潮」而不是水墨</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+  var saved = null;
+  try { saved = localStorage.getItem('preview-theme'); } catch (e) {}
+  if (saved === 'light' || saved === 'dark') {
+    root.setAttribute('data-theme', saved);
+  } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    root.setAttribute('data-theme', 'light');
+  }
+  btn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('preview-theme', next); } catch (e) {}
+  });
+  var img = document.getElementById('avatar');
+  img.addEventListener('error', function () {
+    img.style.display = 'none';
+    document.getElementById('avatarFallback').style.display = 'flex';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{{- /* 网盘链接卡片短代码
+     用法：{{< pan-link name="资源名" url="https://pan.baidu.com/s/xxxx" code="abcd" size="1.2 GB" note="建议用客户端下载" >}}
+     参数：name(必填) / url(必填) / code(提取码) / size(大小) / note(备注) */ -}}
+{{- $name := .Get "name" -}}
+{{- $url  := .Get "url" -}}
+{{- $code := .Get "code" -}}
+{{- $size := .Get "size" -}}
+{{- $note := .Get "note" -}}
+<div class="pan-link-wrap">
+  <div class="pan-link">
+    <span class="pan-link-icon">📦</span>
+    <div class="pan-link-body">
+      <div class="pan-link-name">
+        {{ with $name }}{{ . }}{{ else }}网盘资源{{ end }}
+        {{ with $size }}<span class="pan-link-size">{{ . }}</span>{{ end }}
+      </div>
+      {{ with $note }}<div class="pan-link-meta">{{ . }}</div>{{ end }}
+    </div>
+    {{ with $url }}
+      <a href="{{ . }}" target="_blank" rel="noopener noreferrer" class="mc-btn mc-btn-primary">打开网盘 →</a>
+    {{ end }}
+  </div>
+  {{ with $code }}
+    <div class="pan-link-code">
+      提取码：<code class="pan-link-pwd">{{ . }}</code>
+      <span class="pan-link-hint">（点击选中复制）</span>
+    </div>
+  {{ end }}
+</div>

@@ -1,0 +1,22 @@
+{{ define "main" }}
+<header class="term-header">
+  <p class="eyebrow">标签</p>
+  <h1 class="term-name">{{ .Title }}</h1>
+  <p class="term-count">共 {{ len .Pages }} 篇</p>
+</header>
+
+<div class="posts">
+  {{- range .Paginator.Pages -}}
+  <a class="post" href="{{ .Permalink }}">
+    <time datetime="{{ .Date.Format "2006-01-02" }}">
+      {{- .Date.Format "2006 · 01 · 02" -}}
+    </time>
+    <span class="post-title">{{ .Title }}</span>
+    {{- with .Description -}}
+    <span class="post-desc">{{ . }}</span>
+    {{- end -}}
+  </a>
+  {{- end -}}
+</div>
+{{ partial "pagination.html" . }}
+{{ end }}

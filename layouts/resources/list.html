@@ -1,0 +1,99 @@
+{{ define "main" }}
+
+<header style="text-align:center;padding:1.5rem 0 2.5rem">
+  <h1>{{ .Title | emojify }}</h1>
+  {{ with .Params.description }}
+    <p style="font-size:15.5px;color:var(--ink-4);max-width:60ch;margin:.5em auto 0">{{ . }}</p>
+  {{ end }}
+</header>
+
+{{/* ============ 资源贡献者 ============ */}}
+{{ with .Params.contributors }}
+<section style="margin-bottom:2.5rem">
+  <h2 class="resource-category">资源贡献者</h2>
+  {{ range . }}
+    {{ $c := . }}
+    <div class="contributor-card">
+      {{ with $c.avatar }}
+        {{ $img := resources.Get . }}
+        {{ if $img }}
+          {{ if not (or $.Site.Params.disableImageOptimization (eq $img.MediaType.SubType "svg")) }}
+            {{ $img = $img.Fill "256x256 q92" }}
+          {{ end }}
+          <img class="contributor-avatar nozoom"
+               src="{{ $img.RelPermalink }}"
+               alt="{{ $c.name }}"
+               width="88" height="88" loading="lazy" decoding="async">
+        {{ end }}
+      {{ end }}
+      <div class="contributor-body">
+        <div class="contributor-head">
+          <h3 class="contributor-name">{{ $c.name }}</h3>
+          <span class="contributor-role">资源贡献者</span>
+        </div>
+        {{ with $c.intro }}
+          <p class="contributor-intro">{{ . }}</p>
+        {{ end }}
+        {{ with $c.tags }}
+          <div class="contributor-tags">
+            {{ range . }}<span class="resource-tag">{{ . }}</span>{{ end }}
+          </div>
+        {{ end }}
+        {{ with $c.links }}
+          <div class="contributor-actions">
+            {{ range . }}
+              <a href="{{ .url | default "#" }}" class="mc-btn mc-btn-ghost">{{ .label | default "占位" }}</a>
+            {{ end }}
+          </div>
+        {{ end }}
+      </div>
+    </div>
+  {{ end }}
+</section>
+{{ end }}
+
+{{/* ============ 资源卡片墙 ============ */}}
+{{ $resources := .Pages.ByWeight }}
+{{ if $resources }}
+<section class="resources-grid">
+  {{ range $resources }}
+    <a href="{{ .RelPermalink }}" class="resource-card">
+      {{ $p := . }}
+      {{ with .Params.cover }}
+        {{/* CMS 上传的封面存为 bundle 内相对文件名，优先按页面资源解析 */}}
+        {{ $src := . | relURL }}
+        {{ with $p.Resources.GetMatch . }}{{ $src = .RelPermalink }}{{ end }}
+        <div class="resource-cover-wrap">
+          <img src="{{ $src }}" alt="{{ $p.Title }}" loading="lazy" decoding="async">
+        </div>
+      {{ else }}
+        <div class="resource-cover-wrap" style="display:flex;align-items:center;justify-content:center;font-size:1.75rem;color:var(--ink-5)" aria-hidden="true">
+          📦
+        </div>
+      {{ end }}
+      <div class="resource-card-body">
+        <h2 class="resource-card-title">{{ .Title }}</h2>
+        {{ with .Params.description }}
+          <p class="resource-card-desc">{{ . }}</p>
+        {{ end }}
+        {{ with .Params.tags }}
+          <div class="resource-card-meta">
+            {{ range . }}<span class="resource-tag">{{ . }}</span>{{ end }}
+          </div>
+        {{ end }}
+        <span class="resource-card-link">查看详情</span>
+      </div>
+    </a>
+  {{ end }}
+</section>
+{{ else }}
+<p style="text-align:center;color:var(--ink-4);padding:4rem 0">资源正在整理中…</p>
+{{ end }}
+
+{{ if .Content }}
+<section class="prose" style="padding-bottom:3rem">
+  {{ .Content }}
+</section>
+{{ end }}
+
+{{ end }}

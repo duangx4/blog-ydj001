@@ -1,0 +1,21 @@
+{{ define "main" }}
+<div class="posts">
+  {{- range .Paginator.Pages -}}
+  <a class="post" href="{{ .Permalink }}">
+    <time datetime="{{ .Date.Format "2006-01-02" }}">
+      {{- .Date.Format "2006 · 01 · 02" -}}
+    </time>
+    <span class="post-title">{{ .Title }}</span>
+    {{- with .Description -}}
+    <span class="post-desc">{{ . }}</span>
+    {{- end -}}
+    {{- with .Params.tags -}}
+    <span class="tags">
+      {{- range . -}}<span class="tag">{{ . }}</span>{{- end -}}
+    </span>
+    {{- end -}}
+  </a>
+  {{- end -}}
+</div>
+{{ partial "pagination.html" . }}
+{{ end }}

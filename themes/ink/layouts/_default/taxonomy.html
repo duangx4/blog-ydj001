@@ -1,0 +1,17 @@
+{{ define "main" }}
+<header style="margin-bottom:52px">
+  <p class="eyebrow">{{ .Type | upper }}</p>
+  <h1 style="font-size:32px;font-weight:700;color:var(--ink-1);margin:0 0 .4em;letter-spacing:.04em">
+    {{ .Title }}
+  </h1>
+</header>
+
+<div class="taxonomy-list">
+  {{- range .Data.Terms.Alphabetical -}}
+  <a class="pill" href="{{ .Page.Permalink }}">
+    {{ .Page.Title }}
+    <span class="pill-count">{{ .Count }}</span>
+  </a>
+  {{- end -}}
+</div>
+{{ end }}

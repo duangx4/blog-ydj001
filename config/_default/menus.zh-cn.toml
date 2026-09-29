@@ -30,6 +30,11 @@
   weight = 30
 
 [[main]]
+  name = "资源"
+  pageRef = "resources"
+  weight = 25
+
+[[main]]
   name = "留言板"
   pageRef = "message"
   weight = 30

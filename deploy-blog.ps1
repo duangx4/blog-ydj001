@@ -90,11 +90,11 @@ ssh -i $SshKey -p $SshPort -o StrictHostKeyChecking=accept-new $Server "chown -R
 if ($LASTEXITCODE -ne 0) { Fail "chown 失败"; exit 1 }
 Ok "权限已修正"
 
-# Git 提交
+# Git 提交（只暂存已跟踪文件，不自动拉入 untracked）
 Step "Git：提交并推送"
-$hasChanges = [bool] (git status --porcelain)
+$hasChanges = [bool] (git diff --name-only; git diff --cached --name-only)
 if ($hasChanges) {
-    git add -A
+    git add --update
     git commit -m "deploy: $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
     if ($LASTEXITCODE -ne 0) { Fail "git commit 失败"; exit 1 }
 }

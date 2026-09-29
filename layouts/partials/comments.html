@@ -1,0 +1,21 @@
+{{/*
+  Twikoo 评论区
+  连接参数来自 config/_default/params.toml 的 [comments] 段：
+    twikooEnvId — 云函数地址
+    twikooSrc   — Twikoo JS CDN
+  在页面 frontmatter 写 showComments: true 即可启用（site.Params.article.showComments 全局默认关）。
+*/}}
+{{ $envId := .Site.Params.comments.twikooEnvId }}
+{{ $src   := .Site.Params.comments.twikooSrc }}
+{{ if and $envId $src }}
+<div id="tcomment"></div>
+<script src="{{ $src | safeURL }}"></script>
+<script>
+  twikoo.init({
+    envId: {{ $envId }},
+    el: "#tcomment",
+  });
+</script>
+{{ else }}
+  {{ warnf "[blog-ydj001] comments.twikooEnvId 或 twikooSrc 未在 params.toml 配置，评论区不可用。" }}
+{{ end }}

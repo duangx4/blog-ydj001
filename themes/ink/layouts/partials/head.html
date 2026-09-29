@@ -1,0 +1,95 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+{{- $title := .Site.Title -}}
+{{- if not .IsHome -}}
+  {{- $title = printf "%s · %s" .Title .Site.Title -}}
+{{- end }}
+<title>{{ $title }}</title>
+
+{{- with .Description }}<meta name="description" content="{{ . }}">{{ end }}
+{{- with .Site.Params.Author }}<meta name="author" content="{{ . }}">{{ end }}
+
+{{- /* Open Graph */ -}}
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+{{- with .Description }}<meta property="og:description" content="{{ . }}">{{ end }}
+
+{{- /* RSS */ -}}
+{{ range .AlternativeOutputFormats -}}
+  <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink }}" title="{{ $.Site.Title }}">
+{{ end -}}
+
+{{- /* Canonical */ -}}
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{- /* Fonts: 预连接 + 异步加载 */ -}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+{{- /* LXGW WenKai（楷体，题头用） */ -}}
+<link rel="preload" as="style"
+  href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css"
+  onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css"></noscript>
+
+{{- /* Noto Sans SC + JetBrains Mono */ -}}
+<link rel="preload" as="style"
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+  onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"></noscript>
+
+{{- /* CSS bundle */ -}}
+{{- $cssFiles := slice
+  "css/tokens.css"
+  "css/base.css"
+  "css/nav.css"
+  "css/layout.css"
+  "css/posts.css"
+  "css/prose.css"
+  "css/mount.css"
+  "css/footer.css"
+  "css/search.css"
+  "css/taxonomy.css"
+  "css/page-about.css"
+  "css/page-projects.css"
+  "css/page-now.css"
+  "css/page-resources.css"
+  "css/shortcodes.css"
+-}}
+{{- $bundle := slice -}}
+{{- range $cssFiles -}}
+  {{- $r := resources.Get . -}}
+  {{- if $r -}}
+    {{- $bundle = $bundle | append $r -}}
+  {{- end -}}
+{{- end -}}
+{{- $css := $bundle | resources.Concat "css/ink.css" | minify | fingerprint -}}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+
+{{- /* 阅读进度条脚本（最小化内联，避免 FOUC） */ -}}
+<script>
+(function(){
+  document.addEventListener("scroll",function(){
+    var d=document.documentElement,b=document.body;
+    var h=Math.max(d.scrollHeight,b.scrollHeight)-d.clientHeight;
+    var p=h>0?Math.round(d.scrollTop/h*100):0;
+    var bar=document.getElementById("reading-progress");
+    if(bar)bar.style.width=p+"%";
+  },{passive:true});
+})();
+</script>
+
+{{- /* 主题色防闪 FOUC */ -}}
+<script>
+(function(){
+  var s=localStorage.getItem("ink-theme");
+  if(!s)s=window.matchMedia&&window.matchMedia("(prefers-color-scheme:light)").matches?"light":"dark";
+  document.documentElement.dataset.theme=s;
+})();
+</script>

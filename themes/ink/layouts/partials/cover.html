@@ -1,0 +1,20 @@
+{{- /* cover.html — 封面装裱 partial
+     用法：{{ partial "cover.html" (dict "page" . "class" "cover-hero") }}
+*/ -}}
+{{- $page := .page -}}
+{{- $class := .class | default "cover-thumb" -}}
+{{- $img := $page.Resources.GetMatch "featured.*" -}}
+{{- if $img -}}
+  {{- $filled := cond (eq $class "cover-hero") ($img.Fill "940x460 Center") ($img.Fill "560x280 Center") -}}
+  <div class="{{ $class }}">
+    <div class="mount">
+      <div class="frame">
+        <img src="{{ $filled.RelPermalink }}"
+             alt="{{ $page.Title }}"
+             width="{{ $filled.Width }}"
+             height="{{ $filled.Height }}"
+             loading="lazy">
+      </div>
+    </div>
+  </div>
+{{- end -}}

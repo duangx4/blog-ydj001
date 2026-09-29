@@ -1,0 +1,18 @@
+{{/*
+  留言板专用 simple 布局（ink 主题版）
+  覆盖 _default/simple.html，在正文下方直接渲染评论区（不走 showComments 开关）。
+*/}}
+{{ define "main" }}
+<article class="prose">
+  <h1>{{ .Title | emojify }}</h1>
+  {{ .Content }}
+</article>
+
+{{ if templates.Exists "partials/comments.html" }}
+  <div style="margin-top:3rem;padding-top:1.5rem;border-top:1px dashed var(--line)">
+    {{ partial "comments.html" . }}
+  </div>
+{{ else }}
+  {{ warnf "[blog-ydj001] 缺少 partials/comments.html，留言板将没有评论区。" }}
+{{ end }}
+{{ end }}

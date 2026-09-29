@@ -1,0 +1,149 @@
+{{- /* 下载表格短代码（v2 · 自适应列数）
+     用法：
+       {{< download-table caption="下载" >}}
+       Windows (x64) | amd64 | 1.0.3 | 2.1 MB | d41d8cd98f00b204e9800998ecf8427e | https://example.com/a.zip
+       macOS (Apple Silicon) | arm64 | 1.0.3 | 2.3 MB | - | https://example.com/b.dmg
+       Linux | - | 1.0.3 | 2.0 MB | - | https://example.com/c.AppImage
+       {{< /download-table >}}
+
+     列数自适应：3–6 列都支持，按「数据行里最多的单元格数」决定表格宽度。
+       3 列 → 名称 | 大小 | 下载
+       4 列 → 名称 | 版本 | 大小 | 下载
+       5 列 → 平台 | 版本 | 大小 | 校验值 | 下载
+       6 列 → 平台 | 架构 | 版本 | 大小 | 校验值 | 下载
+     表头默认按上表推得，可用参数逐列覆盖（覆盖某一列后列数按数据行走）：
+       col1="平台" col2="架构" col3="版本" col4="大小" col5="校验值" col6="下载"
+     其它参数：
+       caption="表标题"      表格下方说明文字
+       hash="MD5|SHA256|…"   校验值列的表头名（默认 MD5）
+       note="…"              表格上方提示（例如「旧版本仍可下载」）
+
+     数据行规则：
+       - 只写数据，不要写表头行
+       - 用 | 分隔单元格；某格不适用就写 -
+       - 最后一格若形如 URL 会渲染成「下载」按钮；否则按纯文本显示
+       - 校验值类长串（32 位以上十六进制）自动用等宽字换行显示
+       - 行内单元格不足会自动用 — 补齐；超出部分忽略并输出构建警告
+*/ -}}
+
+{{- $raw := trim .Inner "\n\r" -}}
+
+{{- /* ---------- 1. 参数 ---------- */ -}}
+{{- $caption := .Get "caption" -}}
+{{- $note := .Get "note" -}}
+{{- $hashLabel := .Get "hash" | default "MD5" -}}
+
+{{- /* 逐列表头覆盖（col1..col6）；注意 range 里 . 是整数，须用 $ 取短代码上下文 */ -}}
+{{- $overrides := slice -}}
+{{- range $i := seq 6 -}}
+  {{- $overrides = $overrides | append ($.Get (printf "col%d" $i)) -}}
+{{- end -}}
+
+{{- /* ---------- 2. 解析数据行 ----------
+     踩坑：Hugo 的 append 对「切片的切片」会展平一层，
+     直接 `$rows = $rows | append $cells` 会让 $rows 变成一堆字符串，
+     之后 `index $row 0` 取到的是首字符（渲染出 87 105 110 … 这种 ASCII 数字）。
+     解法：每行包一层 dict，dict 不是切片 → 不再被展平。
+*/ -}}
+{{- $rows := slice -}}
+{{- $maxCols := 0 -}}
+{{- range (split $raw "\n") -}}
+  {{- $line := trim . " \t\r" -}}
+  {{- if $line -}}
+    {{- $cells := slice -}}
+    {{- range (split $line "|") -}}
+      {{- $cells = $cells | append (trim . " \t\r") -}}
+    {{- end -}}
+    {{- $n := len $cells -}}
+    {{- if gt $n $maxCols -}}{{- $maxCols = $n -}}{{- end -}}
+    {{- $rows = $rows | append (dict "cells" $cells) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* ---------- 3. 列数收敛到 3–6 ---------- */ -}}
+{{- $cols := $maxCols -}}
+{{- if lt $cols 3 -}}{{- $cols = 3 -}}{{- end -}}
+{{- if gt $cols 6 -}}{{- $cols = 6 -}}{{- end -}}
+{{- if gt $maxCols 6 -}}
+  {{- warnf "download-table: 有数据行写了 %d 列，超出上限 6 列，第 7 列起已忽略。" $maxCols -}}
+{{- end -}}
+
+{{- /* ---------- 4. 表头 ---------- */ -}}
+{{- /* dict 的键必须是字符串，查找时把 $cols 转成字符串 */ -}}
+{{- $defaults := dict
+      "3" (slice "名称" "大小" "下载")
+      "4" (slice "名称" "版本" "大小" "下载")
+      "5" (slice "平台" "版本" "大小" (printf "校验值(%s)" $hashLabel) "下载")
+      "6" (slice "平台" "架构" "版本" "大小" (printf "校验值(%s)" $hashLabel) "下载")
+-}}
+{{- $labels := index $defaults (string $cols) -}}
+{{- /* 未传的 colN 取到的是空字符串（不是 nil），必须显式判空，否则会把空串当表头 */ -}}
+{{- $headers := slice -}}
+{{- range $i, $d := $labels -}}
+  {{- $ov := index $overrides $i -}}
+  {{- if or (eq $ov nil) (eq $ov "") -}}
+    {{- $headers = $headers | append $d -}}
+  {{- else -}}
+    {{- $headers = $headers | append $ov -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* ---------- 5. 渲染 ---------- */ -}}
+{{- if $rows -}}
+{{- with $note -}}
+<p class="dt-note">{{ . }}</p>
+{{- end -}}
+<div class="dt-wrap">
+  <table class="dt-table">
+    <thead>
+      <tr>
+        {{- range $headers }}
+        <th>{{ . }}</th>
+        {{- end }}
+      </tr>
+    </thead>
+    <tbody>
+      {{- $last := sub $cols 1 -}}
+      {{- range $row := $rows }}
+        {{- $cells := $row.cells -}}
+        <tr>
+          {{- range $i := seq $cols }}
+            {{- $idx := sub $i 1 -}}
+            {{- $cell := "" -}}
+            {{- if lt $idx (len $cells) -}}{{- $cell = index $cells $idx -}}{{- end -}}
+            {{- $empty := or (eq $cell "") (eq $cell "-") -}}
+            {{- if eq $idx $last -}}
+              <td>
+                {{- if and (not $empty) (or (hasPrefix $cell "http://") (hasPrefix $cell "https://")) -}}
+                  <a href="{{ $cell }}" target="_blank" rel="noopener noreferrer" class="mc-btn mc-btn-primary" style="font-size:12px;padding:4px 12px;text-decoration:none">下载</a>
+                {{- else if and (not $empty) ($.Page.Resources.GetMatch $cell) -}}
+                  {{- /* 后台上传进文章目录的附件：直接写文件名即可 */ -}}
+                  <a href="{{ ($.Page.Resources.GetMatch $cell).RelPermalink }}" download class="mc-btn mc-btn-primary" style="font-size:12px;padding:4px 12px;text-decoration:none">下载</a>
+                {{- else if $empty -}}
+                  <span class="dt-empty">—</span>
+                {{- else -}}
+                  {{ $cell }}
+                {{- end -}}
+              </td>
+            {{- else if $empty -}}
+              <td><span class="dt-empty">—</span></td>
+            {{- else if findRE `^[0-9a-fA-F]{32,}$` $cell -}}
+              <td class="dt-cell-wrap"><code style="font-size:11.5px;word-break:break-all">{{ $cell }}</code></td>
+            {{- else -}}
+              <td>{{ $cell }}</td>
+            {{- end -}}
+          {{- end }}
+        </tr>
+      {{- end }}
+    </tbody>
+  </table>
+</div>
+{{- with $caption -}}
+<p class="dt-caption">{{ . }}</p>
+{{- end -}}
+{{- else -}}
+<div class="dt-error">
+  下载表格为空：请在 <code>download-table</code> 短代码内逐行填写，单元格用 <code>|</code> 分隔，例如<br>
+  <code>Windows (x64) | amd64 | 1.0.0 | 2.1 MB | 校验值 | https://example.com/a.zip</code>
+</div>
+{{- end -}}

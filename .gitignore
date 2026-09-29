@@ -7,6 +7,7 @@ Thumbs.db
 
 # Hugo
 .hugo_build.lock
+/resources/_gen/
 
 # IDE
 .idea/
@@ -18,3 +19,6 @@ Thumbs.db
 
 # 本地备份
 *.bak-*
+
+# 已废弃主题（站内改用 themes/ink，不再入库）
+/themes/blowfish/

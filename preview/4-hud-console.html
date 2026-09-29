@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>预览 04 · 控制台 HUD — ydj001.xyz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   预览 04 · 控制台 HUD (Instrument Console)
+   —— 呼应菜单里的「个人控制台」：细描边面板 + 状态灯 + 等宽数字
+   ============================================================ */
+
+:root, [data-theme="dark"] {
+  --bg:        #0e1116;
+  --bg-2:      #0a0d12;
+  --panel:     #151a22;
+  --panel-2:   #1a212b;
+  --head:      #12171e;
+  --border:    #232b36;
+  --border-hi: #35404f;
+
+  --text:      #e6ecf4;
+  --text-mid:  #9aa7b8;
+  --text-dim:  #667486;
+
+  --accent:      #f5a623;
+  --accent-fill: #f5a623;
+  --ok:          #3ddc84;
+  --info:        #58a6ff;
+  --err:         #ff5c5c;
+  --track:       rgba(255, 255, 255, 0.07);
+
+  --shadow: 0 12px 30px -16px rgba(0, 0, 0, 0.85);
+}
+[data-theme="light"] {
+  --bg:        #eef1f5;
+  --bg-2:      #e5e9ef;
+  --panel:     #ffffff;
+  --panel-2:   #f7f9fc;
+  --head:      #f4f7fa;
+  --border:    #d5dce5;
+  --border-hi: #b6c1ce;
+
+  --text:      #10161f;
+  --text-mid:  #4c5867;
+  --text-dim:  #7b8798;
+
+  --accent:      #a86400;
+  --accent-fill: #f0a020;
+  --ok:          #158a4c;
+  --info:        #1f6feb;
+  --err:         #c9302c;
+  --track:       rgba(16, 22, 31, 0.09);
+
+  --shadow: 0 10px 26px -18px rgba(16, 34, 64, 0.5);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  font-size: 15.5px;
+  line-height: 1.78;
+  -webkit-font-smoothing: antialiased;
+  transition: background .3s ease, color .3s ease;
+}
+
+/* 只给状态条用的一点仪表感底纹 */
+.mono, time, code, pre, .stat-num, .lbl, .eyebrow, .lede-meta, .ver, .nav-tag { font-family: "JetBrains Mono", Consolas, monospace; }
+
+h1, h2, h3, h4, .post-title, .brand { font-family: "Noto Sans SC", sans-serif; font-weight: 900; }
+
+/* ============================================================
+   顶栏
+   ============================================================ */
+nav.top {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 58px;
+  padding: 0 24px;
+  background: var(--head);
+  border-bottom: 1px solid var(--border);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  letter-spacing: .02em;
+  color: var(--text);
+  text-decoration: none;
+}
+.brand .led { margin: 0; }
+.ver {
+  font-size: 10.5px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 7px;
+  letter-spacing: .06em;
+}
+nav.top ul {
+  display: flex;
+  gap: 2px;
+  list-style: none;
+  margin: 0; padding: 0;
+  flex: 1;
+}
+nav.top a {
+  display: block;
+  position: relative;
+  font-size: 13.5px;
+  color: var(--text-mid);
+  text-decoration: none;
+  padding: 18px 12px;
+  border-bottom: 2px solid transparent;
+  transition: color .18s, border-color .18s;
+}
+nav.top a:hover { color: var(--text); }
+nav.top a.active { color: var(--accent); border-bottom-color: var(--accent); }
+nav.top .caret::after { content: " ⌄"; font-size: 10px; opacity: .5; }
+
+.theme-btn {
+  margin-left: auto;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--text-mid);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 13px;
+  cursor: pointer;
+  transition: color .18s, border-color .18s;
+}
+.theme-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ============================================================
+   容器
+   ============================================================ */
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 22px 24px 80px;
+}
+.lbl {
+  font-size: 10.5px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   状态条（仪表集群）
+   ============================================================ */
+.cluster {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 22px;
+}
+.cell {
+  background: var(--panel);
+  padding: 13px 16px 14px;
+}
+.cell-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+.stat-num { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+.stat-sub { font-size: 11.5px; color: var(--text-dim); }
+
+.bar { height: 5px; background: var(--track); border-radius: 3px; overflow: hidden; margin-top: 10px; }
+.bar > span { display: block; height: 100%; background: var(--accent-fill); border-radius: 3px; }
+.bar.ok > span { background: var(--ok); }
+.bar.info > span { background: var(--info); }
+
+/* 状态灯 */
+.led {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 18%, transparent);
+  flex: 0 0 auto;
+}
+.led.warn { background: var(--accent-fill); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-fill) 18%, transparent); }
+.led.err  { background: var(--err); box-shadow: 0 0 0 3px color-mix(in srgb, var(--err) 18%, transparent); }
+.led.pulse { animation: pulse 2.4s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .35; }
+}
+
+/* ============================================================
+   面板
+   ============================================================ */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  background: var(--head);
+  border-bottom: 1px solid var(--border);
+}
+.panel-head .lbl { color: var(--text-mid); }
+.panel-head .right { margin-left: auto; }
+.panel-body { padding: 16px; }
+
+/* ============================================================
+   个人资料（左对齐，与其它三版居中方案区分）
+   ============================================================ */
+.identity {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 250px;
+  gap: 22px;
+  align-items: center;
+  padding: 20px 22px;
+  margin-bottom: 22px;
+}
+.avatar-wrap { position: relative; }
+.avatar {
+  width: 104px; height: 104px;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid var(--border-hi);
+}
+.avatar-fallback {
+  width: 104px; height: 104px;
+  border-radius: 10px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--accent);
+  border: 1px solid var(--border-hi);
+  background: var(--panel-2);
+}
+.avatar-wrap .led {
+  position: absolute;
+  right: -4px; bottom: -4px;
+  width: 14px; height: 14px;
+  border: 3px solid var(--panel);
+  box-shadow: none;
+}
+.identity h1 {
+  font-size: clamp(24px, 3.2vw, 33px);
+  line-height: 1.25;
+  margin: 0 0 6px;
+  letter-spacing: -.01em;
+}
+.headline { font-size: 14.5px; color: var(--text-mid); margin: 0 0 4px; }
+.bio { font-size: 12.5px; color: var(--text-dim); margin: 0; }
+.pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.pill {
+  font-size: 11.5px;
+  color: var(--text-mid);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 3px 10px;
+}
+.socials { display: flex; flex-wrap: wrap; gap: 6px; }
+.socials a {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 10px;
+  transition: color .18s, border-color .18s;
+}
+.socials a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ============================================================
+   主栅格：左内容 / 右仪表
+   ============================================================ */
+.main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 306px;
+  gap: 22px;
+  align-items: start;
+}
+.col { display: grid; gap: 22px; }
+
+/* ============================================================
+   文章条目
+   ============================================================ */
+.post {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  transition: background .18s;
+}
+.post:last-child { border-bottom: none; }
+.post:hover { background: var(--panel-2); }
+.post .thumb {
+  aspect-ratio: 1200 / 630;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+}
+.post .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 10.5px;
+  color: var(--text-dim);
+  letter-spacing: .05em;
+  margin-bottom: 6px;
+}
+.post-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-hi); }
+.post-title {
+  display: block;
+  font-size: 16.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0 0 6px;
+  transition: color .18s;
+}
+.post:hover .post-title { color: var(--accent); }
+.post-desc { font-size: 13px; color: var(--text-mid); line-height: 1.72; margin: 0 0 9px; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  font-size: 10.5px;
+  color: var(--text-dim);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-family: "JetBrains Mono", Consolas, monospace;
+}
+
+/* ============================================================
+   侧栏：服务矩阵
+   ============================================================ */
+.svc {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.svc-item {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 11px;
+}
+.svc-item .svc-name {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.svc-item .svc-val { font-size: 11px; color: var(--text-dim); }
+
+.kv { display: grid; gap: 9px; }
+.kv-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12.5px;
+}
+.kv-row .k { color: var(--text-mid); }
+.kv-row .v { font-family: "JetBrains Mono", Consolas, monospace; font-size: 12px; color: var(--text); }
+
+.deploy-list { display: grid; gap: 11px; }
+.deploy-item { display: flex; gap: 10px; align-items: baseline; font-size: 12px; }
+.deploy-item time {
+  font-size: 11px;
+  color: var(--text-dim);
+  flex: 0 0 78px;
+}
+.deploy-item span { color: var(--text-mid); line-height: 1.55; }
+
+.cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+.cloud a {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+.cloud a:hover { color: var(--accent); border-color: var(--accent); }
+.cloud a b { color: var(--text-mid); font-weight: 400; margin-left: 5px; }
+
+/* ============================================================
+   封面演示
+   ============================================================ */
+.cover-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.cover-cell { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--panel-2); }
+.cover-cell .thumb { aspect-ratio: 1200/630; overflow: hidden; border-bottom: 1px solid var(--border); }
+.cover-cell .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cover-cell .body { padding: 11px 13px 13px; }
+.cover-cell h4 { font-size: 13.5px; margin: 8px 0 4px; font-weight: 700; }
+.cover-cell p { font-size: 11.5px; color: var(--text-dim); margin: 0; line-height: 1.6; }
+.chip {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: .06em;
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 1px 7px;
+}
+.chip-bad { color: var(--err); border-color: color-mix(in srgb, var(--err) 45%, transparent); }
+.chip-ok  { color: var(--ok);  border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+
+/* ============================================================
+   正文
+   ============================================================ */
+.prose-panel .panel-body { padding: 26px 30px 30px; }
+.prose {
+  counter-reset: h2c;
+  font-size: 16px;
+  line-height: 1.9;
+  max-width: 74ch;
+}
+.prose h2 {
+  counter-increment: h2c;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 38px 0 14px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--border);
+}
+.prose h2:first-child { margin-top: 0; }
+.prose h2::before {
+  content: counter(h2c, decimal-leading-zero);
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: 4px;
+  padding: 2px 7px;
+  flex: 0 0 auto;
+}
+.prose h3 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 30px 0 12px;
+}
+.prose h3::before {
+  content: "";
+  width: 3px;
+  height: 15px;
+  background: var(--accent-fill);
+  border-radius: 2px;
+  flex: 0 0 auto;
+}
+.prose p { margin: 0 0 17px; }
+
+.prose blockquote {
+  margin: 24px 0;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--info);
+  border-radius: 0 6px 6px 0;
+  background: var(--panel-2);
+  color: var(--text-mid);
+  font-size: 13.5px;
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+
+.prose code {
+  font-size: .87em;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--accent);
+}
+.prose pre {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  margin: 0 0 20px;
+  font-size: 12.5px;
+  line-height: 1.75;
+}
+[data-theme="light"] .prose pre { background: #12171f; }
+[data-theme="light"] .prose pre code { color: #dfe8f4; }
+.prose pre code { background: none; border: none; padding: 0; color: var(--text); }
+.prose pre .c { color: var(--text-dim); }
+.prose pre .k { color: var(--accent-fill); }
+.prose pre .s { color: var(--ok); }
+
+.prose ul { padding-left: 20px; margin: 0 0 17px; }
+.prose li { margin-bottom: 8px; }
+.prose li::marker { color: var(--accent); }
+
+.prose table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 0 0 22px; }
+.prose th, .prose td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+.prose th {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 500;
+  background: var(--panel-2);
+}
+.prose tr:last-child td { border-bottom: none; }
+.prose strong { color: var(--text); font-weight: 700; }
+.prose a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); }
+
+.note {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: 0 0 16px;
+  max-width: 78ch;
+}
+
+/* ============================================================
+   页脚 + 标注
+   ============================================================ */
+footer.site {
+  border-top: 1px solid var(--border);
+  background: var(--head);
+  padding: 22px 24px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+.footer-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.footer-inner a { color: var(--text-mid); text-decoration: none; }
+.footer-inner a:hover { color: var(--accent); }
+
+.spec {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  padding: 18px 24px 24px;
+  font-size: 12px;
+  line-height: 1.95;
+  color: var(--text-dim);
+}
+.spec-inner { max-width: 1180px; margin: 0 auto; }
+.spec b { color: var(--accent); font-weight: 600; }
+.swatches { display: inline-flex; gap: 6px; vertical-align: -2px; margin-left: 6px; }
+.sw { width: 13px; height: 13px; display: inline-block; border-radius: 3px; border: 1px solid var(--border); }
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 1080px) {
+  .identity { grid-template-columns: auto minmax(0, 1fr); }
+  .identity .socials { grid-column: 1 / -1; }
+}
+@media (max-width: 980px) {
+  .main-grid { grid-template-columns: 1fr; }
+  .cluster { grid-template-columns: 1fr 1fr; }
+  .cover-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  nav.top { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 8px; }
+  nav.top ul { order: 3; width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+  nav.top ul li { flex: 0 0 auto; }
+  nav.top a { padding: 8px 10px; }
+  .wrap { padding: 16px 16px 60px; }
+  .prose-panel .panel-body { padding: 20px 18px 22px; }
+}
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .cluster { grid-template-columns: 1fr; }
+  .identity { grid-template-columns: 1fr; padding: 16px; }
+  .avatar, .avatar-fallback { width: 84px; height: 84px; }
+  .post { grid-template-columns: 1fr; gap: 11px; }
+  .post .thumb { max-width: 220px; }
+  .svc { grid-template-columns: 1fr; }
+  .prose { font-size: 15.5px; }
+  .prose h2 { font-size: 18px; }
+  .prose table { font-size: 12.5px; }
+  .prose th, .prose td { padding: 7px 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .led.pulse { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <a class="brand" href="#"><span class="led pulse"></span> ydj001.xyz</a>
+  <span class="ver">v2.105</span>
+  <ul>
+    <li><a href="#" class="active">博客</a></li>
+    <li><a href="#" class="caret">自我介绍</a></li>
+    <li><a href="#">资源</a></li>
+    <li><a href="#">留言板</a></li>
+    <li><a href="#">标签</a></li>
+    <li><a href="#">分类</a></li>
+    <li><a href="#" class="caret">个人控制台</a></li>
+  </ul>
+  <button class="theme-btn" id="themeBtn">切换明暗</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- ============ 状态条 ============ -->
+  <div class="cluster">
+    <div class="cell">
+      <div class="cell-top">
+        <span class="lbl">MC 模组服</span>
+        <span class="led pulse"></span>
+      </div>
+      <div class="stat-num">12<span style="font-size:12px;color:var(--text-dim)"> / 20 人</span></div>
+      <div class="stat-sub">在线 · TPS 19.8</div>
+      <div class="bar ok"><span style="width:60%"></span></div>
+    </div>
+    <div class="cell">
+      <div class="cell-top">
+        <span class="lbl">FRP 隧道</span>
+        <span class="led pulse"></span>
+      </div>
+      <div class="stat-num">38<span style="font-size:12px;color:var(--text-dim)"> ms</span></div>
+      <div class="stat-sub">正常 · 丢包 0.0%</div>
+      <div class="bar ok"><span style="width:88%"></span></div>
+    </div>
+    <div class="cell">
+      <div class="cell-top">
+        <span class="lbl">Twikoo</span>
+        <span class="led pulse"></span>
+      </div>
+      <div class="stat-num">147<span style="font-size:12px;color:var(--text-dim)"> 条</span></div>
+      <div class="stat-sub">评论在线 · 响应 42ms</div>
+      <div class="bar info"><span style="width:72%"></span></div>
+    </div>
+    <div class="cell">
+      <div class="cell-top">
+        <span class="lbl">1 号机负载</span>
+        <span class="led warn"></span>
+      </div>
+      <div class="stat-num">68<span style="font-size:12px;color:var(--text-dim)"> %</span></div>
+      <div class="stat-sub">内存 3.1 / 4 GB</div>
+      <div class="bar"><span style="width:68%"></span></div>
+    </div>
+  </div>
+
+  <!-- ============ 个人资料 ============ -->
+  <div class="panel identity">
+    <div class="avatar-wrap">
+      <img class="avatar" id="avatar" src="../assets/img/avatar.jpg" alt="实力人老大 · DAX">
+      <div class="avatar-fallback" id="avatarFallback">Y</div>
+      <span class="led pulse" title="在线"></span>
+    </div>
+    <div>
+      <h1>实力人老大 · DAX</h1>
+      <p class="headline">电气工程 · 嵌入式 · 折腾爱好者</p>
+      <p class="bio">电气工程 / 无人机飞手 / 业余运维 / 从 MC 模组服到 Docker 集群</p>
+      <div class="pills">
+        <span class="pill">电气工程</span>
+        <span class="pill">CAAC 超视距无人机机长</span>
+        <span class="pill">业余运维玩家</span>
+      </div>
+    </div>
+    <div class="socials">
+      <a href="#">GitHub</a><a href="#">微信</a><a href="#">QQ</a><a href="#">邮箱</a><a href="#">RSS</a>
+    </div>
+  </div>
+
+  <!-- ============ 主栅格 ============ -->
+  <div class="main-grid">
+
+    <!-- 左：文章 -->
+    <div class="col">
+      <div class="panel">
+        <div class="panel-head">
+          <span class="led pulse"></span>
+          <span class="lbl">最近更新</span>
+          <span class="lbl right">共 10 篇 / 按年分组</span>
+        </div>
+        <div>
+
+          <a class="post" href="#">
+            <span class="thumb"><img src="../static/img/featured.svg" alt=""></span>
+            <span>
+              <span class="post-meta">
+                <time>2026-08-18</time><span class="dot"></span><span>DAX</span><span class="dot"></span><span>12 分钟</span>
+              </span>
+              <span class="post-title">我的 DAX 算某种程度上的 AGI 吗？（下篇 · 差距在哪）</span>
+              <span class="post-desc">DAX 很强，但它算 AGI 吗？结论是不算——用通用智能的三个硬门槛来量一量。</span>
+              <span class="tags"><span class="tag">DAX</span><span class="tag">AI Agent</span><span class="tag">AGI</span></span>
+            </span>
+          </a>
+
+          <a class="post" href="#">
+            <span class="thumb"><img src="../static/img/covers/blog-evolution.png" alt=""></span>
+            <span>
+              <span class="post-meta">
+                <time>2026-08-12</time><span class="dot"></span><span>运维</span><span class="dot"></span><span>16 分钟</span>
+              </span>
+              <span class="post-title">MC 服务器大迁移：从 NAT 机到 VM 的 72 小时</span>
+              <span class="post-desc">把跑在山东枣庄 NAT 机上的 MC 模组服整体迁到 VMware 虚拟机，顺带重建面板、机器人和监控体系。</span>
+              <span class="tags"><span class="tag">运维</span><span class="tag">MC</span><span class="tag">FRP</span></span>
+            </span>
+          </a>
+
+          <a class="post" href="#">
+            <span class="thumb"><img src="../static/img/featured.svg" alt=""></span>
+            <span>
+              <span class="post-meta">
+                <time>2026-07-27</time><span class="dot"></span><span>AI</span><span class="dot"></span><span>9 分钟</span>
+              </span>
+              <span class="post-title">一次优班答辩 PPT 引发的「技术路线战争」</span>
+              <span class="post-desc">从 python-pptx 到多模态横评再到模板克隆——一个工科生的 PPT 折腾纪实。</span>
+              <span class="tags"><span class="tag">ppt</span><span class="tag">AI</span><span class="tag">自动化</span></span>
+            </span>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- 正文节选 -->
+      <div class="panel prose-panel">
+        <div class="panel-head">
+          <span class="lbl">正文节选</span>
+          <span class="lbl right">blog / dax-not-agi.md</span>
+        </div>
+        <div class="panel-body">
+          <article class="prose">
+
+            <blockquote>
+              <p>系列上篇：《我的 DAX：一个学生自建的个人 Agent 系统（What / Why / How）》</p>
+            </blockquote>
+
+            <h2>结论先行</h2>
+            <p><strong>不算。</strong>DAX 是一个相当强的通用任务 Agent（GPA，General Purpose Agent），但<strong>不是</strong> AGI（通用人工智能）。这两个名字只差一个词，本质差一层。</p>
+
+            <h3>① 跨域泛化：只强在「语言 + 已学工具」</h3>
+            <ul>
+              <li><strong>AGI</strong> 遇到全新领域，能「边学边做」，把别的领域的经验迁移过来。</li>
+              <li><strong>DAX</strong> 只在「语言理解」和「它训练过/见过的工具调用」里强。换到一个完全没见过的领域，它<strong>没有自我学习的机制</strong>——参数是训练时定死的。</li>
+            </ul>
+            <p>它很博学，但那是<strong>别人（训练时）教出来的</strong>，不是它自己摸索出来的。</p>
+
+            <h2>方案选型</h2>
+            <table>
+              <thead>
+                <tr><th>方案</th><th>选不选</th><th>理由</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Halo / WordPress</td><td>❌</td><td>2G 内存跑动态站浪费，还要操心数据库、更新、安全</td></tr>
+                <tr><td>Hexo</td><td>❌</td><td>依赖 Node.js，不想多装一套生态</td></tr>
+                <tr><td><strong>Hugo</strong></td><td><strong>✅</strong></td><td>一个二进制，构建 100ms，纯静态 = 零维护</td></tr>
+              </tbody>
+            </table>
+
+            <p>部署走 <code>ed25519</code> 密钥，不再用 sshpass 明文密码：</p>
+            <pre><code><span class="c"># 生成部署密钥</span>
+<span class="k">ssh-keygen</span> -t ed25519 -C <span class="s">'blog-deploy'</span>
+
+<span class="c"># 公钥扔到 1 号机的 authorized_keys</span>
+<span class="k">cat</span> ~/.ssh/id_ed25519.pub | <span class="k">ssh</span> blog@hk <span class="s">'cat >> ~/.ssh/authorized_keys'</span></code></pre>
+
+            <p>完整的方案对比和选型理由在 <a href="#">《从零搭个人博客》</a>里。</p>
+
+          </article>
+        </div>
+      </div>
+
+      <!-- 封面演示 -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="lbl">封面问题</span>
+          <span class="lbl right">10 篇 / 1 张专属封面</span>
+        </div>
+        <div class="panel-body">
+          <p class="note">
+            控制台风的数据密度最高，同一张默认封面重复出现时最容易被看出来——上面第 1 条和第 3 条就是同一张图。
+          </p>
+          <div class="cover-grid">
+            <div class="cover-cell">
+              <div class="thumb"><img src="../static/img/featured.svg" alt="默认封面"></div>
+              <div class="body">
+                <span class="chip chip-bad">现状 ×9</span>
+                <h4>回落默认封面</h4>
+                <p>所有无封面文章共用同一张图</p>
+              </div>
+            </div>
+            <div class="cover-cell">
+              <div class="thumb"><img src="../static/img/covers/blog-evolution.png" alt="专属封面"></div>
+              <div class="body">
+                <span class="chip chip-ok">现状 ×1</span>
+                <h4>已有专属封面</h4>
+                <p>《博客进化论》——立刻可区分</p>
+              </div>
+            </div>
+            <div class="cover-cell">
+              <div class="thumb" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#12171e,#1c2430)">
+                <span style="font-family:'JetBrains Mono',monospace;color:#f5a623;font-size:12px;letter-spacing:.16em">[ 仪表 · 网格 ]</span>
+              </div>
+              <div class="body">
+                <span class="chip chip-ok">改造后 ×10</span>
+                <h4>琥珀指示器封面</h4>
+                <p>深灰底 + 琥珀描边 + 编号水印</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右：仪表侧栏 -->
+    <div class="col">
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="lbl">服务矩阵</span>
+          <span class="lbl right">示意</span>
+        </div>
+        <div class="panel-body">
+          <div class="svc">
+            <div class="svc-item">
+              <div class="svc-name"><span class="led pulse"></span> Nginx</div>
+              <div class="svc-val">运行中 · 443</div>
+            </div>
+            <div class="svc-item">
+              <div class="svc-name"><span class="led pulse"></span> 1Panel</div>
+              <div class="svc-val">运行中 · 面板</div>
+            </div>
+            <div class="svc-item">
+              <div class="svc-name"><span class="led pulse"></span> Docker</div>
+              <div class="svc-val">6 容器 · 5 正常</div>
+            </div>
+            <div class="svc-item">
+              <div class="svc-name"><span class="led pulse"></span> Twikoo</div>
+              <div class="svc-val">运行中 · 评论</div>
+            </div>
+            <div class="svc-item">
+              <div class="svc-name"><span class="led warn"></span> 备份任务</div>
+              <div class="svc-val">2 小时后执行</div>
+            </div>
+            <div class="svc-item">
+              <div class="svc-name"><span class="led pulse"></span> FRP</div>
+              <div class="svc-val">3 条隧道正常</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="lbl">运行概况</span>
+        </div>
+        <div class="panel-body">
+          <div class="kv">
+            <div class="kv-row"><span class="k">文章总数</span><span class="v">10</span></div>
+            <div class="kv-row"><span class="k">标签 / 分类</span><span class="v">18 / 5</span></div>
+            <div class="kv-row"><span class="k">构建耗时</span><span class="v">112 ms</span></div>
+            <div class="kv-row"><span class="k">站点体积</span><span class="v">4.8 MB</span></div>
+            <div class="kv-row"><span class="k">连续运行</span><span class="v">63 d 04 h</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="lbl">最近部署</span>
+        </div>
+        <div class="panel-body">
+          <div class="deploy-list">
+            <div class="deploy-item">
+              <time>09-25 09:28</time>
+              <span>deploy: 博客视觉改版预览</span>
+            </div>
+            <div class="deploy-item">
+              <time>09-25 09:12</time>
+              <span>deploy: 常规内容更新</span>
+            </div>
+            <div class="deploy-item">
+              <time>08-18 21:40</time>
+              <span>post: DAX 下篇 + archify 架构图</span>
+            </div>
+            <div class="deploy-item">
+              <time>08-12 15:06</time>
+              <span>post: MC 服务器大迁移</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="lbl">标签云</span>
+        </div>
+        <div class="panel-body">
+          <div class="cloud">
+            <a href="#">DAX<b>4</b></a>
+            <a href="#">运维<b>3</b></a>
+            <a href="#">MC<b>2</b></a>
+            <a href="#">无人机<b>2</b></a>
+            <a href="#">Hugo<b>2</b></a>
+            <a href="#">AI<b>3</b></a>
+            <a href="#">STM32<b>1</b></a>
+            <a href="#">FRP<b>1</b></a>
+            <a href="#">Docker<b>1</b></a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="footer-inner">
+    <span>© 2026 ydj001.xyz</span>
+    <a href="#">标签</a>
+    <a href="#">分类</a>
+    <a href="#">RSS</a>
+    <span style="margin-left:auto">Hugo · Blowfish · 页面数据为示意</span>
+  </div>
+</footer>
+
+<div class="spec">
+  <div class="spec-inner">
+    <div><b>风格 04 · 控制台 HUD（Instrument Console）</b></div>
+    <div>主色 <b>#f5a623</b>（琥珀）· 状态色 <b>#3ddc84</b> / <b>#58a6ff</b> / <b>#ff5c5c</b>
+      <span class="swatches"><span class="sw" style="background:#f5a623"></span><span class="sw" style="background:#3ddc84"></span><span class="sw" style="background:#58a6ff"></span><span class="sw" style="background:#0e1116"></span></span>
+    </div>
+    <div>字体 标题 <b>Noto Sans SC 900</b> · 正文 <b>Noto Sans SC</b> · 数字/标签 <b>JetBrains Mono</b></div>
+    <div>手法 状态灯 · 进度条 · 细描边面板带标题栏 · 左侧内容右侧仪表双栏 · 服务矩阵 · 正文小节编号</div>
+    <div>代价 <b>中</b> —— 需要新增面板/状态条组件样式，但全部是纯 CSS 变量，不碰主题源码</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+  var saved = null;
+  try { saved = localStorage.getItem('preview-theme'); } catch (e) {}
+  if (saved === 'light' || saved === 'dark') {
+    root.setAttribute('data-theme', saved);
+  } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    root.setAttribute('data-theme', 'light');
+  }
+  btn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('preview-theme', next); } catch (e) {}
+  });
+  var img = document.getElementById('avatar');
+  img.addEventListener('error', function () {
+    img.style.display = 'none';
+    document.getElementById('avatarFallback').style.display = 'flex';
+  });
+})();
+</script>
+</body>
+</html>

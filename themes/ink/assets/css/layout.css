@@ -1,0 +1,72 @@
+/* ==========================================================
+   layout.css — 容器、章节题头、bleed 宽版块
+   ========================================================== */
+
+main#main-content {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--pad-x) 110px;
+}
+
+section { margin-bottom: 84px; }
+
+/* 宽版块（突破 max-w 限制） */
+.bleed {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+}
+
+/* 章节题头 —— 楷体 + 飞白尾线 */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink-2);
+  letter-spacing: .14em;
+  margin: 0 0 34px;
+}
+
+.section-head::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--line) 0%, var(--line) 62%, transparent 100%);
+}
+
+/* eyebrow 小标 */
+.eyebrow {
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-meta);
+  margin: 0 0 22px;
+}
+
+/* 分页 */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 48px;
+}
+
+.pagination a,
+.pagination span {
+  font-size: 13px;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--ink-4);
+  text-decoration: none;
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+
+.pagination a:hover { color: var(--stone-blue); border-color: var(--stone-blue); }
+.pagination .current { color: var(--ink-1); border-color: var(--stone-blue); }
+.pagination .disabled { opacity: .35; pointer-events: none; }

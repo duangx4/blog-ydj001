@@ -1,5 +1,5 @@
 {{ $disableImageOptimization := .Site.Params.disableImageOptimization | default false }}
-<div class="flex author">
+<div style="display:flex;align-items:center;gap:16px" class="author">
   {{ with .Site.Params.Author.image }}
     {{ $authorImage := "" }}
     {{ if or (strings.HasPrefix . "http:") (strings.HasPrefix . "https:") }}
@@ -9,47 +9,27 @@
     {{ end }}
     {{ if $authorImage }}
       {{ $final := $authorImage }}
-      {{ $squareImage := $authorImage }}
       {{ if not (or $disableImageOptimization (eq $authorImage.MediaType.SubType "svg")) }}
-        {{ $final = $authorImage.Fill "192x192" }}
-        {{ $shortSide := int (math.Min $authorImage.Width $authorImage.Height) }}
-        {{ $squareImage = $authorImage.Crop (printf "%dx%d" $shortSide $shortSide ) }}
+        {{ $final = $authorImage.Fill "192x192 q90" }}
       {{ end }}
       <img
-        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4"
-        width="96"
-        height="96"
-        alt="{{ $.Site.Params.Author.name | default " Author" }}"
-        src="{{ $final.RelPermalink }}">
-    {{ else }}
-      {{ $authorImage := resources.GetRemote . }}
-      {{ $final := $authorImage }}
-      {{ $squareImage := $authorImage }}
-      {{ if not $disableImageOptimization }}
-        {{ $final = $authorImage.Fill "192x192" }}
-        {{ $shortSide := int (math.Min $authorImage.Width $authorImage.Height) }}
-        {{ $squareImage = $authorImage.Crop (printf "%dx%d" $shortSide $shortSide ) }}
-      {{ end }}
-      <img
-        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4"
-        width="96"
-        height="96"
-        alt="{{ $.Site.Params.Author.name | default " Author" }}"
-        src="{{ $final.RelPermalink }}">
+        style="width:72px;height:72px;border-radius:50%;border:1px solid var(--line);object-fit:cover;flex:0 0 auto;margin:0"
+        width="72" height="72"
+        alt="{{ $.Site.Params.Author.name | default `Author` }}"
+        src="{{ $final.RelPermalink }}"
+        loading="lazy" decoding="async">
     {{ end }}
   {{ end }}
-  <div class="place-self-center">
+  <div>
     {{ with .Site.Params.Author.name | markdownify }}
-      <div class="text-[0.6rem] uppercase leading-3 text-neutral-500 dark:text-neutral-400">
+      <div style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-meta);margin-bottom:2px">
         {{ i18n "author.byline_title" | markdownify }}
       </div>
-      <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
-        {{ . }}
-      </div>
+      <div style="font-weight:600;color:var(--ink-2);line-height:1.5">{{ . }}</div>
     {{ end }}
     {{ with .Site.Params.Author.bio | markdownify }}
-      <div class="text-sm text-neutral-700 dark:text-neutral-400">{{ . }}</div>
+      <div style="font-size:13px;color:var(--ink-4);margin-top:3px">{{ . }}</div>
     {{ end }}
-    <div class="text-2xl sm:text-lg">{{ partialCached "author-links.html" . }}</div>
+    <div style="margin-top:6px">{{ partialCached "author-links.html" . }}</div>
   </div>
 </div>

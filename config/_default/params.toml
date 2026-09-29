@@ -10,6 +10,15 @@ enableStructuredBreadcrumbs = true
 
 replyByEmail = false
 
+# -- 评论系统（Twikoo 自建，模板见 layouts/partials/comments.html）--
+# ⚠ 开关不在本节：主题的判定是 site.Params.article.showComments（见下方 [article]），
+#   单篇可用 frontmatter 的 showComments: true 覆盖（默认关 → 逐页开）。
+#   本节只存 Twikoo 连接参数。
+[comments]
+  provider = "twikoo"
+  twikooEnvId = "https://twikoo.ydj001.xyz"
+  twikooSrc = "https://cdn.jsdelivr.net/npm/twikoo@1.7.15/dist/twikoo.all.min.js"
+
 mainSections = ["blog"]
 
 disableImageOptimization = false
@@ -87,6 +96,11 @@ fingerprintAlgorithm = "sha512"
   showWordCount = true
   sharingLinks = [ "wechat", "weibo", "qq", "telegram", "email" ]
   showZenMode = true
+
+# -- 评论区总开关 --
+# 全站默认关闭（false）；单篇 frontmatter 写 showComments: true 即可开启，
+# 需要 Twikoo 连接参数时见上方 [comments] 段。
+showComments = false
 
 [list]
   showHero = true

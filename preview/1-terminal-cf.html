@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>预览 01 · 终端机房 — ydj001.xyz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   预览 01 · 终端机房 (Terminal / Server Room)
+   —— 与 /archify/*.html 架构图同源的视觉语言
+   ============================================================ */
+
+:root, [data-theme="dark"] {
+  --bg:        #020617;
+  --bg-alt:    #0b1220;
+  --panel:     rgba(15, 23, 42, 0.55);
+  --panel-solid: #0f172a;
+  --border:    #1e293b;
+  --border-hi: #334155;
+  --text:      #e2e8f0;
+  --text-muted:#94a3b8;
+  --text-dim:  #64748b;
+  --accent:    #22d3ee;
+  --accent-2:  #34d399;
+  --accent-3:  #fbbf24;
+  --danger:    #fb7185;
+  --grid-line: rgba(34, 211, 238, 0.055);
+  --scan:      rgba(0, 0, 0, 0.30);
+  --header-bg: rgba(2, 6, 23, 0.85);
+  --code-bg:   #01040e;
+  --shadow:    none;
+}
+[data-theme="light"] {
+  --bg:        #f1f5f9;
+  --bg-alt:    #e2e8f0;
+  --panel:     rgba(255, 255, 255, 0.72);
+  --panel-solid: #ffffff;
+  --border:    #cbd5e1;
+  --border-hi: #94a3b8;
+  --text:      #0f172a;
+  --text-muted:#475569;
+  --text-dim:  #64748b;
+  --accent:    #0e7490;
+  --accent-2:  #047857;
+  --accent-3:  #b45309;
+  --danger:    #be123c;
+  --grid-line: rgba(14, 116, 144, 0.07);
+  --scan:      rgba(15, 23, 42, 0.02);
+  --header-bg: rgba(241, 245, 249, 0.9);
+  --code-bg:   #e2e8f0;
+  --shadow:    none;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Noto Sans SC", -apple-system, "Segoe UI", "PingFang SC", sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ---------- 背景：网格 + 扫描线 ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    var(--scan) 3px,
+    var(--scan) 4px
+  );
+  opacity: 0.55;
+}
+
+/* ---------- 等宽：标题 / UI / 元信息 ---------- */
+h1, h2, h3, h4,
+.mono, .brand, nav a, .tag, .meta, button,
+.post-title, .eyebrow, .statusbar, .stat-label, .footer-cols, .spec {
+  font-family: "JetBrains Mono", "Consolas", "SFMono-Regular", ui-monospace, monospace;
+}
+
+/* 中文标题里等宽会发飘，字号收一点、字重加一点 */
+h1, h2, h3, h4, .post-title { letter-spacing: -0.01em; font-weight: 700; }
+
+/* ============================================================
+   顶栏
+   ============================================================ */
+.statusbar {
+  position: relative;
+  z-index: 40;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-alt);
+  padding: 5px 24px;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.statusbar .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  margin-right: 6px;
+  vertical-align: 1px;
+  box-shadow: 0 0 6px var(--accent-2);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+.statusbar .dot.warn { background: var(--accent-3); box-shadow: 0 0 6px var(--accent-3); }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+nav.top {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 24px;
+  height: 58px;
+  background: var(--header-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.brand {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+.brand::before { content: "›_ "; color: var(--accent); }
+
+nav.top ul {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0; padding: 0;
+  flex: 1;
+}
+nav.top a {
+  display: block;
+  font-size: 14px;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 11px;
+  border: 1px solid transparent;
+  transition: color .15s, border-color .15s, background .15s;
+}
+nav.top a:hover {
+  color: var(--accent);
+  border-color: var(--border-hi);
+  background: var(--panel);
+}
+nav.top a.active { color: var(--accent); border-color: var(--accent); }
+nav.top .caret::after { content: " ▾"; font-size: 10px; opacity: .6; }
+
+.theme-btn {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-hi);
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.theme-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ============================================================
+   容器
+   ============================================================ */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+section { margin-bottom: 56px; }
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 14px;
+}
+.eyebrow::before { content: "// "; color: var(--accent); opacity: .7; }
+
+/* ============================================================
+   Profile
+   ============================================================ */
+.profile {
+  text-align: center;
+  padding: 56px 0 8px;
+}
+.avatar-wrap {
+  display: inline-block;
+  position: relative;
+  margin-bottom: 22px;
+}
+.avatar {
+  width: 128px; height: 128px;
+  display: block;
+  object-fit: cover;
+  border: 1px solid var(--border-hi);
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+  filter: saturate(0.9) contrast(1.05);
+}
+.avatar-fallback {
+  width: 128px; height: 128px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 46px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--panel-solid);
+  border: 1px solid var(--border-hi);
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+.profile h1 {
+  font-size: clamp(26px, 4.4vw, 40px);
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+.profile h1 .cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 0.95em;
+  background: var(--accent);
+  vertical-align: -0.08em;
+  margin-left: 6px;
+  animation: blink 1.1s step-end infinite;
+}
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+.headline {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin: 0 0 6px;
+}
+.headline::before { content: "$ "; color: var(--accent); }
+.bio { font-size: 13px; color: var(--text-dim); margin: 0 0 20px; }
+
+.pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 18px; }
+.pill {
+  font-size: 12px;
+  color: var(--accent);
+  border: 1px solid var(--border-hi);
+  background: var(--panel);
+  padding: 3px 11px;
+  letter-spacing: 0.02em;
+}
+.pill::before { content: "["; opacity: .45; }
+.pill::after  { content: "]"; opacity: .45; }
+
+.socials { display: flex; gap: 14px; justify-content: center; font-size: 12px; }
+.socials a { color: var(--text-dim); text-decoration: none; }
+.socials a:hover { color: var(--accent); }
+
+/* ============================================================
+   文章列表
+   ============================================================ */
+.post-list { border-top: 1px solid var(--border); }
+.post {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  transition: background .18s ease, padding-left .18s ease;
+}
+.post:hover { background: var(--panel); padding-left: 12px; }
+.post .date {
+  font-size: 12px;
+  color: var(--text-dim);
+  padding-top: 3px;
+  white-space: nowrap;
+}
+.post .date::before { content: "$ "; color: var(--accent); opacity: .6; }
+.post-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 6px;
+  transition: color .18s;
+}
+.post:hover .post-title { color: var(--accent); }
+.post-desc { font-size: 13.5px; color: var(--text-muted); margin: 0 0 9px; line-height: 1.7; }
+.post .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.tag {
+  font-size: 11px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 1px 7px;
+}
+.tag::before { content: "#"; color: var(--accent); opacity: .55; }
+
+/* ============================================================
+   封面问题演示
+   ============================================================ */
+.cover-demo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+.demo-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  overflow: hidden;
+}
+.demo-card .thumb {
+  aspect-ratio: 1200 / 630;
+  background: var(--bg-alt);
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.demo-card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.demo-card .body { padding: 12px 14px 14px; }
+.demo-card h4 { font-size: 13.5px; margin: 0 0 6px; }
+.demo-card p { font-size: 12px; color: var(--text-dim); margin: 0; }
+.demo-state { font-size: 10.5px; letter-spacing: 0.1em; padding: 1px 7px; border: 1px solid; }
+.state-bad  { color: var(--danger); border-color: var(--danger); }
+.state-ok   { color: var(--accent-2); border-color: var(--accent-2); }
+
+/* ============================================================
+   正文排版
+   ============================================================ */
+.prose {
+  max-width: 760px;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+.prose h2 {
+  font-size: 22px;
+  margin: 44px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.prose h2::before { content: "## "; color: var(--accent); opacity: .55; font-size: 0.8em; }
+.prose h3 {
+  font-size: 17px;
+  margin: 32px 0 12px;
+  color: var(--accent);
+}
+.prose h3::before { content: "### "; opacity: .45; font-size: 0.85em; }
+.prose p { margin: 0 0 18px; }
+
+.prose blockquote {
+  margin: 24px 0;
+  padding: 12px 18px;
+  border-left: 2px solid var(--accent);
+  background: var(--panel);
+  color: var(--text-muted);
+  font-size: 14.5px;
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+
+.prose code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.87em;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  color: var(--accent);
+}
+.prose pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--accent);
+  padding: 16px 18px;
+  overflow-x: auto;
+  margin: 0 0 20px;
+  font-size: 13px;
+  line-height: 1.75;
+}
+.prose pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text);
+}
+.prose pre .c { color: var(--text-dim); }
+.prose pre .k { color: var(--accent); }
+.prose pre .s { color: var(--accent-2); }
+
+.prose ul { padding-left: 22px; margin: 0 0 18px; }
+.prose li { margin-bottom: 8px; }
+.prose li::marker { color: var(--accent); }
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+  margin: 0 0 22px;
+}
+.prose th, .prose td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+}
+.prose th {
+  background: var(--panel);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.prose strong { color: var(--accent); font-weight: 700; }
+.prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ============================================================
+   页脚 + 风格标注
+   ============================================================ */
+footer.site {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  background: var(--bg-alt);
+  padding: 28px 24px 32px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.footer-inner a { color: var(--text-muted); text-decoration: none; }
+.footer-inner a:hover { color: var(--accent); }
+.footer-inner .sep { opacity: .35; }
+
+.spec {
+  position: relative;
+  z-index: 1;
+  background: var(--panel-solid);
+  border-top: 1px solid var(--border);
+  padding: 18px 24px 26px;
+  font-size: 11.5px;
+  line-height: 1.9;
+  color: var(--text-dim);
+}
+.spec-inner { max-width: 1080px; margin: 0 auto; }
+.spec b { color: var(--accent); font-weight: 500; }
+.swatches { display: inline-flex; gap: 6px; vertical-align: -2px; margin-left: 6px; }
+.sw { width: 13px; height: 13px; display: inline-block; border: 1px solid var(--border-hi); }
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 900px) {
+  nav.top { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 10px; }
+  nav.top ul { order: 3; width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+  nav.top ul li { flex: 0 0 auto; }
+  main { padding: 0 16px 60px; }
+  .statusbar { padding: 5px 16px; font-size: 10px; gap: 12px; }
+}
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .profile { padding: 36px 0 4px; }
+  .post { grid-template-columns: 1fr; gap: 6px; padding: 16px 0; }
+  .post .date { padding-top: 0; }
+  .post:hover { padding-left: 0; }
+  .prose { font-size: 16px; }
+  .prose h2 { font-size: 19px; }
+  .prose table { font-size: 13px; }
+  .prose th, .prose td { padding: 6px 8px; }
+  .statusbar { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .profile h1 .cursor { animation: none; opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<!-- 顶栏：服务器状态条 -->
+<div class="statusbar">
+  <span><span class="dot"></span>MC 服 在线</span>
+  <span><span class="dot"></span>FRP 隧道 正常</span>
+  <span><span class="dot"></span>Twikoo 在线</span>
+  <span><span class="dot warn"></span>1 号机 CPU 68%</span>
+  <span style="margin-left:auto">ydj001.xyz · 香港 / 枣庄 双机</span>
+</div>
+
+<nav class="top">
+  <a class="brand" href="#">ydj001</a>
+  <ul>
+    <li><a href="#" class="active">博客</a></li>
+    <li><a href="#" class="caret">自我介绍</a></li>
+    <li><a href="#">资源</a></li>
+    <li><a href="#">留言板</a></li>
+    <li><a href="#">标签</a></li>
+    <li><a href="#">分类</a></li>
+    <li><a href="#" class="caret">个人控制台</a></li>
+  </ul>
+  <button class="theme-btn" id="themeBtn">◐ 切换明暗</button>
+</nav>
+
+<main>
+
+  <!-- ============ Profile ============ -->
+  <section class="profile">
+    <div class="avatar-wrap">
+      <img class="avatar" id="avatar" src="../assets/img/avatar.jpg" alt="实力人老大 · DAX">
+      <div class="avatar-fallback" id="avatarFallback">Y</div>
+    </div>
+    <h1>实力人老大 · DAX<span class="cursor" aria-hidden="true"></span></h1>
+    <p class="headline">电气工程 · 嵌入式 · 折腾爱好者</p>
+    <p class="bio">电气工程 / 无人机飞手 / 业余运维 / 从 MC 模组服到 Docker 集群</p>
+    <div class="pills">
+      <span class="pill">电气工程</span>
+      <span class="pill">CAAC 超视距无人机机长</span>
+      <span class="pill">业余运维玩家</span>
+    </div>
+    <div class="socials">
+      <a href="#">github</a><a href="#">wechat</a><a href="#">qq</a><a href="#">email</a><a href="#">rss</a>
+    </div>
+  </section>
+
+  <!-- ============ 文章列表 ============ -->
+  <section>
+    <p class="eyebrow">ls -lt ~/posts</p>
+    <div class="post-list">
+
+      <a class="post" href="#">
+        <span class="date">2026-08-18</span>
+        <span>
+          <span class="post-title">我的 DAX 算某种程度上的 AGI 吗？（下篇 · 差距在哪）</span>
+          <span class="post-desc">DAX 很强，但它算 AGI 吗？结论是不算——用通用智能的三个硬门槛来量一量。</span>
+          <span class="tags"><span class="tag">DAX</span><span class="tag">AI Agent</span><span class="tag">AGI</span></span>
+        </span>
+      </a>
+
+      <a class="post" href="#">
+        <span class="date">2026-08-12</span>
+        <span>
+          <span class="post-title">MC 服务器大迁移：从 NAT 机到 VM 的 72 小时</span>
+          <span class="post-desc">把跑在山东枣庄 NAT 机上的 MC 模组服整体迁到 VMware 虚拟机，顺带重建面板、机器人和监控体系。</span>
+          <span class="tags"><span class="tag">运维</span><span class="tag">MC</span><span class="tag">FRP</span></span>
+        </span>
+      </a>
+
+      <a class="post" href="#">
+        <span class="date">2026-07-27</span>
+        <span>
+          <span class="post-title">一次优班答辩PPT引发的「技术路线战争」</span>
+          <span class="post-desc">从 python-pptx 到多模态横评再到模板克隆——一个工科生的 PPT 折腾纪实。</span>
+          <span class="tags"><span class="tag">ppt</span><span class="tag">AI</span><span class="tag">自动化</span></span>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ 封面问题演示 ============ -->
+  <section>
+    <p class="eyebrow">封面问题 · 单调的真正根因</p>
+    <p style="font-size:14px;color:var(--text-muted);margin:0 0 20px;max-width:760px">
+      站内 10 篇文章里只有 1 张专属封面，其余 9 篇全部回落到同一个 <code class="prose-code" style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--code-bg);border:1px solid var(--border);padding:1px 5px;color:var(--accent)">featured.svg</code>
+      ——所以卡片看起来都一样。这比配色更影响观感。
+    </p>
+    <div class="cover-demo">
+      <div class="demo-card">
+        <div class="thumb"><img src="../static/img/featured.svg" alt="默认封面"></div>
+        <div class="body">
+          <span class="demo-state state-bad">现状 ×9 篇</span>
+          <h4 style="margin-top:8px">回落默认封面</h4>
+          <p>所有无封面文章共用同一张图</p>
+        </div>
+      </div>
+      <div class="demo-card">
+        <div class="thumb"><img src="../static/img/covers/blog-evolution.png" alt="专属封面"></div>
+        <div class="body">
+          <span class="demo-state state-ok">现状 ×1 篇</span>
+          <h4 style="margin-top:8px">已有专属封面</h4>
+          <p>《博客进化论》——卡片立刻可区分</p>
+        </div>
+      </div>
+      <div class="demo-card">
+        <div class="thumb" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#020617,#0e7490)">
+          <span style="font-family:'JetBrains Mono',monospace;color:#22d3ee;font-size:13px;letter-spacing:.1em">[ 本风格生成 ]</span>
+        </div>
+        <div class="body">
+          <span class="demo-state state-ok">改造后 ×10 篇</span>
+          <h4 style="margin-top:8px">逐篇生成封面</h4>
+          <p>网格 + 等宽标题 + 域名水印</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 正文节选 ============ -->
+  <section>
+    <p class="eyebrow">cat ~/posts/dax-not-agi.md</p>
+    <article class="prose">
+
+      <blockquote>
+        <p>系列上篇：《我的 DAX：一个学生自建的个人 Agent 系统（What / Why / How）》</p>
+      </blockquote>
+
+      <h2>结论先行</h2>
+      <p><strong>不算。</strong>DAX 是一个相当强的通用任务 Agent（GPA，General Purpose Agent），但<strong>不是</strong> AGI（通用人工智能）。这两个名字只差一个词，本质差一层。</p>
+
+      <h3>① 跨域泛化：只强在「语言 + 已学工具」</h3>
+      <ul>
+        <li><strong>AGI</strong> 遇到全新领域，能「边学边做」，把别的领域的经验迁移过来。</li>
+        <li><strong>DAX</strong> 只在「语言理解」和「它训练过/见过的工具调用」里强。换到一个完全没见过的领域，它<strong>没有自我学习的机制</strong>——参数是训练时定死的。</li>
+      </ul>
+      <p>它很博学，但那是<strong>别人（训练时）教出来的</strong>，不是它自己摸索出来的。</p>
+
+      <h2>方案选型（摘自另一篇）</h2>
+      <table>
+        <thead>
+          <tr><th>方案</th><th>选不选</th><th>理由</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Halo / WordPress</td><td>❌</td><td>2G 内存跑动态站浪费，还要操心数据库、更新、安全</td></tr>
+          <tr><td>Hexo</td><td>❌</td><td>依赖 Node.js，不想多装一套生态</td></tr>
+          <tr><td><strong>Hugo</strong></td><td><strong>✅</strong></td><td>一个二进制，构建 100ms，纯静态 = 零维护</td></tr>
+        </tbody>
+      </table>
+
+      <p>部署走 <code>ed25519</code> 密钥，不再用 sshpass 明文密码：</p>
+      <pre><code><span class="c"># 生成部署密钥</span>
+<span class="k">ssh-keygen</span> -t ed25519 -C <span class="s">'blog-deploy'</span>
+
+<span class="c"># 公钥扔到 1 号机的 authorized_keys</span>
+<span class="k">cat</span> ~/.ssh/id_ed25519.pub | <span class="k">ssh</span> blog@hk <span class="s">'cat >> ~/.ssh/authorized_keys'</span></code></pre>
+
+      <p>完整的方案对比和选型理由在 <a href="#">《从零搭个人博客》</a>里。</p>
+
+    </article>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="footer-inner">
+    <span>© 2026 ydj001.xyz</span>
+    <span class="sep">|</span>
+    <a href="#">标签</a>
+    <a href="#">分类</a>
+    <a href="#">RSS</a>
+    <span style="margin-left:auto">Powered by Hugo · Blowfish</span>
+  </div>
+</footer>
+
+<div class="spec">
+  <div class="spec-inner">
+    <div><b>风格 01 · 终端机房（Terminal / Server Room）</b></div>
+    <div>主色 <b>#22d3ee</b>（青）· 辅色 <b>#34d399</b>（绿，状态灯）
+      <span class="swatches"><span class="sw" style="background:#22d3ee"></span><span class="sw" style="background:#34d399"></span><span class="sw" style="background:#020617"></span><span class="sw" style="background:#1e293b"></span></span>
+    </div>
+    <div>字体 标题/UI <b>JetBrains Mono</b>（等宽）· 正文 <b>Noto Sans SC</b>（中文可读性优先）</div>
+    <div>手法 直角 · 网格+扫描线背景 · <b>$</b> 前缀列表 · 状态灯 · 光标闪动 · 与 <b>/archify</b> 架构图同源</div>
+    <div>代价 <b>低</b> —— 换配色变量 + 重做 3 个 SVG + 逐篇封面，无需跑 Tailwind 构建</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+
+  var saved = null;
+  try { saved = localStorage.getItem('preview-theme'); } catch (e) {}
+  if (saved === 'light' || saved === 'dark') {
+    root.setAttribute('data-theme', saved);
+  } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    root.setAttribute('data-theme', 'light');
+  }
+
+  btn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('preview-theme', next); } catch (e) {}
+  });
+
+  // 头像加载失败 → 退回字母占位，保证预览在无图环境下也完整
+  var img = document.getElementById('avatar');
+  img.addEventListener('error', function () {
+    img.style.display = 'none';
+    var fb = document.getElementById('avatarFallback');
+    fb.style.display = 'flex';
+  });
+})();
+</script>
+</body>
+</html>

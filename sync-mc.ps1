@@ -13,7 +13,7 @@ $ErrorActionPreference = 'Stop'
 
 # --------------------- 配置区 ---------------------
 $McDir     = "C:\Users\21972\Desktop\blog-ydj001\static\mc"
-$Server    = "root@154.12.85.12"
+$Server    = "root@38.76.201.242"
 $SshKey    = "$env:USERPROFILE\.ssh\id_ed25519"
 $Site1Root = "/var/www/mc.ydj001.xyz"      # 独立站
 $Site2Root = "/var/www/ydj001.xyz/mc"      # 博客站

@@ -1,0 +1,19 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-copy">
+      <div>© {{ now.Year }} {{ .Site.Params.Author | default .Site.Title }}</div>
+      {{- with .Site.Params.license -}}
+      <div class="footer-cc">
+        本站内容采用 <a href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ .name }}</a> 授权
+      </div>
+      {{- end }}
+    </div>
+    <nav class="footer-links" aria-label="底部链接">
+      <a href="{{ "index.xml" | relURL }}" title="RSS 订阅">RSS</a>
+      <a href="{{ "sitemap.xml" | relURL }}" title="站点地图">Sitemap</a>
+      {{- with .Site.Params.githubRepo -}}
+        <a href="{{ . }}" target="_blank" rel="noopener noreferrer">GitHub</a>
+      {{- end }}
+    </nav>
+  </div>
+</footer>

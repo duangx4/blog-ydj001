@@ -1,0 +1,238 @@
+/* ==========================================================
+   page-resources.css — Resources 专用：介绍卡 + 资源卡墙
+   ========================================================== */
+
+/* 资源分区容器 */
+.resources-section { margin-bottom: 72px; }
+
+/* 资源卡墙网格 */
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/* 资源卡片 */
+.resource-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-2);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+
+.resource-card:hover {
+  border-color: var(--stone-blue);
+  background: var(--paper-3);
+}
+
+.resource-card-body {
+  padding: 18px 20px 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.resource-card-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+  margin: 0 0 8px;
+  letter-spacing: .02em;
+  line-height: 1.4;
+}
+
+.resource-card-desc {
+  font-size: 13px;
+  color: var(--ink-4);
+  line-height: 1.8;
+  flex: 1;
+}
+
+.resource-card-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.resource-tag {
+  font-size: 11px;
+  padding: 2px 9px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--ink-meta);
+  letter-spacing: .04em;
+}
+
+/* 按钮（小型行动链接） */
+.mc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 16px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  letter-spacing: .04em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color var(--t-fast), background var(--t-fast), border-color var(--t-fast);
+}
+
+.mc-btn-primary {
+  background: var(--stone-blue);
+  color: var(--paper);
+  border: 1px solid var(--stone-blue);
+}
+
+.mc-btn-primary:hover {
+  background: transparent;
+  color: var(--stone-blue);
+}
+
+.mc-btn-ghost {
+  background: transparent;
+  color: var(--ink-4);
+  border: 1px solid var(--line);
+}
+
+.mc-btn-ghost:hover {
+  color: var(--stone-blue);
+  border-color: var(--stone-blue);
+}
+
+/* 资源贡献者卡片 */
+.contributor-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-2);
+  padding: 22px 24px;
+}
+
+.contributor-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  object-fit: cover;
+  flex: 0 0 auto;
+}
+
+.contributor-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.contributor-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.contributor-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink-2);
+  margin: 0;
+  letter-spacing: .02em;
+}
+
+.contributor-role {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-meta);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 1px 8px;
+}
+
+.contributor-intro {
+  font-size: 13.5px;
+  color: var(--ink-4);
+  line-height: 1.8;
+  margin: 0 0 12px;
+}
+
+.contributor-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.contributor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .contributor-card { flex-direction: column; align-items: center; text-align: center; }
+  .contributor-head, .contributor-tags, .contributor-actions { justify-content: center; }
+  .contributor-avatar { width: 72px; height: 72px; }
+}
+
+/* 大类标题（Tools / Reading / Services 等） */
+.resource-category {
+  font-size: 11.5px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink-meta);
+  margin: 0 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.resource-category::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line-soft);
+}
+
+/* 封面包裹 */
+.resource-cover-wrap {
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  background: var(--paper-3);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  flex: 0 0 auto;
+}
+
+.resource-cover-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  margin: 0;
+  transition: transform .5s ease;
+}
+
+.resource-card:hover .resource-cover-wrap img { transform: scale(1.04); }
+
+/* 详情链接文字 */
+.resource-card-link {
+  display: inline-block;
+  margin-top: auto;
+  padding-top: 12px;
+  font-size: 12.5px;
+  color: var(--stone-blue);
+  letter-spacing: .04em;
+}
+
+@media (max-width: 640px) {
+  .resources-grid { grid-template-columns: 1fr; }
+}

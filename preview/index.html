@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>前端风格预览 · 五选一 — ydj001.xyz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0d11;
+  --panel: #131720;
+  --border: #232a36;
+  --text: #e8edf5;
+  --text-mid: #9ba7b8;
+  --text-dim: #64707f;
+  --a1: #22d3ee;
+  --a2: #c8a45c;
+  --a3: #4fc3ff;
+  --a4: #f5a623;
+  --a5: #2f6f92;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1140px; margin: 0 auto; padding: 56px 24px 80px; }
+h1 { font-size: clamp(26px, 4vw, 38px); font-weight: 900; margin: 0 0 12px; letter-spacing: -.01em; }
+.lede { font-size: 15px; color: var(--text-mid); margin: 0 0 8px; max-width: 68ch; }
+.hint {
+  font-size: 13px;
+  color: var(--text-dim);
+  border-left: 2px solid var(--border);
+  padding-left: 14px;
+  margin: 22px 0 44px;
+  max-width: 68ch;
+}
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 20px; }
+a.card {
+  display: block;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px 22px 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+a.card:hover { transform: translateY(-4px); border-color: var(--k); box-shadow: 0 16px 34px -18px var(--k); }
+.num {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: .14em;
+  color: var(--k);
+}
+.card h2 { font-size: 19px; font-weight: 700; margin: 10px 0 8px; }
+.card p { font-size: 13.5px; color: var(--text-mid); margin: 0 0 16px; line-height: 1.7; }
+.sw { display: flex; gap: 5px; margin-bottom: 14px; }
+.sw i { width: 20px; height: 20px; border-radius: 4px; border: 1px solid rgba(255,255,255,.12); }
+.meta { font-family: "JetBrains Mono", Consolas, monospace; font-size: 11px; color: var(--text-dim); letter-spacing: .03em; }
+.cost { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-dim); margin-top: 12px; }
+.c1 { --k: var(--a1); }
+.c2 { --k: var(--a2); }
+.c3 { --k: var(--a3); }
+.c4 { --k: var(--a4); }
+.c5 { --k: var(--a5); }
+.foot { margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--text-dim); }
+code { font-family: "JetBrains Mono", Consolas, monospace; font-size: .9em; color: var(--text-mid); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>前端风格 · 五选一</h1>
+  <p class="lede">五个方向各做成一个独立 HTML，用的都是站点真实内容（真实菜单、真实头像、真实三篇文章、真实正文节选），便于横向对比。</p>
+  <p class="hint">
+    每个页面右上角都能切明暗；页面底部有该风格的标注条（主色 / 字体 / 手法 / 改造代价）。<br>
+    五份都内建了「封面问题」演示区 —— 现状是 10 篇文章只有 1 张专属封面，其余 9 篇共用同一张默认图，这是列表页看起来单调的第一来源。
+  </p>
+
+  <div class="grid">
+
+    <a class="card c1" href="1-terminal-cf.html">
+      <div class="num">STYLE 01</div>
+      <h2>终端机房</h2>
+      <p>等宽标题、直角、深空底 + 网格与扫描线、<code>$</code> 前缀、状态灯。与站内 archify 架构图同源。</p>
+      <div class="sw"><i style="background:#22d3ee"></i><i style="background:#34d399"></i><i style="background:#fbbf24"></i><i style="background:#020617"></i></div>
+      <div class="meta">JetBrains Mono / Noto Sans SC</div>
+      <div class="cost">改造代价 · 中</div>
+    </a>
+
+    <a class="card c2" href="2-editorial.html">
+      <div class="num">STYLE 02</div>
+      <h2>杂志排版</h2>
+      <p>衬线大标题、首字下沉、大留白、居中窄栏、细分隔线、暖白纸感。现有霞鹜文楷标题的顺势强化。</p>
+      <div class="sw"><i style="background:#c8a45c"></i><i style="background:#8c9e6e"></i><i style="background:#14120f"></i><i style="background:#faf8f5"></i></div>
+      <div class="meta">LXGW WenKai / Noto Serif SC</div>
+      <div class="cost">改造代价 · 极低</div>
+    </a>
+
+    <a class="card c3" href="3-deep-space.html">
+      <div class="num">STYLE 03</div>
+      <h2>深空玻璃</h2>
+      <p>动态渐变光晕背景、毛玻璃卡片、大圆角、渐变大标题。把 <code>resources</code> 页已有的毛玻璃推成全站。</p>
+      <div class="sw"><i style="background:#4fc3ff"></i><i style="background:#8b6cff"></i><i style="background:#35e0c4"></i><i style="background:#060a17"></i></div>
+      <div class="meta">LXGW WenKai / Noto Sans SC</div>
+      <div class="cost">改造代价 · 中</div>
+    </a>
+
+    <a class="card c4" href="4-hud-console.html">
+      <div class="num">STYLE 04</div>
+      <h2>控制台 HUD</h2>
+      <p>状态灯、进度条、细描边面板、左内容右仪表双栏、服务矩阵。呼应菜单里的「个人控制台」。</p>
+      <div class="sw"><i style="background:#f5a623"></i><i style="background:#3ddc84"></i><i style="background:#58a6ff"></i><i style="background:#0e1116"></i></div>
+      <div class="meta">Noto Sans SC 900 / JetBrains Mono</div>
+      <div class="cost">改造代价 · 中</div>
+    </a>
+
+    <a class="card c5" href="5-ink-instrument.html">
+      <div class="num">STYLE 05</div>
+      <h2>墨与器</h2>
+      <p>中国水墨 ＋ 科技：墨分五色做文字层级、飞白做分隔线、航迹与山脊同构、册页装裱照片。明=宣纸，暗=拓片。</p>
+      <div class="sw"><i style="background:#2f6f92"></i><i style="background:#5c8360"></i><i style="background:#a83a2c"></i><i style="background:#f4f0e6"></i><i style="background:#100f0d"></i></div>
+      <div class="meta">LXGW WenKai / Noto Sans SC / JetBrains Mono</div>
+      <div class="cost">改造代价 · 高</div>
+    </a>
+
+  </div>
+
+  <div class="foot">
+    选定方向后，落地范围按之前确认的「表层」执行：配色换肤 → 背景与图形资源 → 逐篇封面补齐。
+    全部改在 <code>assets/css/custom.css</code> 与 <code>static/img/</code>，不动 <code>themes/blowfish/**</code>。
+  </div>
+</div>
+</body>
+</html>

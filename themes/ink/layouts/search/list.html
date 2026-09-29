@@ -1,0 +1,26 @@
+{{ define "main" }}
+<header style="margin-bottom:2rem">
+  <p class="eyebrow">SEARCH</p>
+  <h1>搜索</h1>
+</header>
+
+{{/* Pagefind UI */}}
+<div id="search"></div>
+
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="/pagefind/pagefind-ui.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function() {
+    new PagefindUI({
+      element: '#search',
+      showSubResults: true,
+      translations: {
+        placeholder: '输入关键词…',
+        zero_results: '未找到相关结果',
+        many_results: '找到 SEARCH_COUNT 个结果',
+        one_result:   '找到 1 个结果',
+      }
+    });
+  });
+</script>
+{{ end }}

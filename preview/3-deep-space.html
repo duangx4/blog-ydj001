@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>预览 03 · 深空玻璃 — ydj001.xyz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" rel="stylesheet">
+<style>
+/* ============================================================
+   预览 03 · 深空玻璃 (Deep Space Glass)
+   —— 把 resources 页的 .dax-intro 毛玻璃推成全站语言
+   ============================================================ */
+
+:root, [data-theme="dark"] {
+  --bg:        #060a17;
+  --text:      #eaf1ff;
+  --text-mid:  #a9b6d4;
+  --text-dim:  #6b7891;
+  --accent:    #4fc3ff;
+  --accent-2:  #8b6cff;
+  --accent-3:  #35e0c4;
+
+  --glass:        rgba(20, 28, 50, 0.42);
+  --glass-hi:     rgba(30, 40, 68, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.11);
+  --glass-top:    rgba(255, 255, 255, 0.06);
+  --blur:         18px;
+
+  --orb-1: rgba(79, 195, 255, 0.55);
+  --orb-2: rgba(139, 108, 255, 0.48);
+  --orb-3: rgba(53, 224, 196, 0.34);
+
+  --shadow:    0 18px 48px -18px rgba(0, 0, 0, 0.75);
+  --shadow-hi: 0 26px 60px -20px rgba(79, 195, 255, 0.42);
+}
+[data-theme="light"] {
+  --bg:        #eef3fb;
+  --text:      #101a2e;
+  --text-mid:  #48576f;
+  --text-dim:  #7d8aa0;
+  --accent:    #1a7fc4;
+  --accent-2:  #6b4ce0;
+  --accent-3:  #118e7a;
+
+  --glass:        rgba(255, 255, 255, 0.62);
+  --glass-hi:     rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.72);
+  --glass-top:    rgba(255, 255, 255, 0.9);
+  --blur:         18px;
+
+  --orb-1: rgba(79, 195, 255, 0.5);
+  --orb-2: rgba(139, 108, 255, 0.36);
+  --orb-3: rgba(53, 224, 196, 0.34);
+
+  --shadow:    0 18px 44px -20px rgba(30, 58, 110, 0.28);
+  --shadow-hi: 0 26px 56px -20px rgba(26, 127, 196, 0.34);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  font-size: 16px;
+  line-height: 1.82;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background .4s ease, color .4s ease;
+}
+
+/* ---------- 动态光晕背景 ---------- */
+.orbs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+}
+.orb-1 {
+  width: 62vw; height: 62vw;
+  top: -18vw; left: -14vw;
+  background: var(--orb-1);
+  animation: drift1 26s ease-in-out infinite;
+}
+.orb-2 {
+  width: 54vw; height: 54vw;
+  top: 24vh; right: -18vw;
+  background: var(--orb-2);
+  animation: drift2 32s ease-in-out infinite;
+}
+.orb-3 {
+  width: 46vw; height: 46vw;
+  bottom: -16vw; left: 22vw;
+  background: var(--orb-3);
+  animation: drift3 38s ease-in-out infinite;
+}
+@keyframes drift1 {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  50%     { transform: translate(6vw, 5vh) scale(1.12); }
+}
+@keyframes drift2 {
+  0%,100% { transform: translate(0, 0) scale(1.05); }
+  50%     { transform: translate(-7vw, -6vh) scale(0.95); }
+}
+@keyframes drift3 {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  50%     { transform: translate(-5vw, -4vh) scale(1.15); }
+}
+
+/* 细星点 */
+.stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 22%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1.2px 1.2px at 68% 14%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1.6px 1.6px at 84% 62%, rgba(255,255,255,.45), transparent),
+    radial-gradient(1.1px 1.1px at 34% 78%, rgba(255,255,255,.35), transparent),
+    radial-gradient(1.3px 1.3px at 52% 46%, rgba(255,255,255,.3), transparent);
+}
+[data-theme="light"] .stars { opacity: .25; }
+[data-theme="dark"]  .stars { opacity: .8; }
+
+/* ---------- 等宽只用于数字/元信息 ---------- */
+.mono, time, .stat-num, .tag, code, pre, .eyebrow { font-family: "JetBrains Mono", Consolas, monospace; }
+
+h1, h2, h3, h4, .post-title, .brand { font-family: "LXGW WenKai", "Noto Sans SC", sans-serif; }
+
+/* ============================================================
+   毛玻璃基础
+   ============================================================ */
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(170%);
+  backdrop-filter: blur(var(--blur)) saturate(170%);
+  box-shadow: var(--shadow), inset 0 1px 0 var(--glass-top);
+}
+
+/* ============================================================
+   顶栏
+   ============================================================ */
+nav.top {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 28px;
+  height: 66px;
+  background: var(--glass);
+  border-bottom: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+.brand {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: .02em;
+}
+.brand::before {
+  content: "";
+  display: inline-block;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: 1px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px var(--accent);
+}
+nav.top ul {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  margin: 0; padding: 0;
+  flex: 1;
+}
+nav.top a {
+  display: block;
+  font-size: 14px;
+  color: var(--text-mid);
+  text-decoration: none;
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: color .2s, background .2s, border-color .2s;
+}
+nav.top a:hover {
+  color: var(--text);
+  background: var(--glass-hi);
+  border-color: var(--glass-border);
+}
+nav.top a.active {
+  color: var(--text);
+  background: var(--glass-hi);
+  border-color: var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-top);
+}
+nav.top .caret::after { content: " ⌄"; font-size: 10px; opacity: .55; }
+
+.theme-btn {
+  margin-left: auto;
+  font-size: 12.5px;
+  font-family: inherit;
+  color: var(--text-mid);
+  background: var(--glass-hi);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 6px 15px;
+  cursor: pointer;
+  transition: color .2s, box-shadow .2s;
+}
+.theme-btn:hover { color: var(--accent); box-shadow: 0 0 18px -4px var(--accent); }
+
+/* ============================================================
+   容器
+   ============================================================ */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 28px 90px;
+}
+section { margin-bottom: 64px; }
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 20px;
+}
+
+/* ============================================================
+   Profile
+   ============================================================ */
+.profile {
+  text-align: center;
+  padding: 66px 0 10px;
+}
+.avatar-ring {
+  display: inline-block;
+  padding: 5px;
+  border-radius: 50%;
+  margin-bottom: 22px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+  box-shadow: 0 0 34px -6px var(--accent);
+}
+.avatar {
+  width: 126px; height: 126px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 3px solid var(--bg);
+}
+.avatar-fallback {
+  width: 126px; height: 126px;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-family: "LXGW WenKai", serif;
+  font-size: 48px;
+  color: var(--accent);
+  border: 3px solid var(--bg);
+  background: var(--glass-hi);
+}
+.profile h1 {
+  font-size: clamp(30px, 5.4vw, 46px);
+  font-weight: 700;
+  letter-spacing: .01em;
+  margin: 0 0 12px;
+  background: linear-gradient(135deg, var(--text) 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.headline { font-size: 16px; color: var(--text-mid); margin: 0 0 6px; }
+.bio { font-size: 13.5px; color: var(--text-dim); margin: 0 0 24px; }
+
+.pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 22px; }
+.pill {
+  font-size: 12.5px;
+  color: var(--text-mid);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 5px 15px;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 var(--glass-top);
+}
+
+.socials { display: flex; gap: 18px; justify-content: center; font-size: 13px; }
+.socials a { color: var(--text-dim); text-decoration: none; transition: color .2s; }
+.socials a:hover { color: var(--accent); }
+
+/* ============================================================
+   文章卡片
+   ============================================================ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+  gap: 22px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 22px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .35s cubic-bezier(.34,1.4,.64,1), box-shadow .35s ease;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hi), inset 0 1px 0 var(--glass-top);
+}
+.card .thumb {
+  aspect-ratio: 1200 / 630;
+  overflow: hidden;
+  background: var(--glass-hi);
+  border-bottom: 1px solid var(--glass-border);
+}
+.card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+.card:hover .thumb img { transform: scale(1.05); }
+.card .body { padding: 18px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+.card time { display: block; font-size: 11.5px; color: var(--text-dim); margin-bottom: 9px; letter-spacing: .04em; }
+.post-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0 0 10px;
+  transition: color .2s;
+}
+.card:hover .post-title { color: var(--accent); }
+.post-desc { font-size: 13.5px; color: var(--text-mid); line-height: 1.75; margin: 0 0 16px; flex: 1; }
+.card .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.tag {
+  font-size: 11px;
+  color: var(--text-mid);
+  background: var(--glass-hi);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+/* ============================================================
+   封面问题演示
+   ============================================================ */
+.cover-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 22px; }
+.demo-card { border-radius: 22px; overflow: hidden; }
+.demo-card .thumb { aspect-ratio: 1200/630; overflow: hidden; border-bottom: 1px solid var(--glass-border); background: var(--glass-hi); }
+.demo-card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.demo-card .body { padding: 15px 18px 18px; }
+.demo-card h4 { font-size: 15px; margin: 10px 0 5px; font-weight: 700; }
+.demo-card p { font-size: 12.5px; color: var(--text-dim); margin: 0; }
+.demo-state {
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+.state-bad { color: #ff8095; border-color: rgba(255,128,149,.5); }
+.state-ok  { color: var(--accent-3); border-color: color-mix(in srgb, var(--accent-3) 50%, transparent); }
+
+/* ============================================================
+   正文
+   ============================================================ */
+.prose-wrap {
+  border-radius: 26px;
+  padding: 40px 44px 34px;
+}
+.prose { max-width: 100%; font-size: 16.5px; line-height: 1.9; }
+.prose h2 {
+  font-size: 25px;
+  font-weight: 700;
+  margin: 44px 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--glass-border);
+}
+.prose h2:first-child { margin-top: 0; }
+.prose h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 34px 0 12px;
+}
+.prose p { margin: 0 0 18px; }
+
+.prose blockquote {
+  margin: 26px 0;
+  padding: 16px 22px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  border-left: 3px solid var(--accent);
+  background: var(--glass-hi);
+  color: var(--text-mid);
+  font-size: 14.5px;
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+
+.prose code {
+  font-size: .87em;
+  background: var(--glass-hi);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  padding: 1px 6px;
+  color: var(--accent);
+}
+.prose pre {
+  background: rgba(4, 8, 20, 0.55);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  margin: 0 0 22px;
+  font-size: 13px;
+  line-height: 1.78;
+}
+[data-theme="light"] .prose pre { background: rgba(22, 32, 54, 0.055); }
+.prose pre code { background: none; border: none; padding: 0; color: var(--text); }
+.prose pre .c { color: var(--text-dim); }
+.prose pre .k { color: var(--accent); }
+.prose pre .s { color: var(--accent-3); }
+
+.prose ul { padding-left: 22px; margin: 0 0 18px; }
+.prose li { margin-bottom: 9px; }
+.prose li::marker { color: var(--accent); }
+
+.prose table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 0 0 24px; }
+.prose th, .prose td { padding: 11px 13px; text-align: left; border-bottom: 1px solid var(--glass-border); }
+.prose th {
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 500;
+  background: var(--glass-hi);
+}
+.prose tr:last-child td { border-bottom: none; }
+.prose strong { color: var(--text); font-weight: 700; }
+.prose a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); }
+
+/* ============================================================
+   页脚 + 标注
+   ============================================================ */
+footer.site {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--glass-border);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  padding: 30px 28px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.footer-inner a { color: var(--text-mid); text-decoration: none; }
+.footer-inner a:hover { color: var(--accent); }
+
+.spec {
+  position: relative;
+  z-index: 1;
+  background: rgba(4, 8, 20, 0.4);
+  border-top: 1px solid var(--glass-border);
+  padding: 20px 28px 28px;
+  font-size: 12px;
+  line-height: 1.95;
+  color: var(--text-dim);
+}
+[data-theme="light"] .spec { background: rgba(255,255,255,.5); }
+.spec-inner { max-width: 1060px; margin: 0 auto; }
+.spec b { color: var(--accent); font-weight: 600; }
+.swatches { display: inline-flex; gap: 6px; vertical-align: -2px; margin-left: 6px; }
+.sw { width: 13px; height: 13px; display: inline-block; border-radius: 3px; border: 1px solid var(--glass-border); }
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 900px) {
+  nav.top { flex-wrap: wrap; height: auto; padding: 12px 18px; gap: 10px; }
+  nav.top ul { order: 3; width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+  nav.top ul li { flex: 0 0 auto; }
+  main { padding: 0 18px 70px; }
+  .prose-wrap { padding: 28px 22px 24px; border-radius: 20px; }
+  .orb { filter: blur(70px); }
+}
+@media (max-width: 640px) {
+  body { font-size: 15.5px; }
+  .profile { padding: 44px 0 6px; }
+  .avatar, .avatar-fallback { width: 100px; height: 100px; }
+  .card-grid { grid-template-columns: 1fr; gap: 18px; }
+  .prose { font-size: 16px; }
+  .prose h2 { font-size: 21px; }
+  .prose table { font-size: 13px; }
+  .prose th, .prose td { padding: 8px 9px; }
+  section { margin-bottom: 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .orb { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="orbs" aria-hidden="true">
+  <span class="orb orb-1"></span>
+  <span class="orb orb-2"></span>
+  <span class="orb orb-3"></span>
+</div>
+<div class="stars" aria-hidden="true"></div>
+
+<nav class="top">
+  <a class="brand" href="#">ydj001.xyz</a>
+  <ul>
+    <li><a href="#" class="active">博客</a></li>
+    <li><a href="#" class="caret">自我介绍</a></li>
+    <li><a href="#">资源</a></li>
+    <li><a href="#">留言板</a></li>
+    <li><a href="#">标签</a></li>
+    <li><a href="#">分类</a></li>
+    <li><a href="#" class="caret">个人控制台</a></li>
+  </ul>
+  <button class="theme-btn" id="themeBtn">切换明暗</button>
+</nav>
+
+<main>
+
+  <!-- ============ Profile ============ -->
+  <section class="profile">
+    <div class="avatar-ring">
+      <img class="avatar" id="avatar" src="../assets/img/avatar.jpg" alt="实力人老大 · DAX">
+      <div class="avatar-fallback" id="avatarFallback">Y</div>
+    </div>
+    <h1>实力人老大 · DAX</h1>
+    <p class="headline">电气工程 · 嵌入式 · 折腾爱好者</p>
+    <p class="bio">电气工程 / 无人机飞手 / 业余运维 / 从 MC 模组服到 Docker 集群</p>
+    <div class="pills">
+      <span class="pill">电气工程</span>
+      <span class="pill">CAAC 超视距无人机机长</span>
+      <span class="pill">业余运维玩家</span>
+    </div>
+    <div class="socials">
+      <a href="#">github</a><a href="#">wechat</a><a href="#">qq</a><a href="#">email</a><a href="#">rss</a>
+    </div>
+  </section>
+
+  <!-- ============ 文章卡片 ============ -->
+  <section>
+    <p class="eyebrow">最近更新</p>
+    <div class="card-grid">
+
+      <a class="card glass" href="#">
+        <span class="thumb"><img src="../static/img/featured.svg" alt=""></span>
+        <span class="body">
+          <time>2026-08-18</time>
+          <span class="post-title">我的 DAX 算某种程度上的 AGI 吗？（下篇 · 差距在哪）</span>
+          <span class="post-desc">DAX 很强，但它算 AGI 吗？结论是不算——用通用智能的三个硬门槛来量一量。</span>
+          <span class="tags"><span class="tag">DAX</span><span class="tag">AI Agent</span><span class="tag">AGI</span></span>
+        </span>
+      </a>
+
+      <a class="card glass" href="#">
+        <span class="thumb"><img src="../static/img/covers/blog-evolution.png" alt=""></span>
+        <span class="body">
+          <time>2026-08-12</time>
+          <span class="post-title">MC 服务器大迁移：从 NAT 机到 VM 的 72 小时</span>
+          <span class="post-desc">把跑在山东枣庄 NAT 机上的 MC 模组服整体迁到 VMware 虚拟机，顺带重建面板、机器人和监控体系。</span>
+          <span class="tags"><span class="tag">运维</span><span class="tag">MC</span><span class="tag">FRP</span></span>
+        </span>
+      </a>
+
+      <a class="card glass" href="#">
+        <span class="thumb"><img src="../static/img/featured.svg" alt=""></span>
+        <span class="body">
+          <time>2026-07-27</time>
+          <span class="post-title">一次优班答辩PPT引发的「技术路线战争」</span>
+          <span class="post-desc">从 python-pptx 到多模态横评再到模板克隆——一个工科生的 PPT 折腾纪实。</span>
+          <span class="tags"><span class="tag">ppt</span><span class="tag">AI</span><span class="tag">自动化</span></span>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ 封面问题 ============ -->
+  <section>
+    <p class="eyebrow">封面问题</p>
+    <p style="font-size:14.5px;color:var(--text-mid);margin:0 0 22px;max-width:760px">
+      注意上面第 1 张和第 3 张卡片——它们用的是同一张默认图，在毛玻璃卡片里尤其扎眼。
+      补齐逐篇封面是这套风格收益最大的动作。
+    </p>
+    <div class="cover-demo">
+      <div class="demo-card glass">
+        <div class="thumb"><img src="../static/img/featured.svg" alt="默认封面"></div>
+        <div class="body">
+          <span class="demo-state state-bad">现状 ×9 篇</span>
+          <h4>回落默认封面</h4>
+          <p>所有无封面文章共用同一张图</p>
+        </div>
+      </div>
+      <div class="demo-card glass">
+        <div class="thumb"><img src="../static/img/covers/blog-evolution.png" alt="专属封面"></div>
+        <div class="body">
+          <span class="demo-state state-ok">现状 ×1 篇</span>
+          <h4>已有专属封面</h4>
+          <p>《博客进化论》——卡片立刻可区分</p>
+        </div>
+      </div>
+      <div class="demo-card glass">
+        <div class="thumb" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0b1230,#1a2a5c,#2e1f5e)">
+          <span style="color:#4fc3ff;font-size:14px;letter-spacing:.14em;font-family:'JetBrains Mono',monospace">[ 深空网格 ]</span>
+        </div>
+        <div class="body">
+          <span class="demo-state state-ok">改造后 ×10 篇</span>
+          <h4>光晕 + 渐变封面</h4>
+          <p>深蓝底 + 青紫渐变 + 域名水印</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 正文节选 ============ -->
+  <section>
+    <p class="eyebrow">正文节选</p>
+    <div class="prose-wrap glass">
+      <article class="prose">
+
+        <blockquote>
+          <p>系列上篇：《我的 DAX：一个学生自建的个人 Agent 系统（What / Why / How）》</p>
+        </blockquote>
+
+        <h2>结论先行</h2>
+        <p><strong>不算。</strong>DAX 是一个相当强的通用任务 Agent（GPA，General Purpose Agent），但<strong>不是</strong> AGI（通用人工智能）。这两个名字只差一个词，本质差一层。</p>
+
+        <h3>① 跨域泛化：只强在「语言 + 已学工具」</h3>
+        <ul>
+          <li><strong>AGI</strong> 遇到全新领域，能「边学边做」，把别的领域的经验迁移过来。</li>
+          <li><strong>DAX</strong> 只在「语言理解」和「它训练过/见过的工具调用」里强。换到一个完全没见过的领域，它<strong>没有自我学习的机制</strong>——参数是训练时定死的。</li>
+        </ul>
+        <p>它很博学，但那是<strong>别人（训练时）教出来的</strong>，不是它自己摸索出来的。</p>
+
+        <h2>方案选型</h2>
+        <table>
+          <thead>
+            <tr><th>方案</th><th>选不选</th><th>理由</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Halo / WordPress</td><td>❌</td><td>2G 内存跑动态站浪费，还要操心数据库、更新、安全</td></tr>
+            <tr><td>Hexo</td><td>❌</td><td>依赖 Node.js，不想多装一套生态</td></tr>
+            <tr><td><strong>Hugo</strong></td><td><strong>✅</strong></td><td>一个二进制，构建 100ms，纯静态 = 零维护</td></tr>
+          </tbody>
+        </table>
+
+        <p>部署走 <code>ed25519</code> 密钥，不再用 sshpass 明文密码：</p>
+        <pre><code><span class="c"># 生成部署密钥</span>
+<span class="k">ssh-keygen</span> -t ed25519 -C <span class="s">'blog-deploy'</span>
+
+<span class="c"># 公钥扔到 1 号机的 authorized_keys</span>
+<span class="k">cat</span> ~/.ssh/id_ed25519.pub | <span class="k">ssh</span> blog@hk <span class="s">'cat >> ~/.ssh/authorized_keys'</span></code></pre>
+
+        <p>完整的方案对比和选型理由在 <a href="#">《从零搭个人博客》</a>里。</p>
+
+      </article>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="footer-inner">
+    <span>© 2026 ydj001.xyz</span>
+    <a href="#">标签</a>
+    <a href="#">分类</a>
+    <a href="#">RSS</a>
+    <span style="margin-left:auto">Hugo · Blowfish</span>
+  </div>
+</footer>
+
+<div class="spec">
+  <div class="spec-inner">
+    <div><b>风格 03 · 深空玻璃（Deep Space Glass）</b></div>
+    <div>主色 <b>#4fc3ff</b>（青）· 辅色 <b>#8b6cff</b>（紫）/ <b>#35e0c4</b>（薄荷）
+      <span class="swatches"><span class="sw" style="background:#4fc3ff"></span><span class="sw" style="background:#8b6cff"></span><span class="sw" style="background:#35e0c4"></span><span class="sw" style="background:#060a17"></span></span>
+    </div>
+    <div>字体 标题 <b>LXGW WenKai</b> · 正文 <b>Noto Sans SC</b> · 元信息 <b>JetBrains Mono</b></div>
+    <div>手法 动态渐变光晕（纯 CSS 动画）· 毛玻璃 <b>backdrop-filter</b> · 大圆角 22-26px · 渐变大标题</div>
+    <div>代价 <b>中</b> —— <b>backdrop-filter</b> 在低端移动设备和部分浏览器上开销较大，长列表页需实测</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+  var saved = null;
+  try { saved = localStorage.getItem('preview-theme'); } catch (e) {}
+  if (saved === 'light' || saved === 'dark') {
+    root.setAttribute('data-theme', saved);
+  } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    root.setAttribute('data-theme', 'light');
+  }
+  btn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('preview-theme', next); } catch (e) {}
+  });
+  var img = document.getElementById('avatar');
+  img.addEventListener('error', function () {
+    img.style.display = 'none';
+    document.getElementById('avatarFallback').style.display = 'flex';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{{- $currentPage := . -}}
+<nav class="top" aria-label="主导航">
+  {{- /* 品牌印章 */ -}}
+  <a href="{{ .Site.BaseURL | relURL }}" class="brand" aria-label="{{ .Site.Title }} 首页">
+    <span class="seal" aria-hidden="true">印</span>
+    {{ .Site.Title }}
+  </a>
+
+  {{- /* 汉堡按钮（移动端） */ -}}
+  <button class="nav-toggle" aria-label="展开导航" aria-expanded="false" aria-controls="nav-menu" id="nav-toggle">
+    ☰
+  </button>
+
+  {{- /* 导航链接 */ -}}
+  <ul id="nav-menu" role="list">
+    {{- range .Site.Menus.main -}}
+      {{- $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) -}}
+      {{- if .HasChildren -}}
+        <li class="nav-has-dropdown">
+          <a href="{{ .URL | relURL }}"
+             {{ if $active }}class="active" aria-current="page"{{ end }}>
+            {{ .Name }}<span class="caret" aria-hidden="true"></span>
+          </a>
+          <ul class="nav-dropdown" role="list">
+            {{- range .Children -}}
+              {{- $childActive := $currentPage.IsMenuCurrent "main" . -}}
+              <li>
+                <a href="{{ .URL | relURL }}"
+                   {{ if $childActive }}aria-current="page"{{ end }}>
+                  {{ .Name }}
+                </a>
+              </li>
+            {{- end -}}
+          </ul>
+        </li>
+      {{- else -}}
+        <li>
+          <a href="{{ .URL | relURL }}"
+             {{ if $active }}class="active" aria-current="page"{{ end }}>
+            {{ .Name }}
+          </a>
+        </li>
+      {{- end -}}
+    {{- end -}}
+  </ul>
+
+  {{- /* 主题切换 */ -}}
+  <button class="theme-btn" aria-label="切换到白昼模式" type="button">白昼</button>
+</nav>
+
+{{- /* 移动端菜单开关脚本 */ -}}
+<script>
+(function(){
+  var btn=document.getElementById("nav-toggle");
+  var menu=document.getElementById("nav-menu");
+  if(!btn||!menu)return;
+  btn.addEventListener("click",function(){
+    var open=menu.classList.toggle("open");
+    btn.setAttribute("aria-expanded",open?"true":"false");
+    btn.setAttribute("aria-label",open?"关闭导航":"展开导航");
+  });
+})();
+</script>

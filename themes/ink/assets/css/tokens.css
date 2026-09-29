@@ -1,0 +1,71 @@
+/* ==========================================================
+   tokens.css — 墨与器 设计令牌
+   精确来自 preview/5-ink-instrument.html
+   ========================================================== */
+
+:root, [data-theme="light"] {
+  --paper:      #f4f0e6;
+  --paper-2:    #ece7da;
+  --paper-3:    #e3ddcd;
+
+  /* 墨分五色 */
+  --ink-1:      #14120f;
+  --ink-2:      #2b2823;
+  --ink-3:      #45413a;
+  --ink-4:      #7d786d;
+  --ink-5:      #b0aa9d;
+  /* 小号元信息文字专用：保证在 paper / paper-2 / paper-3 三级底色上都 >= 4.5:1（AA） */
+  --ink-meta:   #645f56;
+
+  --line:       rgba(20, 18, 15, 0.14);
+  --line-soft:  rgba(20, 18, 15, 0.07);
+
+  /* 三味颜料 */
+  --stone-blue:  #2f6f92;
+  --stone-green: #5c8360;
+  --cinnabar:    #a83a2c;
+
+  --grain-opacity: 0.5;
+  --grain-blend:   multiply;
+  --code-bg:       rgba(20, 18, 15, 0.045);
+  --shadow:        none;
+}
+
+[data-theme="dark"] {
+  --paper:      #100f0d;
+  --paper-2:    #171613;
+  --paper-3:    #1f1d19;
+
+  /* 拓片：黑底白笔 */
+  --ink-1:      #f2ede2;
+  --ink-2:      #ded7c9;
+  --ink-3:      #b6ae9f;
+  --ink-4:      #7d7668;
+  --ink-5:      #423e36;
+  /* 小号元信息文字专用：保证在 paper / paper-2 / paper-3 三级底色上都 >= 4.5:1（AA） */
+  --ink-meta:   #8b8476;
+
+  --line:       rgba(242, 237, 226, 0.15);
+  --line-soft:  rgba(242, 237, 226, 0.07);
+
+  --stone-blue:  #6fb3d4;
+  --stone-green: #8fbf92;
+  --cinnabar:    #d96a58;
+
+  --grain-opacity: 0.42;
+  --grain-blend:   screen;
+  --code-bg:       rgba(242, 237, 226, 0.05);
+  --shadow:        none;
+}
+
+/* 主题专有布局令牌 */
+:root {
+  --nav-h:    68px;
+  --max-w:    940px;
+  --pad-x:    34px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --t-fast:   0.25s ease;
+  --t-mid:    0.3s ease;
+  --t-slow:   0.45s ease;
+}

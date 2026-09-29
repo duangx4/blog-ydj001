@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>资源发布后台 · ydj001</title>
+</head>
+<body>
+  <!-- 配置在同目录 config.yml，Sveltia 会自动加载 -->
+  <script src="https://unpkg.com/@sveltia/cms@0.223.0/dist/sveltia-cms.js"
+          integrity="sha384-kGBT9JIpQwruwT9A4VINu7Zmzw3Qttn/tO+EBFTddw1/PFUnt4074uXE9RNhX3N3"
+          crossorigin="anonymous"></script>
+  <script>
+    // 让编辑器把项目自定义 shortcode 识别成可填表的组件，而不是一坨原始文本。
+    // 属性顺序与 layouts/shortcodes 的写法一致；手写顺序不同时只是退化为普通文本，不会丢内容。
+    const attr = (name) => `(?: ${name}="(?<${name}>[^"]*)")?`;
+    const q = (v) => String(v ?? '').replace(/"/g, '&quot;');
+
+    CMS.registerEditorComponent({
+      id: 'pan-link',
+      label: '网盘卡片',
+      fields: [
+        { name: 'name', label: '资源名', widget: 'string', default: '' },
+        { name: 'url', label: '网盘链接', widget: 'string', default: '' },
+        { name: 'code', label: '提取码', widget: 'string', required: false, default: '' },
+        { name: 'size', label: '大小', widget: 'string', required: false, default: '' },
+        { name: 'note', label: '备注', widget: 'string', required: false, default: '' },
+      ],
+      pattern: new RegExp(
+        '^\\{\\{< pan-link' + attr('name') + attr('url') + attr('code') + attr('size') + attr('note') + ' >\\}\\}$', 'm'
+      ),
+      toBlock: ({ name, url, code, size, note }) => {
+        const parts = [`name="${q(name)}"`, `url="${q(url)}"`];
+        if (code) parts.push(`code="${q(code)}"`);
+        if (size) parts.push(`size="${q(size)}"`);
+        if (note) parts.push(`note="${q(note)}"`);
+        return `{{< pan-link ${parts.join(' ')} >}}`;
+      },
+      toPreview: ({ name, size }) => `📦 网盘：${name || '(未命名)'}${size ? ' · ' + size : ''}`,
+    });
+
+    CMS.registerEditorComponent({
+      id: 'download-table',
+      label: '下载表格',
+      fields: [
+        { name: 'caption', label: '表格说明', widget: 'string', required: false, default: '' },
+        { name: 'hash', label: '校验值列名（如 SHA256）', widget: 'string', required: false, default: '' },
+        {
+          name: 'rows', label: '数据行', widget: 'text', default: '',
+          hint: '每行一条，用 | 分隔，不适用的格写 -。3 列：名称 | 大小 | 下载；6 列：平台 | 架构 | 版本 | 大小 | 校验值 | 下载。下载格填网址，或填本页上传的附件文件名。',
+        },
+      ],
+      pattern: new RegExp(
+        '^\\{\\{< download-table' + attr('caption') + attr('hash') + ' >\\}\\}\\n(?<rows>[\\s\\S]*?)\\n?\\{\\{< /download-table >\\}\\}$', 'm'
+      ),
+      toBlock: ({ caption, hash, rows }) => {
+        const parts = [];
+        if (caption) parts.push(`caption="${q(caption)}"`);
+        if (hash) parts.push(`hash="${q(hash)}"`);
+        const open = `{{< download-table${parts.length ? ' ' + parts.join(' ') : ''} >}}`;
+        return `${open}\n${String(rows ?? '').trim()}\n{{< /download-table >}}`;
+      },
+      toPreview: ({ caption, rows }) => {
+        const n = String(rows ?? '').split('\n').filter((l) => l.trim()).length;
+        return `⬇️ 下载表格：${n} 行${caption ? ' · ' + caption : ''}`;
+      },
+    });
+  </script>
+</body>
+</html>

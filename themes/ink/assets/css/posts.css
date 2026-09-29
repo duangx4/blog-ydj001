@@ -1,0 +1,111 @@
+/* ==========================================================
+   posts.css — 文章列表（竖脊线 + 路点 + post 卡信息）
+   ========================================================== */
+
+/* 竖脊线容器 */
+.posts {
+  position: relative;
+  padding-left: 34px;
+}
+
+/* 竖脊线 */
+.posts::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 12px;
+  bottom: 12px;
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    var(--line) 6%,
+    var(--line) 94%,
+    transparent 100%);
+}
+
+/* 单篇文章行 */
+.post {
+  position: relative;
+  display: block;
+  padding: 26px 0 28px;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid var(--line-soft);
+  transition: color var(--t-fast);
+}
+
+.post:last-child { border-bottom: none; }
+
+/* 路点 */
+.post::before {
+  content: "";
+  position: absolute;
+  left: -34px;
+  top: 38px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1.4px solid var(--ink-5);
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+
+.post:hover::before {
+  border-color: var(--cinnabar);
+  background: var(--cinnabar);
+}
+
+/* 时间戳 */
+.post time {
+  display: block;
+  font-size: 11.5px;
+  letter-spacing: .18em;
+  color: var(--ink-meta);
+  margin-bottom: 10px;
+}
+
+/* 标题 */
+.post-title {
+  display: block;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: .02em;
+  color: var(--ink-2);
+  margin: 0 0 12px;
+  transition: color var(--t-fast);
+}
+
+.post:hover .post-title { color: var(--stone-blue); }
+
+/* 摘要 */
+.post-desc {
+  display: block;
+  font-size: 14.5px;
+  color: var(--ink-4);
+  line-height: 1.85;
+  margin: 0 0 14px;
+  max-width: 64ch;
+}
+
+/* 标签行 */
+.post .tags {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 11.5px;
+  color: var(--ink-meta);
+  letter-spacing: .05em;
+}
+
+.tag::before {
+  content: "· ";
+  color: var(--stone-green);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post, .post::before, .post-title { transition: none; }
+}

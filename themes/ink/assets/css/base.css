@@ -1,0 +1,78 @@
+/* ==========================================================
+   base.css — reset + body + 纸纹 + 字体分工
+   ========================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink-3);
+  font-family: "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  font-size: 16px;
+  line-height: 1.9;
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--t-slow), color var(--t-slow);
+}
+
+/* 纸纹 / 拓片石面 —— 同一层 SVG 噪声，两种混合模式 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23g)'/></svg>");
+}
+
+/* 字体分工：楷（题）/ 黑（文）/ 等宽（数） */
+h1, h2, h3, h4,
+.brand, .post-title, .section-head, .seal-char {
+  font-family: "LXGW WenKai", "Noto Serif SC", "Songti SC", serif;
+}
+
+.mono, time, code, pre,
+.stat-num, .eyebrow, .tag, .chip, .kv-v {
+  font-family: "JetBrains Mono", Consolas, monospace;
+}
+
+/* 链接基础 */
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* 飞白：两端渐隐的墨线 */
+.rule {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--line) 8%,
+    var(--line) 92%,
+    transparent 100%);
+}
+
+/* 进度条 */
+#reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--stone-blue);
+  z-index: 200;
+  transition: width 0.1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  body { transition: none; }
+  #reading-progress { transition: none; }
+}

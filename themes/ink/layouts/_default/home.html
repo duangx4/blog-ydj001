@@ -1,0 +1,33 @@
+{{ define "main" }}
+{{- $pages := where .Site.RegularPages "Type" "blog" | first 5 -}}
+<section>
+  {{ partial "home/profile.html" . }}
+</section>
+
+<section>
+  <h2 class="section-head">近期文章</h2>
+  <div class="posts">
+    {{- range $pages -}}
+    <a class="post" href="{{ .Permalink }}">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">
+        {{- .Date.Format "2006 · 01 · 02" -}}
+      </time>
+      <span class="post-title">{{ .Title }}</span>
+      {{- with .Description -}}
+      <span class="post-desc">{{ . }}</span>
+      {{- end -}}
+      {{- with .Params.tags -}}
+      <span class="tags">
+        {{- range . -}}<span class="tag">{{ . }}</span>{{- end -}}
+      </span>
+      {{- end -}}
+    </a>
+    {{- end -}}
+  </div>
+  <p style="margin-top:28px">
+    <a href="{{ "blog" | relURL }}" style="font-size:13.5px;color:var(--stone-blue);text-decoration:none;letter-spacing:.06em;">
+      查看全部文章 →
+    </a>
+  </p>
+</section>
+{{ end }}

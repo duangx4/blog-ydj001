@@ -3,16 +3,9 @@ title: "留言板"
 slug: "message"
 description: "有啥想说的？留言即可，无需登录。"
 layout: "simple"
-showComments: false
+showComments: true
 ---
 
 有啥想说的？留言即可，无需登录。
 
-<div id="twikoo"></div>
-<script src="https://cdn.jsdelivr.net/npm/twikoo@1.7.15/dist/twikoo.all.min.js"></script>
-<script>
-twikoo.init({
-  envId: "https://twikoo.ydj001.xyz",
-  el: "#twikoo",
-});
-</script>
+> 想聊跟某篇文章相关的问题，直接在那篇文章底部留言会更方便归档；资源链接失效也欢迎在这里告诉我。
