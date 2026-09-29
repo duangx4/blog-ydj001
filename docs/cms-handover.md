@@ -224,7 +224,9 @@ rsync -rlptz --delete --exclude='mc/' \
 ### 站主管理贡献者卡片
 
 - 卡片文件在 `content/contributors/<GitHub 登录名>.md`，也可以在本地直接编辑
-- 想删除某张卡片：**后台删不了**（`delete: false`），本地删文件后提交
+- 想删除某张卡片：后台点开卡片，右上角「删除」→ 保存，会开一个删除 PR
+  （只有卡片 `github` 字段是你自己的才删得掉，别人删会被 CI 打回）
+- 注意删卡片**不会**连带删掉 `assets/img/contributors/` 下的头像文件，想清干净要另外删图片
 - 想调整顺序：改各自的 `weight`，越小越靠前
 
 ### 正文短代码

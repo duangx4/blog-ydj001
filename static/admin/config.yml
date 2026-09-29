@@ -41,7 +41,10 @@ collections:
     public_folder: ""
     format: yaml-frontmatter
     create: true
-    delete: false
+    # 删除按钮开关。关掉它只是把入口藏起来，真正的防线是
+    # .github/workflows/resource-ownership.yml 的归属校验：
+    # 只有本人署名的文章才允许删，别人删会被打回。
+    delete: true
     identifier_field: title
     slug:
       editable: [create]
@@ -127,7 +130,9 @@ collections:
     public_folder: /img/contributors
     format: yaml-frontmatter
     create: true
-    delete: false
+    # 同上。注意删卡片不会连带删掉 assets/img/contributors/ 下的头像，
+    # 想清干净要另外提交删图片（或在本地删）。
+    delete: true
     identifier_field: name
     slug:
       editable: [create]

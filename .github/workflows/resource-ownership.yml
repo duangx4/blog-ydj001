@@ -58,18 +58,28 @@ jobs:
                 case "$slug" in
                   */*) echo "::error file=$file::贡献者卡片必须是 content/contributors/<用户名>.md"; fail=1; continue ;;
                 esac
-                # 卡片文件名 + github 字段都必须等于 PR 作者
+                # 卡片文件名必须是自己的登录名（删除时同样成立）
                 if [ "$slug" != "$PR_AUTHOR" ]; then
                   echo "::error file=$file::卡片文件名必须是你的 GitHub 登录名 $PR_AUTHOR（当前是 $slug）"; fail=1; continue
                 fi
-                head_github="$(github_at "$HEAD_SHA" "$file")"
-                if [ "$head_github" != "$PR_AUTHOR" ]; then
-                  echo "::error file=$file::github 字段必须填 $PR_AUTHOR（当前是 ${head_github:-空}）"; fail=1; continue
-                fi
-                # 已有卡片：github 字段不允许被改成别人（防止冒名占用文件）
+                # 已有卡片：原 github 字段属于自己才动得了（防止改掉别人的署名接管卡片）。
+                # 注意这条要在「文件是否还在」之前判断——删除后 HEAD 上读不到字段，
+                # 只看 HEAD 会把合法删除误判成「github 字段为空」。
                 base_github="$(github_at "$BASE_SHA" "$file")"
                 if [ -n "$base_github" ] && [ "$base_github" != "$PR_AUTHOR" ]; then
                   echo "::error file=$file::这张卡片属于 $base_github，无权修改"; fail=1; continue
+                fi
+                # 删除卡片：文件从 HEAD 消失，原署名是自己的就放行
+                if ! git cat-file -e "$HEAD_SHA:$file" 2>/dev/null; then
+                  if [ -z "$base_github" ]; then
+                    echo "::error file=$file::卡片不存在，没有可删除的内容"; fail=1
+                  fi
+                  continue
+                fi
+                # 新增 / 修改：github 字段必须填自己
+                head_github="$(github_at "$HEAD_SHA" "$file")"
+                if [ "$head_github" != "$PR_AUTHOR" ]; then
+                  echo "::error file=$file::github 字段必须填 $PR_AUTHOR（当前是 ${head_github:-空}）"; fail=1; continue
                 fi
                 continue ;;
             esac
@@ -90,26 +100,32 @@ jobs:
                 echo "::error file=$file::贡献者只能修改 content/resources/<slug>/、content/contributors/<用户名>.md 或上传头像"; fail=1; continue ;;
             esac
 
-            [ -n "${seen[$slug]:-}" ] && continue
-            seen[$slug]=1
+            # 已有文章：原署名必须是自己（防止改掉别人的署名来接管文章）。
+            # 这个判断必须对每个改动的文件都跑，不能因为「这篇已经查过」就跳过：
+            # git diff 按字母序输出，cover.png 排在 index.md 前面，先查一次就把 slug
+            # 标记成 seen，紧跟的 index.md 会被 continue 掉，归属校验等于没有。
             index="content/resources/$slug/index.md"
-
-            # 已有文章：原署名必须是自己（防止改掉别人的署名来接管文章）
-            base_authors="$(authors_at "$BASE_SHA" "$index")"
             if git cat-file -e "$BASE_SHA:$index" 2>/dev/null; then
+              base_authors="$(authors_at "$BASE_SHA" "$index")"
               if ! grep -qxF "$PR_AUTHOR" <<<"$base_authors"; then
                 echo "::error file=$index::「$slug」的署名不是 $PR_AUTHOR，无权修改"; fail=1; continue
               fi
             fi
+            seen[$slug]=1
 
-            # 修改后的文章：署名仍须包含自己（删除整篇文章的情况 delete: false 已在后台禁用）
+            # 修改后的文章：署名仍须包含自己
             if git cat-file -e "$HEAD_SHA:$index" 2>/dev/null; then
               head_authors="$(authors_at "$HEAD_SHA" "$index")"
               if ! grep -qxF "$PR_AUTHOR" <<<"$head_authors"; then
                 echo "::error file=$index::authors 必须填你的 GitHub 用户名 $PR_AUTHOR"; fail=1
               fi
             else
-              echo "::error file=$index::不允许删除资源文章或缺少 index.md"; fail=1
+              # HEAD 上没有 index.md：两种情况要分开。
+              # 「原署名是自己」（上面已校验）→ 本人删除，放行；
+              # 「BASE 上本来也没有」→ 新建文章漏了 index.md，或路径写错，拒绝。
+              if ! git cat-file -e "$BASE_SHA:$index" 2>/dev/null; then
+                echo "::error file=$index::缺少 index.md，资源文章必须是 content/resources/<slug>/index.md"; fail=1
+              fi
             fi
           done < <(git diff --name-only "$BASE_SHA...$HEAD_SHA")
 
