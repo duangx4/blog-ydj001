@@ -22,3 +22,6 @@ Thumbs.db
 
 # 已废弃主题（站内改用 themes/ink，不再入库）
 /themes/blowfish/
+
+# Trae 编辑器工作记录（含过程笔记，不入公开仓库）
+/.trae/
