@@ -1,11 +1,16 @@
 # 推送到 master 后自动构建并发布到 VPS
-# 需要的仓库 Secrets（Settings → Secrets and variables → Actions）：
-#   SSH_PRIVATE_KEY  CI 专用的 ed25519 私钥（不要复用本地密钥）
-#   SSH_KNOWN_HOSTS  ssh-keyscan -p <端口> <主机> 的输出，用于校验服务器指纹
+#
+# 需要的仓库 Secrets（Settings → Secrets and variables → Actions → Secrets）：
+#   SSH_PRIVATE_KEY  CI 专用 ed25519 私钥（推荐新建一把，别复用本机那把）
+#   SSH_KNOWN_HOSTS  38.76.201.242 的主机公钥（下面 Preflight 会打印缺失项）
 #   DEPLOY_HOST      38.76.201.242
 #   DEPLOY_USER      root
 #   DEPLOY_PORT      22
 #   DEPLOY_PATH      /var/www/ydj001.xyz
+#
+# ⚠ 历史上这个工作流「Deploy 步骤 0 秒失败」的原因不是脚本 bug：
+#   6 个输入一个都没配齐 → ${USER}@${HOST} 展开成空串 → ssh 打 usage、exit 255。
+#   现在 Preflight 步骤会把「缺了哪一个」直接写进 Actions 摘要，不再是无信息量的红叉。
 name: deploy
 
 on:
@@ -36,6 +41,39 @@ jobs:
       - name: Build
         run: hugo --minify
 
+      # 先验输入，再谈连接：缺哪个就点名说哪个。
+      - name: Preflight deploy inputs
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          missing=()
+          for v in SSH_PRIVATE_KEY SSH_KNOWN_HOSTS DEPLOY_HOST DEPLOY_USER DEPLOY_PORT DEPLOY_PATH; do
+            if [ -z "${!v}" ]; then missing+=("$v"); fi
+          done
+          if [ ${#missing[@]} -gt 0 ]; then
+            {
+              echo "### ❌ 部署输入缺失，共 ${#missing[@]} 项"
+              echo
+              echo "在这个仓库的 **Settings → Secrets and variables → Actions** 里补齐："
+              echo
+              for v in "${missing[@]}"; do echo "- \`$v\`"; done
+              echo
+              echo "补齐后重跑本工作流即可（Actions → deploy → Re-run）。"
+              echo
+              echo "取值参考：\`DEPLOY_HOST=38.76.201.242\`、\`DEPLOY_USER=root\`、\`DEPLOY_PORT=22\`、"
+              echo "\`DEPLOY_PATH=/var/www/ydj001.xyz\`；\`SSH_PRIVATE_KEY\` 是能登录该主机的 ed25519 私钥，"
+              echo "\`SSH_KNOWN_HOSTS\` 用 \`ssh-keyscan -t ed25519 38.76.201.242\` 的输出。"
+            } >> "$GITHUB_STEP_SUMMARY"
+            for v in "${missing[@]}"; do echo "::error::missing secret $v"; done
+            exit 1
+          fi
+          echo "all 6 deploy inputs present"
+
       - name: Configure SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -45,6 +83,9 @@ jobs:
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+          # 私钥若被改行/夹带 CR，ssh 会直接拒绝加载——早点发现
+          ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null
 
       # 暂不加 --delete：服务器上可能有仓库外的文件（如 sync-mc.ps1 推送的 mc/），
       # 确认远端目录内容后再开启，并用 --exclude 保护这些目录。
@@ -56,8 +97,9 @@ jobs:
           TARGET: ${{ secrets.DEPLOY_PATH }}
         run: |
           rsync -rlptz --chown=www-data:www-data \
-            -e "ssh -i ~/.ssh/deploy_key -p ${PORT:-22} -o StrictHostKeyChecking=yes" \
+            -e "ssh -i ~/.ssh/deploy_key -p ${PORT:-22} -o StrictHostKeyChecking=yes -o BatchMode=yes -o ConnectTimeout=15" \
             public/ "${USER}@${HOST}:${TARGET}/"
+          echo "### ✅ 已发布到 ${HOST}:${TARGET}" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Cleanup
         if: always()
