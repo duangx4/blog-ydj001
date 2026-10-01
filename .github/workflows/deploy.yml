@@ -6,7 +6,9 @@
 #   DEPLOY_HOST      38.76.201.242
 #   DEPLOY_USER      root
 #   DEPLOY_PORT      22
-#   DEPLOY_PATH      /var/www/ydj001.xyz
+#   DEPLOY_PATH      .   ← 注意是点号：服务器上这把 CI 密钥被 authorized_keys 强制为
+#                    `rrsync -wo /var/www/ydj001.xyz`（只能写该目录、不能开 shell/读文件），
+#                    路径一律相对于该目录；填绝对路径会写进嵌套子目录
 #
 # ⚠ 历史上这个工作流「Deploy 步骤 0 秒失败」的原因不是脚本 bug：
 #   6 个输入一个都没配齐 → ${USER}@${HOST} 展开成空串 → ssh 打 usage、exit 255。
@@ -66,7 +68,7 @@ jobs:
               echo "补齐后重跑本工作流即可（Actions → deploy → Re-run）。"
               echo
               echo "取值参考：\`DEPLOY_HOST=38.76.201.242\`、\`DEPLOY_USER=root\`、\`DEPLOY_PORT=22\`、"
-              echo "\`DEPLOY_PATH=/var/www/ydj001.xyz\`；\`SSH_PRIVATE_KEY\` 是能登录该主机的 ed25519 私钥，"
+              echo "\`DEPLOY_PATH=.\`（rrsync 限制下相对于 /var/www/ydj001.xyz）；\`SSH_PRIVATE_KEY\` 是 CI 专用 ed25519 私钥，"
               echo "\`SSH_KNOWN_HOSTS\` 用 \`ssh-keyscan -t ed25519 38.76.201.242\` 的输出。"
             } >> "$GITHUB_STEP_SUMMARY"
             for v in "${missing[@]}"; do echo "::error::missing secret $v"; done
