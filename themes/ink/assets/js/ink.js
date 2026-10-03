@@ -46,7 +46,10 @@
       var vh = window.innerHeight || 0;
       els.forEach(function (el) {
         if (el.classList.contains("is-inked")) return;
-        if (el.getBoundingClientRect().top < vh) el.classList.add("is-inked");
+        var r = el.getBoundingClientRect();
+        /* 上下两边都要判：只看 top 会漏掉「很高、跨过整屏」的元素
+           （top 在视口下方但 bottom 还在视口内）。 */
+        if (r.top < vh && r.bottom > 0) el.classList.add("is-inked");
       });
     }, 2500);
   }
@@ -206,11 +209,19 @@
 
     rail.classList.add("is-ready");
 
+    /* 导航栏高度从 CSS 读，别硬编码 —— 它写在 tokens.css 的 --nav-h 里，
+       改了字号/内距这里要跟着变，写死就会让高亮整体偏一截。 */
+    function navHeight() {
+      var v = getComputedStyle(document.documentElement).getPropertyValue("--nav-h");
+      var n = parseInt(v, 10);
+      return isNaN(n) ? 68 : n;
+    }
+
     var current = -1;
 
     function update() {
       var scrollY = window.scrollY;
-      var navH = 92;
+      var navH = navHeight() + 24;
       /* 当前节：最后一个已经滚过导航栏的标题 */
       var idx = 0;
       for (var i = 0; i < headings.length; i++) {
@@ -246,10 +257,17 @@
 
   /* ------------------------------------------------------ */
   function boot() {
-    initReveal();
-    initNav();
-    initCode();
-    initToc();
+    /* 每个模块各自兜错：一块坏了不能连累其它块。
+       reveal 单独包一层的原因是——它一旦抛错，.reveal 会永远停在
+       opacity:0，正文直接看不见；这是唯一不能容忍的失败模式。 */
+    try { initReveal(); } catch (e) {
+      document.querySelectorAll(".reveal").forEach(function (el) {
+        el.classList.add("is-inked");
+      });
+    }
+    try { initNav(); } catch (e) {}
+    try { initCode(); } catch (e) {}
+    try { initToc(); } catch (e) {}
   }
 
   if (document.readyState === "loading") {
