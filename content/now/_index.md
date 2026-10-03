@@ -4,7 +4,7 @@ slug: "now"
 description: "最近在折腾什么"
 layout: "now"
 date: 2026-07-28
-lastmod: 2026-07-28
+lastmod: 2026-10-03
 ---
 
 > 这页来自 [nownownow.com](https://nownownow.com/about) 的灵感。
@@ -12,12 +12,14 @@ lastmod: 2026-07-28
 
 ## 🛠 在折腾
 
+- **广工赛**：正在打
 - **博客改版收尾**：从 Trae 半成品到能交付，UI 细节、字体、阅读体验全打磨
 - **南方电网方向**：无人机巡检岗位调研，差一张低压电工证（训练中）
 - **MC 服 v2**：筹备升级到 1.21，整理服务端 mods 列表
 
 ## 📚 在学
 
+- **PLC 工业自动化**：西门子 S7-1200，软件刚装完，还没开始学
 - 自建 Hugo 主题 ink：tokens / partials / shortcodes，水墨拓片方向
 - Docker Compose 多容器编排（计划把博客/MC 服都容器化）
 - C++ 基础补强（为 STM32 进阶铺路）
