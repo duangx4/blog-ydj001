@@ -1,6 +1,6 @@
 {{ define "main" }}
 
-<header style="text-align:center;padding:1.5rem 0 2.5rem">
+<header class="reveal" style="text-align:center;padding:1.5rem 0 2.5rem">
   <h1>{{ .Title | emojify }}</h1>
   {{ with .Params.description }}
     <p style="font-size:15.5px;color:var(--ink-4);max-width:60ch;margin:.5em auto 0">{{ . }}</p>
@@ -21,17 +21,17 @@
 {{ with $contributors }}
 <section style="margin-bottom:2.5rem">
   <h2 class="resource-category">资源贡献者</h2>
-  {{ range . }}
-    {{ $c := .Params }}
-    {{ $name := $c.name | default .Title }}
+  {{ range $index, $page := . }}
+    {{ $c := $page.Params }}
+    {{ $name := $c.name | default $page.Title }}
     {{ if not $c }}
-      {{ $c = . }}
+      {{ $c = $page }}
       {{ $name = $c.name }}
     {{ end }}
     {{/* 名字兜底到 GitHub 用户名；两者都没有说明是张空卡片，跳过不渲染 */}}
     {{ if not $name }}{{ $name = $c.github }}{{ end }}
     {{ if $name }}
-    <div class="contributor-card">
+    <div class="contributor-card reveal" style="--reveal-delay:{{ printf "%.2fs" (mul (mod $index 4) 0.08) }}">
     {{/* 头像解析顺序：全局资源（CMS 上传到这里，可裁剪压缩）→ static 原样路径（兼容 GitHub 头像直链） */}}
     {{ if $c.avatar }}
       {{ $src := "" }}
@@ -85,10 +85,10 @@
 {{ $resources := .Pages.ByWeight }}
 {{ if $resources }}
 <section class="resources-grid">
-  {{ range $resources }}
-    <a href="{{ .RelPermalink }}" class="resource-card">
-      {{ $p := . }}
-      {{ with .Params.cover }}
+  {{ range $index, $page := $resources }}
+    <a href="{{ $page.RelPermalink }}" class="resource-card reveal" style="--reveal-delay:{{ printf "%.2fs" (mul (mod $index 6) 0.08) }}">
+      {{ $p := $page }}
+      {{ with $page.Params.cover }}
         {{/* CMS 上传的封面存为 bundle 内相对文件名，优先按页面资源解析 */}}
         {{ $src := . | relURL }}
         {{ with $p.Resources.GetMatch . }}{{ $src = .RelPermalink }}{{ end }}
@@ -101,11 +101,11 @@
         </div>
       {{ end }}
       <div class="resource-card-body">
-        <h2 class="resource-card-title">{{ .Title }}</h2>
-        {{ with .Params.description }}
+        <h2 class="resource-card-title">{{ $page.Title }}</h2>
+        {{ with $page.Params.description }}
           <p class="resource-card-desc">{{ . }}</p>
         {{ end }}
-        {{ with .Params.tags }}
+        {{ with $page.Params.tags }}
           <div class="resource-card-meta">
             {{ range . }}<span class="resource-tag">{{ . }}</span>{{ end }}
           </div>

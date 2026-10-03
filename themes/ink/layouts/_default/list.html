@@ -1,15 +1,15 @@
 {{ define "main" }}
 <div class="posts">
-  {{- range .Paginator.Pages -}}
-  <a class="post" href="{{ .Permalink }}">
-    <time datetime="{{ .Date.Format "2006-01-02" }}">
-      {{- .Date.Format "2006 · 01 · 02" -}}
+  {{- range $index, $page := .Paginator.Pages -}}
+  <a class="post reveal" href="{{ $page.Permalink }}" style="--reveal-delay:{{ printf "%.2fs" (mul (mod $index 6) 0.07) }}">
+    <time datetime="{{ $page.Date.Format "2006-01-02" }}">
+      {{- $page.Date.Format "2006 · 01 · 02" -}}
     </time>
-    <span class="post-title">{{ .Title }}</span>
-    {{- with .Description -}}
+    <span class="post-title">{{ $page.Title }}</span>
+    {{- with $page.Description -}}
     <span class="post-desc">{{ . }}</span>
     {{- end -}}
-    {{- with .Params.tags -}}
+    {{- with $page.Params.tags -}}
     <span class="tags">
       {{- range . -}}<span class="tag">{{ . }}</span>{{- end -}}
     </span>

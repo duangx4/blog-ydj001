@@ -22,6 +22,9 @@
       {{- end -}}
     {{- end -}}
     <span>· {{ .ReadingTime }} 分钟阅读</span>
+    {{- if and .Site.Params.article.showWordCount .WordCount -}}
+    <span>· {{ .WordCount }} 字</span>
+    {{- end -}}
   </div>
 </header>
 
@@ -36,6 +39,22 @@
     <a class="tag" href="{{ (print "/tags/" (. | urlize)) | relURL }}" style="text-decoration:none">{{ . }}</a>
     {{- end -}}
   </div>
+  {{- end -}}
+
+  {{- /* 相关文章：配置里开了 showRelatedContent，原先没有模板承接它 */ -}}
+  {{- $related := .Site.RegularPages.Related . | first (.Site.Params.article.relatedContentLimit | default 5) -}}
+  {{- with $related -}}
+  <section class="related" style="margin-top:3rem">
+    <h2 class="section-head" style="font-size:15px">相关文章</h2>
+    <div class="related-list">
+      {{- range . -}}
+      <a class="related-item" href="{{ .RelPermalink }}">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006 · 01 · 02" }}</time>
+        <span class="related-title">{{ .Title }}</span>
+      </a>
+      {{- end -}}
+    </div>
+  </section>
   {{- end -}}
 
   {{- if and .Site.Params.comments (ne .Params.showComments false) -}}

@@ -1,0 +1,10 @@
+{{/* toc-headings.html — 把 .Fragments.Headings 摊平成 [{ID,Title,Level}]。
+     放入 dict 传入：{{ partial "toc-headings.html" (dict "headings" .Fragments.Headings) }} */}}
+{{- $out := slice -}}
+{{- range .headings -}}
+  {{- $out = $out | append (dict "ID" .ID "Title" .Title "Level" .Level) -}}
+  {{- with .Headings -}}
+    {{- $out = $out | append (partial "toc-headings.html" (dict "headings" .)) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}
