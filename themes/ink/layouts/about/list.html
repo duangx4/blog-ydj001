@@ -1,7 +1,7 @@
 {{ define "main" }}
 
 {{/* ============ Hero ============ */}}
-<section class="about-hero">
+<section class="about-hero reveal">
   {{ with .Params.hero }}
     {{ with $.Site.Params.Author.image }}
       {{ $img := resources.Get . }}
@@ -33,13 +33,12 @@
 
 {{/* ============ 技能栈 ============ */}}
 {{ with .Params.skills }}
-<section class="about-section">
+<section class="about-section reveal">
   <h2 class="section-label">技能栈</h2>
   <div class="skill-grid">
-    {{ range . }}
-      <div class="skill-card">
+    {{ range $index, $item := . }}
+      <div class="skill-card reveal" style="--reveal-delay:{{ printf "%.2fs" (mul (mod $index 5) 0.07) }}">
         <div class="skill-card-head">
-          <span class="skill-card-icon">{{ .icon }}</span>
           <h3>{{ .title }}</h3>
         </div>
         <p class="skill-desc">{{ .desc }}</p>
@@ -56,11 +55,11 @@
 
 {{/* ============ 发展规划 ============ */}}
 {{ with .Params.plans }}
-<section class="about-section">
+<section class="about-section reveal">
   <h2 class="section-label">发展规划</h2>
   <div class="plan-grid">
-    {{ range . }}
-      <div class="plan-card">
+    {{ range $index, $item := . }}
+      <div class="plan-card reveal" style="--reveal-delay:{{ printf "%.2fs" (mul (mod $index 5) 0.07) }}">
         <div class="plan-card-title">{{ .title }}</div>
         <p>{{ .text }}</p>
       </div>

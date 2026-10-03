@@ -8,7 +8,7 @@ layout: "projects"
 journey:
   - date: "2026"
     title: "博客 ydj001.xyz 上线"
-    desc: "Hugo + Blowfish，香港 VPS + Cloudflare CDN，全站 SSL。"
+    desc: "Hugo + 自建 ink 主题，香港 VPS + Cloudflare CDN，全站 SSL。"
     tag: "建站"
   - date: "2025-12"
     title: "获得 CAAC 中型超视距无人机机长证"

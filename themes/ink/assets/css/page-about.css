@@ -308,16 +308,6 @@
   letter-spacing: .04em;
 }
 
-.skill-card-icon {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--stone-blue);
-  flex: 0 0 auto;
-}
-
 .skill-desc {
   font-size: 13px;
   color: var(--ink-4);
