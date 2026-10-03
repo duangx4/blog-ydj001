@@ -18,7 +18,7 @@ lastmod: 2026-07-28
 
 ## 📚 在学
 
-- Hugo 主题深度改造（Blowfish partials / templates / 数据文件覆写）
+- 自建 Hugo 主题 ink：tokens / partials / shortcodes，水墨拓片方向
 - Docker Compose 多容器编排（计划把博客/MC 服都容器化）
 - C++ 基础补强（为 STM32 进阶铺路）
 
