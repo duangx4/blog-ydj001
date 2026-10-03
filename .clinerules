@@ -8,16 +8,16 @@
 ## 技术栈
 - 嵌入式：STM32F103 (HAL库/标准库)
 - 语言：Python / C / C++
-- 运维：Linux (Ubuntu) / Docker / 1Panel / Nginx / FRP
+- 运维：Linux / Docker / Nginx / FRP
 - Hugo + 自建主题 ink（themes/ink/）
 
 ## 服务器架构
 - 1号机（香港公网）：nginx + frps + SSL，博客 / CDN / FRP 服务端
 - 2号机 doge（VMware 虚拟机，Debian 13）：MC 服 / QQ 机器人 / 面板 / Hermes，经香港 frps 穿透；2026-08 从 0 号机迁来
-- 枣庄机（山东枣庄）：异地备份
-- 0号机（山东枣庄 NAT）：原业务主力，退役中，资产已迁出
+- 枣庄机（山东枣庄）：异地备份（当前 NAT 断开、不可达，按冷备看待）
+- 0号机（山东枣庄 NAT，旧手册里叫「迁移机」）：原业务主力，退役中，资产已迁出
 
 ## 开发方向
-- 主攻：电网无人机巡检（电气 + CAAC + 低压电工证）
-- 备选：PLC工业自动化 / 嵌入式开发
-- 保底：CAAC无人机飞手
+- 主攻：PLC 工业自动化
+- 副选：嵌入式开发（STM32 进阶）
+- 保底：CAAC 无人机飞手

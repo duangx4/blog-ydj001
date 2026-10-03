@@ -30,7 +30,7 @@ skills:
   - title: "无人机"
     desc: "CAAC 中型超视距机长证 · 航线规划 · 飞行实操"
     works:
-      - "南方电网无人机巡检预备方向"
+      - "持证随时上岗（保底方向）"
   - title: "运维"
     desc: "Linux · Docker · Nginx · FRP 内网穿透"
     works:
@@ -45,9 +45,9 @@ skills:
 # -- 发展规划 --
 plans:
   - title: "主攻"
-    text: "南方电网无人机巡检（电气 + CAAC + 低压电工证 三件套）"
-  - title: "备选"
-    text: "PLC 工业自动化 / 嵌入式开发（STM32 进阶）"
+    text: "PLC 工业自动化"
+  - title: "副选"
+    text: "嵌入式开发（STM32 进阶）"
   - title: "保底"
     text: "CAAC 无人机飞手（民航 / 测绘 / 巡检方向）"
 ---
