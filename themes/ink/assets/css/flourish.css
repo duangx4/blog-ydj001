@@ -30,7 +30,9 @@
   filter: none;
 }
 
-/* 没有 JS 时不至于空白：<html class="no-js"> 由内联脚本在 head 里换成 js */
+/* 没有 JS 时不至于空白：<html class="no-js"> 由 body 末尾 deferred 的
+   ink.js 摘掉并换成 js —— 不是 head 里的内联脚本。《head.html》另有
+   一段内联脚本只负责防主题闪，不碰这个类。 */
 .no-js .reveal {
   opacity: 1;
   transform: none;
@@ -380,7 +382,9 @@ a:hover .frame img {
 /* （原先这里有一条 .prose pre::before 的朱砂角标，已上移到 .code-wrap::before） */
 
 /* ----------------------------------------------------------
-   11. 目录栏 —— 航迹缩略：右侧竖线 + 路点
+   11. 目录栏 —— 航迹缩略：左侧竖线 + 路点
+   浮层落在正文左侧的空槽里（left 由 --max-w 与 50vw 算出），
+   不是右侧。
    ---------------------------------------------------------- */
 .toc-rail {
   position: fixed;
