@@ -23,15 +23,54 @@
     transparent 100%);
 }
 
-/* 单篇文章行 */
+/* 单篇文章行 —— 左侧文字 +（有封面时）右侧册页缩略 */
 .post {
   position: relative;
-  display: block;
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
   padding: 26px 0 28px;
   text-decoration: none;
   color: inherit;
   border-bottom: 1px solid var(--line-soft);
   transition: color var(--t-fast);
+}
+
+/* 文字列。min-width:0 是必需的：flex 子项默认不肯收缩到内容宽度以下，
+   长标题会顶破容器而不是折行。 */
+.post-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* 封面缩略：册页装裱 —— 细墨线 + 一圈纸白边距，与单页 hero 同一套语言 */
+.post-cover {
+  flex: 0 0 auto;
+  width: 200px;
+}
+
+.post-cover .mount {
+  display: block;
+  width: 100%;
+  padding: 6px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.post-cover .frame {
+  height: 108px;
+  border: 1px solid var(--line-soft);
+  border-radius: 1px;
+}
+
+.post-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  margin: 0;
+  border-radius: 0;
 }
 
 .post:last-child { border-bottom: none; }
@@ -64,12 +103,15 @@
   margin-bottom: 10px;
 }
 
-/* 标题 */
+/* 标题
+   25px → 30px：原来这个尺寸配 940px 栏宽和 1.9 行高，视觉重心会掉到
+   日期那行等宽小字上 —— 我上一版据此得出了「列表页该靠封面还是靠文字」
+   的判断，其实问题是字号不够，不是封面不该有。 */
 .post-title {
   display: block;
-  font-size: 25px;
+  font-size: 30px;
   font-weight: 700;
-  line-height: 1.45;
+  line-height: 1.4;
   letter-spacing: .02em;
   color: var(--ink-2);
   margin: 0 0 12px;
@@ -104,6 +146,22 @@
 .tag::before {
   content: "· ";
   color: var(--stone-green);
+}
+
+/* 窄屏：缩略图收掉，标题字号回落。
+   缩略图在手机上是 200px 宽的固定列，正文会被挤到不足 150px —— 那样
+   两边都不可读。这里干脆不要图，让文字独占；封面在单页仍然看得到。 */
+@media (max-width: 640px) {
+  .post { gap: 0; }
+  .post-cover { display: none; }
+  .post-title { font-size: 22px; line-height: 1.45; }
+}
+
+/* 中等宽度：缩略图缩一档，别把正文字列压得太窄 */
+@media (min-width: 641px) and (max-width: 860px) {
+  .post-cover { width: 150px; }
+  .post-cover .frame { height: 82px; }
+  .post-title { font-size: 26px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

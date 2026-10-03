@@ -8,18 +8,34 @@
   <h2 class="section-head">近期文章</h2>
   <div class="posts">
     {{- range $index, $page := $pages -}}
+    {{- $cover := $page.Resources.GetMatch "featured.*" -}}
     <a class="post reveal" href="{{ $page.Permalink }}" style="--reveal-delay:{{ printf "%.2fs" (add 0.12 (mul $index 0.07)) }}">
-      <time datetime="{{ $page.Date.Format "2006-01-02" }}">
-        {{- $page.Date.Format "2006 · 01 · 02" -}}
-      </time>
-      <span class="post-title">{{ $page.Title }}</span>
-      {{- with $page.Description -}}
-      <span class="post-desc">{{ . }}</span>
-      {{- end -}}
-      {{- with $page.Params.tags -}}
-      <span class="tags">
-        {{- range . -}}<span class="tag">{{ . }}</span>{{- end -}}
+      <span class="post-body">
+        <time datetime="{{ $page.Date.Format "2006-01-02" }}">
+          {{- $page.Date.Format "2006 · 01 · 02" -}}
+        </time>
+        <span class="post-title">{{ $page.Title }}</span>
+        {{- with $page.Description -}}
+        <span class="post-desc">{{ . }}</span>
+        {{- end -}}
+        {{- with $page.Params.tags -}}
+        <span class="tags">
+          {{- range . -}}<span class="tag">{{ . }}</span>{{- end -}}
+        </span>
+        {{- end -}}
       </span>
+      {{- if $cover -}}
+        {{- $thumb := $cover.Fill "360x200 Center" -}}
+        <span class="post-cover" aria-hidden="true">
+          <span class="mount">
+            <span class="frame">
+              <img src="{{ $thumb.RelPermalink }}"
+                   alt=""
+                   width="{{ $thumb.Width }}" height="{{ $thumb.Height }}"
+                   loading="lazy" decoding="async">
+            </span>
+          </span>
+        </span>
       {{- end -}}
     </a>
     {{- end -}}
