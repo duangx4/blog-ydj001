@@ -12,7 +12,7 @@
 - Hugo **0.164.0 extended**，配置在 `config/_default/`，主题 `themes/ink/`（直接入库，不是子模块）
 - `layouts/` 覆盖主题同名文件；改主题行为优先放 `layouts/`
 - 内容：`content/blog/`、`content/projects/`、`content/resources/<slug>/index.md`、`content/contributors/<GitHub 登录名>.md`
-- 后台：Sveltia CMS，`static/admin/config.yml`；登录走 `oauth.ydj001.xyz`（香港机 127.0.0.1:4099）
+- 后台：Sveltia CMS，`static/admin/config.yml`；登录走 `oauth.ydj001.xyz`（香港机 nginx 反代到 node 进程 4099 端口；该进程监听 0.0.0.0，靠 ufw 挡住外网）
 - `public/` 是构建产物，不入库
 
 ## 工作流
@@ -27,23 +27,25 @@
 
 适用于 `hermes/*` 和 `claude/*` 分支的 PR。
 
-1. 等 PR 上的检查（`build`，以及触发了的 `resource-ownership`）全绿；红了先看日志，能修就修，修不了在 PR 里说明。
-2. **审查必须在一个新会话里做**，只看 `gh pr diff` 和本文件，不带写这个 PR 时的上下文——自己审自己时尤其如此。
+> Hermes 环境：仓库副本 `/opt/data/repos/blog-ydj001`；GitHub 操作一律用 `ghx`（读 `/opt/data/.env` 里的 token 再调 `gh`，用法与 `gh` 相同；裸 `gh` 未登录）。PR 作者和 token 都是 `duangx4`，所以 `--approve` 会被 GitHub 拒绝，审查结论用 `--comment`。
+
+1. 等 `ghx pr checks <号>` 全绿：`build`（构建），以及 PR 触发了的 `check`（即 `resource-ownership` 工作流的归属校验作业）。红了先看日志，能修就修，修不了在 PR 里说明。
+2. **审查必须在一个新会话里做**，只看 `ghx pr diff <号>` 和本文件，不带写这个 PR 时的上下文——自己审自己时尤其如此。
 3. 审查清单：
    - 改动和 PR 描述一致，没有夹带无关文件
    - 没有密钥、口令、内网地址、私人信息进入仓库
    - 遵守下面「必须成对」「不要做」两节
    - 模板改动：涉及的页面类型都考虑到了（列表页 / 单页 / 404 / 移动端）
-4. 结论写成 PR 评论（`gh pr review --comment`），列出看过的点和发现。
-5. 没问题：`gh pr merge --squash --delete-branch`。有问题：评论说明，不合并；是对方的 PR 就加标签 `agent:claude` 交回去。
-6. 合并后：确认 `deploy` 运行成功，并访问 PR 描述里给的 URL（加 `?v=<时间戳>` 绕缓存）确认已生效，结果回帖到 PR。
+4. 结论写成 PR 评论（`ghx pr review <号> --comment`），列出看过的点和发现。
+5. 没问题：`ghx pr merge <号> --squash --delete-branch`。有问题：评论说明，不合并；是对方的 PR 就加标签 `agent:claude` 交回去。
+6. 合并后：确认 `deploy` 运行成功，并访问 PR 描述里给的 URL（加 `?v=<时间戳>` 绕缓存）确认已生效，结果回帖到 PR。PR 声明「无页面变化」时，以 deploy 成功 + 首页 `https://ydj001.xyz/` 返回 200 为准。
 
 贡献者从后台提交的 PR（`cms/*` 分支）：Hermes 审查并评论，**合并留给站主**。
 
 ## 交接
 
 - 一方做不完或需要对方处理 → 开 **issue**，加标签 `agent:hermes` 或 `agent:claude`。不要往仓库里写交接文档，它们会过时。
-- Claude 可以直接问 Hermes（经 SSH 调 `hermes chat`）；Hermes 联系不到笔记本，只能留 issue。
+- Claude 可以直接问 Hermes：`ssh -p 9022 root@doge.hesitate-p.tech 'docker exec -i -u 10000 hermes hermes chat --query-file - -Q'`，问题从 stdin 传入。Hermes 联系不到笔记本，只能留 issue。
 - 改了服务器（nginx、oauth 代理等不在仓库里的东西）→ 开 issue 加标签 `server`，写明改了什么、备份在哪、怎么回滚。
 
 ## 提交风格
