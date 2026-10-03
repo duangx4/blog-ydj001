@@ -1,0 +1,35 @@
+# PR 构建检查：Hermes 审查后自动合并的前提是这一项为绿。
+# 与 deploy.yml 用同一 Hugo 版本，只构建不发布。
+name: build
+
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.164.0"
+          extended: true
+
+      - name: Build
+        run: hugo --gc --minify
+
+      - name: Summary
+        run: |
+          pages=$(find public -name '*.html' | wc -l)
+          echo "### ✅ 构建通过，生成 ${pages} 个 HTML 页面" >> "$GITHUB_STEP_SUMMARY"
