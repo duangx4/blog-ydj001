@@ -24,11 +24,13 @@
   <div id="reading-progress" aria-hidden="true"></div>
   {{ partial "nav.html" . }}
 
-  {{- /* 目录航迹：只在文章页、且二级标题够多时才渲染骨架，
-         条目由 ink.js 从正文的 h2[id]/h3[id] 生成 */ -}}
+  {{- /* 目录航迹：只在文章页、且标题够多时才渲染骨架，
+         条目由 ink.js 从正文的 h2[id]/h3[id] 生成。
+         闸门必须和 ink.js 的「h2+h3 >= 3」一致 —— 不一致的话
+         会渲染出一个空 landmark（无 JS 时更明显）。 */ -}}
   {{- if and .IsPage (eq .Type "blog") -}}
     {{- $h := partial "toc-headings.html" (dict "headings" .Fragments.Headings) -}}
-    {{- if gt (len (where $h "Level" 2)) 1 }}
+    {{- if ge (add (len (where $h "Level" 2)) (len (where $h "Level" 3))) 3 }}
       <nav class="toc-rail" id="toc-rail" aria-label="文章目录">
         <span class="toc-rail-track" aria-hidden="true"></span>
         <span class="toc-rail-fill" id="toc-rail-fill" aria-hidden="true"></span>

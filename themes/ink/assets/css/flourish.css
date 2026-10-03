@@ -115,14 +115,6 @@ nav.top.is-stuck { box-shadow: 0 1px 0 color-mix(in srgb, var(--ink-1) 4%, trans
   background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(0, 0, 0, .22) 100%);
 }
 
-.seal-text {
-  font-family: "JetBrains Mono", Consolas, monospace;
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: .02em;
-  line-height: 1;
-}
-
 /* ----------------------------------------------------------
    4. 标题的墨底 —— section-head 的楷体字下压一道极淡的墨痕
    ---------------------------------------------------------- */
@@ -303,10 +295,29 @@ a:hover .frame img {
 .code-wrap {
   position: relative;
   margin: 0 0 1.8em;
+  /* 和 pre 同底色，工具栏那条渐隐才接得上（否则尾部露在 --paper 上） */
+  background: var(--paper-2);
 }
 
 .code-wrap pre {
   margin-bottom: 0;
+}
+
+/* 朱砂角标：挂在 wrapper 上，而不是 pre 里。
+   pre 是横滚容器，挂里面的绝对定位元素会跟着内容右移 ——
+   角标本该钉在代码块左上角不动。 */
+.code-wrap::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--cinnabar) 55%, transparent) 0%,
+    transparent 60%);
 }
 
 .code-meta {
@@ -366,18 +377,7 @@ a:hover .frame img {
 }
 
 /* 代码块左上一枚朱砂角标，标明这是「可运行的东西」 */
-.prose pre::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 100%;
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--cinnabar) 55%, transparent) 0%,
-    transparent 60%);
-  pointer-events: none;
-}
+/* （原先这里有一条 .prose pre::before 的朱砂角标，已上移到 .code-wrap::before） */
 
 /* ----------------------------------------------------------
    11. 目录栏 —— 航迹缩略：右侧竖线 + 路点
@@ -728,7 +728,16 @@ footer.site-footer::before {
 }
 
 /* ----------------------------------------------------------
-   14. 动效降级
+   14. 锚点定位 —— 顶栏是 sticky 的，不给标题留出偏移，
+       目录每一次跳转都会把标题送到导航栏底下。
+   ---------------------------------------------------------- */
+.prose :is(h1, h2, h3, h4, h5, h6),
+:target {
+  scroll-margin-top: calc(var(--nav-h) + 18px);
+}
+
+/* ----------------------------------------------------------
+   15. 动效降级
    ---------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .reveal {
@@ -755,4 +764,25 @@ footer.site-footer::before {
   }
 
   .brand:hover .seal { transform: none; }
+
+  /* 航迹整组是「动画驱动」的：航线的描边进度、路点的显隐
+     全靠 animation 实现，光关 transition 它们会照跑不停。
+     注意 .trail-wp 平时是 opacity:0，靠 trail-drop 才现形 ——
+     所以关掉动画的同时必须把 opacity 直接钉成 1，
+     否则这条装饰线会整个消失（而不是静止显示）。 */
+  .hero-trail .trail-route {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .hero-trail .trail-wp {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  .ink-switching body,
+  .ink-switching body::before {
+    opacity: 1;
+    transition: none;
+  }
 }
