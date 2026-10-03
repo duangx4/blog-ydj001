@@ -2,43 +2,6 @@
    page-about.css — About 专用：profile 网格、trail SVG、skills
    ========================================================== */
 
-/* Profile 头部网格 */
-.profile-grid {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 48px;
-  align-items: start;
-  margin-bottom: 72px;
-}
-
-/* 头像装裱 */
-.profile-avatar {
-  position: sticky;
-  top: calc(var(--nav-h) + 24px);
-}
-
-.profile-avatar .mount { display: block; }
-.profile-avatar .frame { height: 180px; }
-.profile-avatar .frame img { object-position: top; }
-
-/* 个人信息区 */
-.profile-info {}
-
-.profile-name {
-  font-size: 30px;
-  font-weight: 700;
-  color: var(--ink-1);
-  margin: 0 0 .35em;
-  letter-spacing: .04em;
-}
-
-.profile-tagline {
-  font-size: 15.5px;
-  color: var(--ink-4);
-  line-height: 1.8;
-  margin: 0 0 24px;
-}
-
 /* 社交链接行 */
 .author-links {
   display: flex;
@@ -92,83 +55,6 @@
 .qr-wrap:focus-within .qr-popup { opacity: 1; pointer-events: auto; }
 
 .qr-popup img { width: 110px; height: 110px; border-radius: var(--radius-sm); }
-
-/* Trail SVG 轨迹（行迹年表） */
-.trail-section { margin-bottom: 72px; }
-
-.trail {
-  position: relative;
-  padding-left: 28px;
-}
-
-.trail-line {
-  position: absolute;
-  left: 5px;
-  top: 8px;
-  bottom: 8px;
-  width: 1px;
-  background: linear-gradient(180deg,
-    transparent 0%, var(--line) 5%,
-    var(--line) 95%, transparent 100%);
-}
-
-.trail-item {
-  position: relative;
-  padding: 0 0 28px;
-}
-
-.trail-item::before {
-  content: "";
-  position: absolute;
-  left: -28px;
-  top: 7px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--paper);
-  border: 1.4px solid var(--ink-5);
-}
-
-.trail-year {
-  font-size: 11px;
-  letter-spacing: .18em;
-  color: var(--ink-meta);
-  margin-bottom: 6px;
-}
-
-.trail-desc {
-  font-size: 15px;
-  color: var(--ink-3);
-  line-height: 1.8;
-}
-
-/* 技能格 */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-}
-
-.skill-group {
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  padding: 18px 20px;
-  background: var(--paper-2);
-}
-
-.skill-group-title {
-  font-size: 11.5px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--ink-meta);
-  margin: 0 0 12px;
-}
-
-.skill-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 8px;
-}
 
 .chip {
   font-size: 12px;
@@ -350,9 +236,7 @@
 }
 
 @media (max-width: 640px) {
-  .profile-grid { grid-template-columns: 1fr; gap: 28px; }
-  .profile-avatar { position: static; }
-  .profile-avatar .frame { height: 140px; }
   .skill-grid { grid-template-columns: 1fr; }
   .plan-grid  { grid-template-columns: 1fr; }
 }
+
