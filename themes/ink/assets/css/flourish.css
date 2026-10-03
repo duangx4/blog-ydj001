@@ -3,11 +3,23 @@
    ----------------------------------------------------------
    设计原则（沿用 preview/5-ink-instrument.html 的语言）：
      1. 不画中国元素，只用水墨的材质法则
-     2. 每一条线都该有笔锋 —— 直线是 CSS，飞白是 SVG 位移
-     3. 动效的隐喻是「落墨」：显影 = 墨渗进纸，而不是淡入
-     4. 朱砂只给印章和警示，一页只准一个红
-   所有动效都尊重 prefers-reduced-motion。
+     2. 每一条线都该有笔锋 —— 直线是 CSS，飞白是 SVG 位移；
+        而且每一笔的抖动**不相同**（三个种子，见 baseof.html）
+     3. 动效的隐喻是「落墨」：显影 ≠ 淡入
+     4. 朱砂只给「强调与警示」—— 印章、章题方块、目录当前节点、
+        航迹终点、警示与行内代码。不是「一页只准一个红」那种说法，
+        那是一条做不到也不该照字面执行的漂亮话。
    ========================================================== */
+
+/* ----------------------------------------------------------
+   0. 飞白分工 —— 三个种子，三种频率
+   同一个 seed 铺满全站会露馅：所有抖动的波形逐像素相同，
+   只是被拉长到不同长度，看着就是「同一笔画了十遍」。
+   baseof.html 里定义了三个 filter：
+     #ink-edge    常规墨线（章题尾线、hr、页脚）
+     #ink-edge-nav 导航底边（更细、更静）
+     #ink-edge-far 长线（航迹那种大跨度）
+   ---------------------------------------------------------- */
 
 /* ----------------------------------------------------------
    1. 落墨显影 —— 滚动进入视口时，内容像墨渗进纸一样显出来
@@ -60,7 +72,8 @@
   filter: url(#ink-edge);
 }
 
-/* 导航栏底边 —— 一条会「收笔」的墨线，替代 1px 实线 */
+/* 导航栏底边 —— 一条会「收笔」的墨线，替代 1px 实线。
+   用专给横长细线调的 #ink-edge-nav，抖动更静。 */
 nav.top::after {
   content: "";
   position: absolute;
@@ -69,7 +82,7 @@ nav.top::after {
   bottom: -1px;
   height: 1px;
   pointer-events: none;
-  filter: url(#ink-edge);
+  filter: url(#ink-edge-nav);
   background: linear-gradient(90deg,
     transparent 0%,
     var(--line) 4%,
@@ -104,17 +117,21 @@ nav.top.is-stuck { box-shadow: 0 1px 0 color-mix(in srgb, var(--ink-1) 4%, trans
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><filter id='s'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='60' height='60' filter='url(%23s)'/></svg>");
 }
 
-/* 落在纸上时微微倾斜，像人手盖的 */
-.brand:hover .seal {
-  transform: rotate(-6deg) scale(1.06);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .34), 0 2px 6px color-mix(in srgb, var(--cinnabar) 30%, transparent);
-}
+/* 落在纸上时微微倾斜，像人手盖的。
+   包在 @media (hover: hover) 里：触摸设备上点击后 :hover 会残留，
+   印章会一直歪着不回去 —— 经典的 sticky hover。 */
+@media (hover: hover) and (pointer: fine) {
+  .brand:hover .seal {
+    transform: rotate(-6deg) scale(1.06);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .34), 0 2px 6px color-mix(in srgb, var(--cinnabar) 30%, transparent);
+  }
 
-.brand:hover .seal::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(0, 0, 0, .22) 100%);
+  .brand:hover .seal::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(0, 0, 0, .22) 100%);
+  }
 }
 
 /* ----------------------------------------------------------
@@ -151,7 +168,9 @@ nav.top.is-stuck { box-shadow: 0 1px 0 color-mix(in srgb, var(--ink-1) 4%, trans
   position: relative;
 }
 
-/* 标题左侧一道朱砂竖线，起手处渐隐如收笔 */
+/* 标题左侧一道竖线，起手处渐隐如收笔。
+   墨色而非朱砂：一篇文章里印章、章题方块、目录当前节点已经有三处红，
+   再加一条标题压角就稀释掉了「红=值得看」这层意思。 */
 .article-title::before {
   content: "";
   position: absolute;
@@ -161,8 +180,8 @@ nav.top.is-stuck { box-shadow: 0 1px 0 color-mix(in srgb, var(--ink-1) 4%, trans
   width: 2px;
   background: linear-gradient(180deg,
     transparent 0%,
-    var(--cinnabar) 12%,
-    var(--cinnabar) 88%,
+    var(--ink-4) 12%,
+    var(--ink-4) 88%,
     transparent 100%);
   filter: url(#ink-edge);
 }
@@ -180,7 +199,7 @@ nav.top.is-stuck { box-shadow: 0 1px 0 color-mix(in srgb, var(--ink-1) 4%, trans
 
 .post:hover::before {
   transform: scale(1.18);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--cinnabar) 12%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--stone-blue) 14%, transparent);
 }
 
 /* 竖脊线在被指向的那一行「加浓」—— 用背景不可行，改用一层高亮 */
@@ -318,7 +337,7 @@ a:hover .frame img {
   z-index: 1;
   pointer-events: none;
   background: linear-gradient(180deg,
-    color-mix(in srgb, var(--cinnabar) 55%, transparent) 0%,
+    color-mix(in srgb, var(--ink-4) 42%, transparent) 0%,
     transparent 60%);
 }
 
@@ -364,8 +383,8 @@ a:hover .frame img {
 }
 
 .code-meta button:hover {
-  color: var(--cinnabar);
-  border-color: color-mix(in srgb, var(--cinnabar) 45%, transparent);
+  color: var(--stone-blue);
+  border-color: color-mix(in srgb, var(--stone-blue) 45%, transparent);
 }
 
 .code-meta button:focus-visible {
@@ -517,12 +536,13 @@ a:hover .frame img {
   opacity: .5;
 }
 
-/* 航线：主体墨色偏蓝，带笔锋 */
+/* 航线：主体墨色偏蓝，带笔锋。
+   用长线专用的 #ink-edge-far —— 大跨度的线位移给大些才不显呆。 */
 .trail-route {
   stroke: var(--stone-blue);
   stroke-width: 1.4;
   opacity: .9;
-  filter: url(#ink-edge);
+  filter: url(#ink-edge-far);
 }
 
 /* 路点：短线，落下时从无到有 */
@@ -768,6 +788,20 @@ footer.site-footer::before {
   }
 
   .brand:hover .seal { transform: none; }
+
+  /* 这两条悬停细线只该关掉过渡，**不能**碰 transform。
+     它们的静止态是 transform: scaleX(0)（收在原点不可见），
+     写成 transform: none 会让它们变成永久显示 ——
+     页脚每个链接会一直挂着一条下划线，那是新的视觉缺陷，不是降级。
+     关掉 transition 后，悬停仍然瞬间出现，行为最接近原意。 */
+  .related-item::after,
+  .footer-links a::after,
+  .toc-rail-fill {
+    transition: none !important;
+  }
+
+  /* .toc-rail-fill 的高度由 JS 写入，本来就没有静态可见性问题，
+     这里不再动它。 */
 
   /* 航迹整组是「动画驱动」的：航线的描边进度、路点的显隐
      全靠 animation 实现，光关 transition 它们会照跑不停。

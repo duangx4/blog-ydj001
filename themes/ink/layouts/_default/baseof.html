@@ -6,14 +6,32 @@
 <body>
 
   {{- /* 皴法：湍流位移把直线变成有笔锋的墨线；墨晕：把色块边缘晕开。
-         定义在文档顶部，flourish.css 里的 filter: url(#ink-edge) 全靠它。
-         width/height=0 不占位，aria-hidden 不进无障碍树。 */ -}}
+         定义在文档顶部，flourish.css 里的 filter: url(#...) 全靠它。
+         width/height=0 不占位，aria-hidden 不进无障碍树。
+
+         三个飞白滤镜用**不同 seed + 不同频率**：共用同一个种子会让
+         全站每一条线的抖动波形逐像素相同，只是长短不同 —— 看着就是
+         「同一笔画了十遍」，恰好是手工感的反面。 */ -}}
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <!-- 常规墨线：章题尾线、正文 hr、页脚上缘 -->
     <filter id="ink-edge" x="-2%" y="-40%" width="104%" height="180%">
       <feTurbulence type="fractalNoise" baseFrequency="0.014 0.09" numOctaves="4" seed="11" result="n"/>
       <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4"
                          xChannelSelector="R" yChannelSelector="G"/>
     </filter>
+    <!-- 导航底边：更细的线用更低的频率，抖动更静 -->
+    <filter id="ink-edge-nav" x="-2%" y="-60%" width="104%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.12" numOctaves="3" seed="29" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"
+                         xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <!-- 长线：航迹这种大跨度，位移给大一点才有气势 -->
+    <filter id="ink-edge-far" x="-2%" y="-60%" width="104%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.05" numOctaves="4" seed="47" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="5"
+                         xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <!-- 墨晕：色块边缘晕开 -->
     <filter id="ink-blot" x="-20%" y="-40%" width="140%" height="180%">
       <feTurbulence type="fractalNoise" baseFrequency="0.03 0.06" numOctaves="3" seed="7" result="n2"/>
       <feDisplacementMap in="SourceGraphic" in2="n2" scale="7"
