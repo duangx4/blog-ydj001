@@ -52,6 +52,24 @@
   <div class="profile-hero-links">
     {{ partialCached "author-links.html" . }}
   </div>
+
+  {{- /* 航迹／山脊：同一组 polyline 的两种读法。
+         上面一条是无人机的航线（带路点），下面几条是远山的轮廓 ——
+         这个站主是 CAAC 超视距机长，客机巡检方向，这条线在这里是「有出处」的。 */ -}}
+  <svg class="hero-trail" viewBox="0 0 900 96" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path class="trail-ridge" d="M0,80 L64,80 L64,70 L132,70 L132,77 L226,77"/>
+    <path class="trail-ridge" d="M508,82 C566,82 606,68 676,72 S826,80 900,74"/>
+    <path class="trail-route" pathLength="1"
+          d="M0,54 L96,54 L96,30 L188,30 L188,46 L268,46 C320,46 336,14 392,14 S470,44 540,36 S648,10 706,22 S820,46 900,40"/>
+    <line class="trail-wp" x1="96"  y1="25"  x2="96"  y2="35"  style="--d:.55s"/>
+    <line class="trail-wp" x1="188" y1="41"  x2="188" y2="51"  style="--d:.75s"/>
+    <line class="trail-wp" x1="268" y1="41"  x2="268" y2="51"  style="--d:.95s"/>
+    <line class="trail-wp" x1="392" y1="9"   x2="392" y2="19"  style="--d:1.15s"/>
+    <line class="trail-wp" x1="540" y1="31"  x2="540" y2="41"  style="--d:1.35s"/>
+    <line class="trail-wp" x1="706" y1="17"  x2="706" y2="27"  style="--d:1.55s"/>
+    <line class="trail-wp trail-wp-end" x1="900" y1="35" x2="900" y2="45" style="--d:1.75s"/>
+  </svg>
+
   {{ with .Content }}
     <div class="prose profile-hero-bio">{{ . }}</div>
   {{ end }}

@@ -1,6 +1,6 @@
 {{ define "main" }}
 
-<header style="text-align:center;padding:1.5rem 0 2.5rem">
+<header class="reveal" style="text-align:center;padding:1.5rem 0 2.5rem">
   <h1>{{ .Title | emojify }}</h1>
   {{ with .Params.description }}
     <p style="color:var(--ink-4);font-size:15.5px;max-width:60ch;margin:.5em auto 0">{{ . }}</p>
@@ -11,19 +11,19 @@
 {{ $projects := .Pages.ByWeight }}
 {{ if $projects }}
 <section class="projects-grid">
-  {{ range $projects }}
-    <a href="{{ .RelPermalink }}" class="project-card">
-      {{ with .Params.cover }}
+  {{ range $index, $page := $projects }}
+    <a href="{{ $page.RelPermalink }}" class="project-card reveal" style="--reveal-delay:{{ printf "%.2fs" (mul (mod $index 6) 0.08) }}">
+      {{ with $page.Params.cover }}
         <div class="project-card-cover">
-          <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy" decoding="async">
+          <img src="{{ . | relURL }}" alt="{{ $page.Title }}" loading="lazy" decoding="async">
         </div>
       {{ end }}
       <div class="project-card-body">
-        <h2 class="project-card-title">{{ .Title }}</h2>
-        {{ with .Params.description }}
+        <h2 class="project-card-title">{{ $page.Title }}</h2>
+        {{ with $page.Params.description }}
           <p class="project-card-desc">{{ . }}</p>
         {{ end }}
-        {{ with .Params.tags }}
+        {{ with $page.Params.tags }}
           <div class="tags" style="margin-bottom:.75rem">
             {{ range . }}<span class="tag">{{ . }}</span>{{ end }}
           </div>
@@ -49,8 +49,8 @@
 <section style="margin-top:72px">
   <h2 class="section-head">历程</h2>
   <div class="journey">
-    {{ range . }}
-      <div class="journey-item">
+    {{ range $index, $page := . }}
+      <div class="journey-item reveal" style="--reveal-delay:{{ printf "%.2fs" (mul (mod $index 7) 0.07) }}">
         <div class="journey-date">{{ .date }}</div>
         <h3 class="journey-title">{{ .title }}</h3>
         <p class="journey-desc">

@@ -1,16 +1,49 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.Language.Lang | default "zh-cn" }}" data-theme="dark">
+<html lang="{{ .Site.Language.Lang | default "zh-cn" }}" data-theme="dark" class="no-js">
 <head>
   {{ partial "head.html" . }}
 </head>
 <body>
+
+  {{- /* 皴法：湍流位移把直线变成有笔锋的墨线；墨晕：把色块边缘晕开。
+         定义在文档顶部，flourish.css 里的 filter: url(#ink-edge) 全靠它。
+         width/height=0 不占位，aria-hidden 不进无障碍树。 */ -}}
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <filter id="ink-edge" x="-2%" y="-40%" width="104%" height="180%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.014 0.09" numOctaves="4" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4"
+                         xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="ink-blot" x="-20%" y="-40%" width="140%" height="180%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03 0.06" numOctaves="3" seed="7" result="n2"/>
+      <feDisplacementMap in="SourceGraphic" in2="n2" scale="7"
+                         xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
   <div id="reading-progress" aria-hidden="true"></div>
   {{ partial "nav.html" . }}
+
+  {{- /* 目录航迹：只在文章页、且二级标题够多时才渲染骨架，
+         条目由 ink.js 从正文的 h2[id]/h3[id] 生成 */ -}}
+  {{- if and .IsPage (eq .Type "blog") -}}
+    {{- $h := partial "toc-headings.html" (dict "headings" .Fragments.Headings) -}}
+    {{- if gt (len (where $h "Level" 2)) 1 }}
+      <nav class="toc-rail" id="toc-rail" aria-label="文章目录">
+        <span class="toc-rail-track" aria-hidden="true"></span>
+        <span class="toc-rail-fill" id="toc-rail-fill" aria-hidden="true"></span>
+        <ol id="toc-rail-list"></ol>
+      </nav>
+    {{- end -}}
+  {{- end }}
+
   <main id="main-content">
     {{ block "main" . }}{{ end }}
   </main>
   {{ partial "footer.html" . }}
   {{- $js := resources.Get "js/theme-toggle.js" | minify -}}
   <script src="{{ $js.RelPermalink }}" defer></script>
+  {{- $js2 := resources.Get "js/ink.js" | minify | fingerprint -}}
+  <script src="{{ $js2.RelPermalink }}" integrity="{{ $js2.Data.Integrity }}" defer></script>
 </body>
 </html>
