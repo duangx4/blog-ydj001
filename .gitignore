@@ -1,6 +1,11 @@
 # 构建产出
 /public/
 
+# 本地凭据（封面脚本会读 .env 取 token，绝不入库）
+.env
+.env.*
+!.env.example
+
 # 操作系统
 .DS_Store
 Thumbs.db
