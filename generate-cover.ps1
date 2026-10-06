@@ -1,11 +1,14 @@
 ﻿# ============================================================================
-# AI 文章封面生成脚本 v2
+# AI 文章封面生成脚本 v2.1
 # 用法: powershell -ExecutionPolicy Bypass -File .\generate-cover.ps1 -Slug "xxx" [-Prompt "自定义提示词"]
 #       不传 -Slug 则为所有【无封面】的文章生成；加 -Force 则连已有封面一起重出
 #
 # v1 -> v2 变更：
 #   v1 调硅基流动 Z-Image（已停用）；v2 改调本机 DAX 出图 API（https://img.ydj001.xyz，
 #   botcf 中转的 gpt-image 系列）。出图后在本地裁成 16:9 存 featured.png。
+# v2.1 变更：默认模型改为 gpt-image-2-4k（实测 2880x2880；旧默认 gpt-image-2.5-flare-4k
+#   已被上游以 400 拒绝、网关回 502）；新增 -FallbackModel 备用模型自动重试一次；
+#   网关/上游的错误正文现在会原样打印出来，不再只显示一句 502。
 #
 # 依赖:
 #   - 出图通行证 token（见下方“读取 token”，仓库是公开仓库，token 绝不写进本文件）
@@ -15,7 +18,8 @@
 param(
     [string]$Slug       = "",
     [string]$Prompt     = "",
-    [string]$Model      = "gpt-image-2.5-flare-4k",
+    [string]$Model      = "gpt-image-2-4k",
+    [string]$FallbackModel = "gpt-image-2-1k",
     [string]$BlogDir    = "",
     [string]$TokenFile  = "",
     [string]$BaseUrl    = "https://img.ydj001.xyz",
@@ -87,10 +91,19 @@ function Invoke-ImgenApi {
     return Invoke-RestMethod -Method $Method -Uri $Url -Headers $headers -UserAgent $Script:UA -TimeoutSec 90
 }
 
+# 取错误正文：网关把上游失败原因放在响应体里，看不到就只剩一句 502 Bad Gateway
+# PS 7 的 $_.Exception.Response 是 HttpResponseMessage（没有 GetResponseStream），
+# 所以先试 ErrorDetails.Message（两代都有），再试流读取，最后退回 Exception.Message
 function Get-ErrText($err) {
+    try {
+        if ($err.ErrorDetails -and $err.ErrorDetails.Message) { return $err.ErrorDetails.Message }
+    } catch { }
     try {
         $resp = $err.Exception.Response
         if ($null -ne $resp) {
+            if ($resp -is [System.Net.Http.HttpResponseMessage]) {
+                return $resp.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+            }
             $sr = New-Object System.IO.StreamReader($resp.GetResponseStream())
             $txt = $sr.ReadToEnd(); $sr.Close()
             if ($txt) { return $txt }
@@ -138,7 +151,7 @@ if ($articles.Count -eq 0) {
 Step "待生成封面：$($articles.Count) 篇"
 $articles | ForEach-Object { Write-Host "  - $($_.slug)" -ForegroundColor Yellow }
 
-# 配额预检（顺带验证 token 是否有效，快速失败）
+# 配额预检（顺带验证 token 是否有效；查询失败只告警，不阻断出图）
 if (-not $NoQuota) {
     try {
         $q = Invoke-ImgenApi -Method Get -Url "$BaseUrl/v1/quota"
@@ -161,15 +174,15 @@ try {
     Warn "System.Drawing / GDI+ 不可用，将直接保存原图（不裁剪）"
 }
 
-function Generate-Cover {
-    param($slug, $prompt)
+# 跑一次出图（提交 + 轮询）：能拿到响应就返回它，提交异常返回 $null。
+# 由调用方决定是否换备用模型重试 —— 上游会轮换模型名，硬编码一个名字迟早失效。
+function Request-Cover {
+    param($slug, $prompt, $model)
 
-    Step "[$slug] 生成中（$Model）..."
-
-    # 调用 API：同步返回 200，或排队返回 202 + job_id
+    Write-Host "        提交中（模型 $model）..." -ForegroundColor DarkGray
     $payload = @{
         prompt    = $prompt
-        model     = $Model
+        model     = $model
         n         = 1
         name      = $slug
         requester = "generate-cover.ps1"
@@ -177,8 +190,16 @@ function Generate-Cover {
     try {
         $r = Invoke-ImgenApi -Method Post -Url "$BaseUrl/v1/images" -BodyObj $payload
     } catch {
-        Fail "[$slug] 提交失败：$(Get-ErrText $_)"
-        return $false
+        $msg = Get-ErrText $_
+        # Cloudflare 会把源站的 502 正文换成它自己的 16 字节 "error code: 502"，
+        # 上游真实原因（由如模型下架）在公网路径上拿不到
+        if ($msg -match "error code:\s*5\d\d" -or $msg.Trim().Length -lt 24) {
+            $hint = "（入口层 502，正文被 Cloudflare 替换：多半是该模型上游暂时不可用；可换 -Model，"
+            $hint = $hint + "或靠 -FallbackModel 兜底。要看真因得在宿主查 imgen-httpd 日志）"
+            $msg = $msg + $hint
+        }
+        Warn "[$slug] 提交失败（$model）：$msg"
+        return $null
     }
 
     $jobId = $r.job_id
@@ -196,9 +217,28 @@ function Generate-Cover {
             if ($r.status -eq "ok" -or $r.status -eq "error") { break }
         }
     }
+    return $r
+}
 
+function Generate-Cover {
+    param($slug, $prompt)
+
+    Step "[$slug] 生成中（$Model）..."
+
+    $r = Request-Cover -slug $slug -prompt $prompt -model $Model
+    $usedModel = $Model
+    if ((($null -eq $r) -or ($r.status -ne "ok")) -and $FallbackModel -and ($FallbackModel -ne $Model)) {
+        Warn "[$slug] $Model 没出图，改用备用模型 $FallbackModel 重试一次"
+        $usedModel = $FallbackModel
+        $r = Request-Cover -slug $slug -prompt $prompt -model $FallbackModel
+    }
+
+    if ($null -eq $r) {
+        Fail "[$slug] 出图未成功：两次请求都没拿到响应（$Model / $FallbackModel）"
+        return $false
+    }
     if ($r.status -ne "ok") {
-        Fail "[$slug] 出图未成功：$($r | ConvertTo-Json -Compress -Depth 4)"
+        Fail "[$slug] 出图未成功（$usedModel）：$($r | ConvertTo-Json -Compress -Depth 4)"
         return $false
     }
 
@@ -212,7 +252,12 @@ function Generate-Cover {
     # 头拼出来的，直连 http://127.0.0.1:7072 这类明文入口时会拼成 https://127.0.0.1:7072
     # 从而握手失败）；相对地址缺失时才退回 abs_url
     $imageUrl = $item.url
-    if ($imageUrl -and $imageUrl -notmatch '^https?://') { $imageUrl = "$BaseUrl$imageUrl" }
+    if ($imageUrl -match '^//') {
+        # 协议相对地址（//host/x.png）：只补协议，不能直接拼在 BaseUrl 后面
+        $imageUrl = "$(([System.Uri]$BaseUrl).Scheme)`:$imageUrl"
+    } elseif ($imageUrl -and $imageUrl -notmatch '^[a-zA-Z][a-zA-Z0-9+.-]*://') {
+        $imageUrl = "$BaseUrl$imageUrl"
+    }
     if (-not $imageUrl) { $imageUrl = $item.abs_url }
 
     # 下载
@@ -281,6 +326,7 @@ function Generate-Cover {
 # 逐一生成
 $success = 0
 $failed = 0
+$skipped = 0
 
 foreach ($article in $articles) {
     $slug = $article.slug
@@ -288,6 +334,7 @@ foreach ($article in $articles) {
 
     if (-not $prompt) {
         Warn "[$slug] 没有提示词，跳过（用 -Prompt 指定）"
+        $skipped++
         continue
     }
 
@@ -300,10 +347,11 @@ foreach ($article in $articles) {
 
 # 总结
 Write-Host ""
-if ($failed -eq 0) {
+if ($failed -eq 0 -and $skipped -eq 0) {
     Ok "全部完成！$success 篇封面已生成"
 } else {
-    Warn "完成：$success 成功，$failed 失败"
+    $skipNote = if ($skipped -gt 0) { "，$skipped 跳过（无提示词）" } else { "" }
+    Warn "完成：$success 成功，$failed 失败$skipNote"
 }
 
 Write-Host ""
