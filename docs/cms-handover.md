@@ -140,7 +140,7 @@ GitHub 仓库 → Settings → Branches → Add branch ruleset：
 
 - **Branch name pattern**: `master`
 - ✅ Require a pull request before merging
-- ✅ Require status checks to pass → 添加 `resource-ownership`
+- ✅ Require status checks to pass → 勾上 `build` 和 `check` 两个（status check 列表里显示的是 **job 名**；`resource-ownership` 只是 workflow 名，按它选会选不到，等于这道门没设）
 - ✅ Do not allow bypassing the above settings
 
 这样贡献者点「发布」会创建 PR，需要你审核合并后才上线。

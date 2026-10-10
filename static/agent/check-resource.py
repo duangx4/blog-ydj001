@@ -191,14 +191,14 @@ def check_front_matter(fm, author):
 
     date = str(fm.get("date", "")).strip().strip('"').strip("'")
     if date in ("", "[]"):
-        err("date 是空的——必填，填提交当时的当前时间（例：2026-10-10T21:00:00+08:00）")
+        err("date 是空的——必填，填提交当时的当前时间（格式示例：2026-09-01T10:00:00+08:00）")
         date = ""
     if date:
         dt = None
         try:
             dt = datetime.datetime.fromisoformat(date.replace("Z", "+00:00"))
         except ValueError:
-            warn("date 不是合法 ISO 8601（建议 2026-10-10T21:00:00+08:00）：%s" % date)
+            warn("date 不是合法 ISO 8601（建议 2026-09-01T10:00:00+08:00）：%s——这种 Hugo 解析不了，构建会直接报错（CI 的 build 会红）" % date)
         if dt is not None:
             if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=datetime.timezone.utc)  # Hugo 对不带时区的日期按 UTC 算
