@@ -254,14 +254,14 @@ rsync -rlptz --delete --exclude='mc/' \
 |---|---|
 | `static/agent/publish.md` | 给 agent 读的投稿契约（线上 `https://ydj001.xyz/agent/publish.md`） |
 | `static/agent/invite.md` | 人看的说明 + 可直接转发给分享者的那段话 |
-| `static/agent/check-resource.py` | 提交前自检脚本，CI 的 `lint` job 跑同一份 |
+| `static/agent/check-resource.py` | 提交前自检脚本，投稿者在本地跑（CI 侧同名作业待接入，见 issue #20） |
 | `layouts/robots.txt` | 覆盖 Hugo 内置模板，含 `Disallow: /agent/`（入口不公开，只私发） |
 
 - 分享者侧：`gh auth login` 一次 → agent 输出一个 PR（分支名 `submit/<slug>`）
-- 站主侧：首次贡献者要点一次 PR 页面的「Approve and run workflows」；三个作业 `build` / `check` / `lint`，前两个必过
+- 站主侧：首次贡献者要点一次 PR 页面的「Approve and run workflows」；两个作业 `build` / `check`，都要过
 - 不走 Collaborator：fork 路线不需要给分享者 Write 权限（CMS 路线才需要）
 - 超过 20 MiB 的文件不进仓库，走网盘 + `pan-link`
-- CI 侧对应 `.github/workflows/resource-ownership.yml` 里的 `lint` job（非 Required，只提示）
+- 自检脚本目前只在投稿者本地跑。想在 CI 里也跑一遍，得先给 token 加 `Workflows` 写权限（改动 `.github/workflows/` 下任何文件的硬要求），job 内容见 issue #20
 
 ---
 
@@ -275,7 +275,7 @@ static/admin/
 static/agent/           # agent 投稿通道（2026-10 新增，入口不公开）
 ├── publish.md          # 给 agent 读的投稿契约
 ├── invite.md           # 人看的说明（可转发给分享者）
-└── check-resource.py   # 提交前自检脚本（CI lint job 同一份）
+└── check-resource.py   # 提交前自检脚本（投稿者本地跑）
 
 layouts/
 ├── resources/list.html # 资源列表（已修改封面路径解析）

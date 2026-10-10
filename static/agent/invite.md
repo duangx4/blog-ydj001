@@ -33,7 +33,7 @@
 
 1. 私发上面那段话
 2. PR 来了，首次贡献者需要点一次「Approve and run workflows」
-3. 等 `build` / `check` / `lint` 三个 check，然后按 `AGENTS.md` 的流程：审 → 合并 → 核验
+3. 等 `build` / `check` 两个 check，然后按 `AGENTS.md` 的流程：审 → 合并 → 核验
 4. 核验点：`/resources/<slug>/` 出页面、封面显示、附件能下载、下载那一列是按钮不是纯文本、作者署名是本人登录名
 
 ## 常见卡点
@@ -45,4 +45,4 @@
 | `check` 红：authors 必须填… | PR 由别的账号发起，或 authors 写错 | 用本人账号重开 PR |
 | `check` 红：无权修改 | 动了别人的文章、名片或其它目录 | 只改自己这次的目录 |
 | check 一直不跑 | 首次贡献者的工作流要维护者批准 | PR 页面点「Approve and run workflows」 |
-| `lint` 红但 `check` 绿 | 契约细节没满足（字段缺失、附件不存在等） | 看 lint 日志按提示改；`lint` 不拦合并，但应该修 |
+| 自检脚本报错 | 契约细节没满足（字段缺失、附件对不上、`date` 在未来等） | 按脚本提示改，改完重跑到 PASS 再提 PR |
