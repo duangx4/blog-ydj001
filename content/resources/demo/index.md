@@ -1,5 +1,7 @@
 ---
 title: "资源页模板示范"
+authors:
+  - duangx4
 date: 2026-09-28
 lastmod: 2026-09-28
 draft: false

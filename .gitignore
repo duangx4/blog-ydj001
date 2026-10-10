@@ -30,3 +30,7 @@ Thumbs.db
 
 # Trae 编辑器工作记录（含过程笔记，不入公开仓库）
 /.trae/
+
+# Python 缓存（static/agent/check-resource.py 可能被本地执行）
+__pycache__/
+*.pyc

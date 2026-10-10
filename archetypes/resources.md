@@ -1,5 +1,7 @@
 ---
 title: "{{ replace .Name "-" " " | title }}"
+# 你的 GitHub 登录名（不是昵称）。归属校验靠它，填错 PR 会被打回。
+authors: []
 date: {{ .Date }}
 lastmod: {{ .Date }}
 draft: true
