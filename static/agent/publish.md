@@ -59,7 +59,7 @@ showComments: false
 ---
 ```
 
-- `date` / `lastmod` 用 ISO 8601 带时区（如 `+08:00`）。
+- `date` / `lastmod` 用 ISO 8601 带时区（如 `+08:00`），**填提交当时的当前时间**——站点配置里 `buildFuture = false`，写成未来时间的话合并后页面根本不会生成（自检脚本会拦住）。
 - `tags` 2–5 个；`categories` 固定写 `资源分享`。
 
 ## 4. 正文骨架

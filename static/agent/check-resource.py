@@ -129,6 +129,19 @@ def parse_front_matter(raw):
     return data
 
 
+def _human_delta(seconds):
+    """把秒数说成人话：3 分钟 / 2.5 小时 / 3 天。"""
+    if seconds < 0:
+        seconds = -seconds
+    if seconds < 90:
+        return "%d 秒" % int(seconds)
+    if seconds < 5400:
+        return "%d 分钟" % int(seconds / 60)
+    if seconds < 172800:
+        return "%.1f 小时" % (seconds / 3600.0)
+    return "%.1f 天" % (seconds / 86400.0)
+
+
 def as_list(v):
     if v is None:
         return []
@@ -178,10 +191,35 @@ def check_front_matter(fm, author):
 
     date = str(fm.get("date", "")).strip()
     if date:
+        dt = None
         try:
-            datetime.datetime.fromisoformat(date.replace("Z", "+00:00"))
+            dt = datetime.datetime.fromisoformat(date.replace("Z", "+00:00"))
         except ValueError:
             warn("date 不是合法 ISO 8601（建议 2026-10-10T21:00:00+08:00）：%s" % date)
+        if dt is not None:
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=datetime.timezone.utc)  # Hugo 对不带时区的日期按 UTC 算
+            delta = (dt - datetime.datetime.now(datetime.timezone.utc)).total_seconds()
+            if delta > 600:
+                err("date 是未来的时间（%s，比现在晚 %s）——站点配置里 buildFuture=false，"
+                    "合并后这个页面根本不会生成；改成当前时间或更早"
+                    % (date, _human_delta(delta)))
+            elif delta > 0:
+                warn("date 比现在晚 %s（未来时间）：Hugo 默认不发布未来页面，确认不是写错"
+                     % _human_delta(delta))
+        if date[:4].isdigit() and int(date[:4]) > datetime.datetime.now().year:
+            warn("date 的年份是 %s，确认不是手误" % date[:4])
+    if "lastmod" in fm:
+        lm = str(fm.get("lastmod", "")).strip()
+        try:
+            lmdt = datetime.datetime.fromisoformat(lm.replace("Z", "+00:00"))
+        except ValueError:
+            lmdt = None
+        if lmdt is not None:
+            if lmdt.tzinfo is None:
+                lmdt = lmdt.replace(tzinfo=datetime.timezone.utc)
+            if (lmdt - datetime.datetime.now(datetime.timezone.utc)).total_seconds() > 86400:
+                warn("lastmod 比现在晚了一天以上（%s），确认时间没写错" % lm)
 
 
 def check_files(bundle, fm, max_bytes):

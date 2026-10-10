@@ -40,7 +40,7 @@
 
 | 现象 | 原因 | 怎么办 |
 |---|---|---|
-| 合并了但资源页没出现 | 文章还是 `draft: true` | front matter 改 `draft: false` |
+| 页面 404 / 资源页没出现 | 文章还是 draft，或 `date` 写成了未来时间 | `draft: false`；`date` 改成当前或更早（配置里 `buildFuture = false`） |
 | 下载那格只是纯文字 | 文件名和实际附件对不上（大小写敏感） | 核对附件文件名 |
 | `check` 红：authors 必须填… | PR 由别的账号发起，或 authors 写错 | 用本人账号重开 PR |
 | `check` 红：无权修改 | 动了别人的文章、名片或其它目录 | 只改自己这次的目录 |
