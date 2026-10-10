@@ -14,10 +14,11 @@
 - 内容：`content/blog/`、`content/projects/`、`content/resources/<slug>/index.md`、`content/contributors/<GitHub 登录名>.md`
 - 后台：Sveltia CMS，`static/admin/config.yml`；登录走 `oauth.ydj001.xyz`（香港机 nginx 反代到 node 进程 4099 端口；该进程监听 0.0.0.0，靠 ufw 挡住外网）
 - `public/` 是构建产物，不入库
+- 资源投稿契约：`static/agent/` 下是给 **agent** 读的投稿通道——`publish.md`（契约，线上 `https://ydj001.xyz/agent/publish.md`）、`invite.md`（人看的邀请/转发说明）、`check-resource.py`（自检脚本，投稿者本地和 CI 用同一份）。站主私发链接给指定分享者，不做公开入口；`layouts/robots.txt` 里 `Disallow: /agent/`。
 
 ## 工作流
 
-1. **不直接推 master。** 从最新 master 开分支：Hermes 用 `hermes/<主题>`，Claude 用 `claude/<主题>`。
+1. **不直接推 master。** 从最新 master 开分支：Hermes 用 `hermes/<主题>`，Claude 用 `claude/<主题>`，外部分享者用 `submit/<slug>`。
 2. 提交前本地跑 `hugo --gc --minify`，0 错误。
 3. 开 PR，描述里写清：改了什么、为什么、怎么验证的、需要上线后看哪个 URL。
 4. **审查 + 合并统一由 Hermes 做**，见下一节。
@@ -25,11 +26,11 @@
 
 ## 审查与自动合并（Hermes）
 
-适用于 `hermes/*` 和 `claude/*` 分支的 PR。
+适用于 `hermes/*`、`claude/*`，以及外部分享者用自己账号从 agent 提交的 `submit/*` PR（同一套标准，契约见 `static/agent/publish.md`）。
 
 > Hermes 环境：仓库副本 `/opt/data/repos/blog-ydj001`；GitHub 操作一律用 `ghx`（读 `/opt/data/.env` 里的 token 再调 `gh`，用法与 `gh` 相同；裸 `gh` 未登录）。PR 作者和 token 都是 `duangx4`，所以 `--approve` 会被 GitHub 拒绝，审查结论用 `--comment`。
 
-1. 等 `ghx pr checks <号>` 全绿：`build`（构建），以及 PR 触发了的 `check`（即 `resource-ownership` 工作流的归属校验作业）。红了先看日志，能修就修，修不了在 PR 里说明。
+1. 等 `ghx pr checks <号>` 出结果，看三个作业：`build`（构建）、`check`（`resource-ownership` 的归属校验）、`lint`（资源契约自检，跑的就是投稿者本地那份 `static/agent/check-resource.py`）。`build`/`check` 是必过项；`lint` 不拦合并，红了先分清是分享者不合契约（在 PR 里点出来让他改）还是脚本误报（改脚本，顺带补 `publish.md`）。改了资源文章的 PR 归属校验和自检都会跑，改别的（主题、配置、文档）只有 `build`。
 2. **审查必须在一个新会话里做**，只看 `ghx pr diff <号>` 和本文件，不带写这个 PR 时的上下文——自己审自己时尤其如此。
 3. 审查清单：
    - 改动和 PR 描述一致，没有夹带无关文件
@@ -55,6 +56,8 @@
 ## 必须成对
 
 - `static/admin/config.yml` 与 `.github/workflows/resource-ownership.yml`：CMS 的按钮开关和 CI 的归属校验是一套，改一个就检查另一个，放在同一个 PR。
+- `static/agent/publish.md`（契约）↔ `static/agent/check-resource.py`（自检脚本）↔ `resource-ownership.yml` 里的 `lint` job：三者是同一套规则，改契约必须同步改脚本和 job。脚本一份两用（投稿者本地 + CI），别在 workflow 里另写一份逻辑。
+- 契约里给分享者看的字段/示例变了，顺手更新 `static/agent/invite.md` 里那段可转发的话和 `docs/cms-handover.md` 的「投稿通道」一节。
 
 ## 不要做
 

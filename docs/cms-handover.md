@@ -242,8 +242,26 @@ rsync -rlptz --delete --exclude='mc/' \
 
 **网盘卡片**（pan-link）：
 ```
-{{< pan-link title="百度网盘" url="https://pan.baidu.com/..." code="xxxx" >}}
+{{< pan-link name="百度网盘" url="https://pan.baidu.com/..." code="xxxx" size="1.2 GB" >}}
 ```
+`name` 和 `url` 必填（写 `title=` 页面不会渲染标题），整行写完，不能换行。
+
+### 用 agent 投稿（2026-10-10 新增）
+
+分享者不想登录后台、只想让自己的 AI agent 干活时走这条：给 agent 一个契约地址，它自己 fork / 写文章 / 开 PR，PR 由**分享者本人的 GitHub 账号**发起，所以归属校验和 CMS 路径完全一样，一行没改。
+
+| 文件 | 用途 |
+|---|---|
+| `static/agent/publish.md` | 给 agent 读的投稿契约（线上 `https://ydj001.xyz/agent/publish.md`） |
+| `static/agent/invite.md` | 人看的说明 + 可直接转发给分享者的那段话 |
+| `static/agent/check-resource.py` | 提交前自检脚本，CI 的 `lint` job 跑同一份 |
+| `layouts/robots.txt` | 覆盖 Hugo 内置模板，含 `Disallow: /agent/`（入口不公开，只私发） |
+
+- 分享者侧：`gh auth login` 一次 → agent 输出一个 PR（分支名 `submit/<slug>`）
+- 站主侧：首次贡献者要点一次 PR 页面的「Approve and run workflows」；三个作业 `build` / `check` / `lint`，前两个必过
+- 不走 Collaborator：fork 路线不需要给分享者 Write 权限（CMS 路线才需要）
+- 超过 20 MiB 的文件不进仓库，走网盘 + `pan-link`
+- CI 侧对应 `.github/workflows/resource-ownership.yml` 里的 `lint` job（非 Required，只提示）
 
 ---
 
@@ -254,8 +272,14 @@ static/admin/
 ├── index.html          # CMS 入口
 └── config.yml          # CMS 配置
 
+static/agent/           # agent 投稿通道（2026-10 新增，入口不公开）
+├── publish.md          # 给 agent 读的投稿契约
+├── invite.md           # 人看的说明（可转发给分享者）
+└── check-resource.py   # 提交前自检脚本（CI lint job 同一份）
+
 layouts/
 ├── resources/list.html # 资源列表（已修改封面路径解析）
+├── robots.txt          # 覆盖 Hugo 内置模板（Disallow: /agent/）
 └── shortcodes/
     └── download-table.html # 下载表格（已修改附件路径解析）
 

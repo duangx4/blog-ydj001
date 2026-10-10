@@ -1,6 +1,7 @@
 # 资源投稿 PR 的归属校验：贡献者只能新增 / 修改 authors 含自己 GitHub 用户名的资源文章，
 # 且不能改动 content/resources/<slug>/ 以外的文件。维护者不受限制。
 # 需要配合 master 分支保护，把本检查设为 Required status check。
+# 同一文件里还有一个 lint job：跑投稿契约的自检脚本（非 Required，只提示）。
 name: resource-ownership
 
 on:
@@ -131,3 +132,53 @@ jobs:
 
           if [ "$fail" -ne 0 ]; then exit 1; fi
           echo "归属校验通过"
+
+  # 契约细节自检：跑的是投稿者在本地跑的那一份脚本（static/agent/check-resource.py）。
+  # 不是 Required check——不拦合并，但会把契约问题（字段缺失、附件对不上、超 20 MiB、
+  # 短代码写错）在 PR 里点出来，省得合并后才发现。
+  # 改契约（static/agent/publish.md）和改这个脚本必须一起改。
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      MAINTAINERS: "duangx4"
+      PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Lint changed resource bundles
+        run: |
+          set -euo pipefail
+
+          # 维护者只跳过署名校验（维护者可能要修别人的老资源），内容契约照查。
+          # 这样维护者自己的 PR 也能真正跑到这个 job，不用等外部投稿才知道它通不通。
+          author_args=(--author "$PR_AUTHOR")
+          for m in $MAINTAINERS; do
+            if [ "$m" = "$PR_AUTHOR" ]; then
+              echo "维护者 $PR_AUTHOR：跳过署名校验，其余契约照查"
+              author_args=()
+            fi
+          done
+
+          # 本次 PR 改到的资源目录（删除的目录查不到 index.md，下面会跳过）
+          slugs="$(git diff --name-only "$BASE_SHA...$HEAD_SHA" -- 'content/resources/' \
+                   | awk -F/ 'NF >= 3 { print $3 }' | sort -u || true)"
+          if [ -z "$slugs" ]; then
+            echo "本 PR 未改动资源文章，跳过契约自检"
+            exit 0
+          fi
+
+          fail=0
+          for slug in $slugs; do
+            dir="content/resources/$slug"
+            if [ ! -f "$dir/index.md" ]; then
+              echo "::notice::$dir 在本次提交里没有 index.md（删除或路径不符），跳过契约自检"
+              continue
+            fi
+            echo "---- $dir ----"
+            python3 static/agent/check-resource.py "$dir" "${author_args[@]}" || fail=1
+          done
+          exit "$fail"
