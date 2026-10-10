@@ -189,7 +189,10 @@ def check_front_matter(fm, author):
     if draft in ("true", "yes", "1"):
         err("draft: true —— 资源页上不会出现这篇文章，改成 false")
 
-    date = str(fm.get("date", "")).strip()
+    date = str(fm.get("date", "")).strip().strip('"').strip("'")
+    if date in ("", "[]"):
+        err("date 是空的——必填，填提交当时的当前时间（例：2026-10-10T21:00:00+08:00）")
+        date = ""
     if date:
         dt = None
         try:

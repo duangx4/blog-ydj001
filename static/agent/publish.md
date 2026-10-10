@@ -125,7 +125,7 @@ python3 /tmp/check-resource.py content/resources/<slug> --author 你的GitHub登
 ```
 
 - 输出 `PASS` 才能推；`FAIL` 按提示逐条改；`WARN` 是提醒，不拦合并。
-- 机器上没有 `python3` 就跳过这步，CI 会兜底把问题指出来。
+- 这一步**没有兜底**：CI 只跑 Hugo 构建和归属校验，不跑这份脚本。机器上没有 `python3` 就装一个再跑，别跳过。
 
 ## 7. Git 与 PR（两条路，优先 A）
 
@@ -171,7 +171,7 @@ git push -u origin submit/<slug>
     -d '{"title":"feat(resources): 新增 <标题>","head":"你的GitHub登录名:submit/<slug>","base":"master","body":"<见下>"}'
   ```
 
-**凭据红线**：token 只放在本机环境变量或 git 凭据里。**绝不要**写进任何文件、提交内容、PR 描述、评论或聊天记录——仓库 CI 会扫，出现凭据形态的字符串会被打回。
+**凭据红线**：token 只放在本机环境变量或 git 凭据里。**绝不要**写进任何文件、提交内容、PR 描述、评论或聊天记录——上面那份自检脚本会扫出凭据形态的字符串并给你 `FAIL`（将来 CI 侧作业也会扫，见仓库 issue #20）。
 
 PR 描述模板：
 

@@ -30,7 +30,7 @@
 
 > Hermes 环境：仓库副本 `/opt/data/repos/blog-ydj001`；GitHub 操作一律用 `ghx`（读 `/opt/data/.env` 里的 token 再调 `gh`，用法与 `gh` 相同；裸 `gh` 未登录）。PR 作者和 token 都是 `duangx4`，所以 `--approve` 会被 GitHub 拒绝，审查结论用 `--comment`。
 
-1. 等 `ghx pr checks <号>` 出结果，看两个作业：`build`（构建）、`check`（`resource-ownership` 的归属校验），两个都是必过项。改了资源文章的 PR 两个都会跑，改别的（主题、配置、文档）只有 `build`。资源契约的自检（`static/agent/check-resource.py`）目前只在投稿者本地跑；CI 侧的同一个作业在 issue #20（要改动 `.github/workflows/`，得有 `Workflows` 写权限的 token）。
+1. 等 `ghx pr checks <号>` 出结果，看两个作业：`build`（构建）、`check`（`resource-ownership` 的归属校验），两个都是必过项。workflow 里 `on.pull_request` 没有 `paths` 过滤，所以**两个作业对每个 PR 都会跑**（维护者自己发的 PR，`check` 会直接判绿、跳过校验）。资源契约的自检（`static/agent/check-resource.py`）目前只在投稿者本地跑；CI 侧的同一个作业在 issue #20（要改动 `.github/workflows/`，得有 `Workflows` 写权限的 token）。
 2. **审查必须在一个新会话里做**，只看 `ghx pr diff <号>` 和本文件，不带写这个 PR 时的上下文——自己审自己时尤其如此。
 3. 审查清单：
    - 改动和 PR 描述一致，没有夹带无关文件
