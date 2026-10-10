@@ -30,6 +30,7 @@ content/resources/<slug>/
 └── tool-v1.0.zip    附件，可选；正文下载表格最后一格写文件名即可变成下载按钮
 ```
 
+- 封面的去向：`cover.png` 显示在 `/resources/` **列表页的资源卡片**上；单篇资源详情页不显示封面图。看不到别以为没生效。
 - `<slug>`：全小写，字母数字，单词间用 `-`，长度建议 2–40 字符，正则 `^[a-z0-9]+(-[a-z0-9]+)*$`，例如 `stm32-toolbox`。
 - slug 就是网址 `/resources/<slug>/`，**定下就别改**：改了等于换一篇文章，旧链接会 404。
 - 本次允许改动的路径（**只允许这三处，其余一律被 CI 拒绝**）：
@@ -46,8 +47,8 @@ content/resources/<slug>/
 title: "资源标题"
 authors:
   - <GITHUB_LOGIN>          # 必须包含 PR 发起人的登录名，且只填本人一个
-date: 2026-09-01T10:00:00+08:00   # 填提交当时的当前时间（这里只是格式示例，别照抄）
-lastmod: 2026-09-01T10:00:00+08:00  # 可选，同理
+date: 2026-09-01T10:00:00+08:00   # 填提交当时的当前时间；比当前时间早几分钟更保险（未来时间会被自检拦下，页面还会静默不生成）。别照抄这个示例值
+lastmod: 2026-09-01T10:00:00+08:00  # 可选，同上
 draft: false              # 必须 false，否则合并后页面上根本不出现
 weight: 10
 description: "一句话说明这是什么、给谁用（显示在资源卡片上，30–60 字）"
@@ -109,6 +110,14 @@ Linux | - | 1.0.0 | 2.0 MB | - | https://example.com/tool.AppImage
 - 用不上的格子写 `-`。
 - 参数：`caption`（表下说明）、`note`（表上提示）、`hash`（校验值列的表头名，默认 MD5）、`col1`–`col6`（逐列覆盖表头）。
 
+**单文件资源**（没有平台/架构之分，比如一个脚本包）别硬套「平台」列：用 5 列 + `col1` 把第一列改写成「文件」（列名只是表头文字，脚本不校验语义）：
+
+```
+{{< download-table caption="下载" hash="SHA256" col1="文件" >}}
+tool-v1.0.zip | 1.0 | 1.1 KB | <sha256 值> | tool-v1.0.zip
+{{< /download-table >}}
+```
+
 ### 网盘卡片 `pan-link`
 
 ```
@@ -124,6 +133,7 @@ curl -fsSLo /tmp/check-resource.py https://ydj001.xyz/agent/check-resource.py
 python3 /tmp/check-resource.py content/resources/<slug> --author 你的GitHub登录名
 ```
 
+- 在**仓库根目录**里跑：第一个参数是从仓库根算的相对路径（`content/resources/<slug>`），脚本文件本身放哪都行（示例放在 `/tmp`）。
 - 输出 `PASS` 才能推；`FAIL` 按提示逐条改；`WARN` 是提醒，不拦合并。
 - 这一步**没有兜底**：CI 只跑 Hugo 构建和归属校验，不跑这份脚本。机器上没有 `python3` 就装一个再跑，别跳过。
 
