@@ -45,9 +45,9 @@ skills:
 # -- 发展规划 --
 plans:
   - title: "主攻"
-    text: "PLC 工业自动化"
+    text: "嵌入式开发（STM32 / Cortex-M）"
   - title: "副选"
-    text: "嵌入式开发（STM32 进阶）"
+    text: "PLC 工业自动化（博途基础，暂不投入精力）"
   - title: "保底"
     text: "CAAC 无人机飞手（民航 / 测绘 / 巡检方向）"
 ---
