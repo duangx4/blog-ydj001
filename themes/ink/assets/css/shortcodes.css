@@ -190,6 +190,24 @@
 
 /* ── archify iframe ───────────────────────────────────── */
 
+/* wide 变体：交互图向右展开，占满正文右侧的空白，不压左侧目录 */
+@media (min-width: 1100px) {
+  .archify-embed--wide {
+    position: relative;
+    left: 0;
+    width: min(980px, calc(100vw - 470px));
+    margin-right: 0;
+  }
+}
+
+/* 窄屏：图比正文栏宽的意义不大，但至少铺满视口，让内部滚动少一点 */
+@media (max-width: 1099px) {
+  .archify-embed--wide {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+}
+
 .archify-wrap {
   width: 100%;
   border: 1px solid var(--line);

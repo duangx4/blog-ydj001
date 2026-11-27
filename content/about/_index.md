@@ -21,7 +21,7 @@ skills:
     desc: "STM32F103 · HAL/标准库 · 基础电子设计"
     works:
       - "智能花园（星火电子社新生杯优胜奖）"
-      - "RobotMaster 校内工程赛电控设计"
+      - "第七届校内工程挑战赛电控负责人（八强）"
   - title: "编程"
     desc: "Python · C · C++ 基础 · Hugo / Markdown"
     works:

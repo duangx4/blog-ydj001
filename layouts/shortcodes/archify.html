@@ -6,8 +6,9 @@
 {{- $height := .Get "height" | default "850" -}}
 {{- $title := .Get "title" | default "交互式架构图" -}}
 {{- $caption := .Get "caption" -}}
+{{- $wide := .Get "wide" -}}
 
-<figure class="archify-embed">
+<figure class="archify-embed{{ with $wide }} archify-embed--wide{{ end }}">
   <iframe
     src="{{ $src }}"
     title="{{ $title }}"
