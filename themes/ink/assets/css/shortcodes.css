@@ -190,6 +190,31 @@
 
 /* ── archify iframe ───────────────────────────────────── */
 
+/* 基础规则：figure 默认有 UA 的 1em 40px 边距，不清掉会顶出正文栏 */
+.archify-embed {
+  margin: 1.8em 0;
+  max-width: 100%;
+}
+
+/* wide 变体：向右展开，占满正文右侧的空白，不压左侧目录 */
+@media (min-width: 1100px) {
+  .archify-embed--wide {
+    width: min(980px, calc(50vw + 250px));
+    max-width: none;
+    margin-right: 0;
+  }
+}
+
+/* 窄屏：图铺到容器的内边距边缘（用 % 和 --pad-x，不用 100vw，避免滚动条宽度造成溢出） */
+@media (max-width: 1099px) {
+  .archify-embed--wide {
+    width: calc(100% + 2 * var(--pad-x));
+    max-width: none;
+    margin-left: calc(-1 * var(--pad-x));
+    margin-right: calc(-1 * var(--pad-x));
+  }
+}
+
 .archify-wrap {
   width: 100%;
   border: 1px solid var(--line);
